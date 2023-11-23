@@ -1,4 +1,5 @@
 import 'package:zona0_apk/domain/entities/data.dart';
+import 'package:zona0_apk/presentation/widgets/products/product_icon.dart';
 import 'package:zona0_apk/presentation/widgets/products/products_horizontal_listview.dart';
 import 'package:zona0_apk/presentation/widgets/slideshows/banner_slideshow.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
@@ -37,6 +38,7 @@ class HomePage extends StatelessWidget {
                 title: "De moda",
                 subtitle: "Algo",
                 products: AppData.allProducts),
+            _categoryWidget(context),
             ProductsHorizontalListView(
                 title: "De moda",
                 subtitle: "Algo",
@@ -62,5 +64,25 @@ class HomePage extends StatelessWidget {
         );
       }, childCount: 1)),
     ]);
+  }
+
+  Widget _categoryWidget(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      width: MediaQuery.of(context).size.width,
+      height: 80,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: AppData.categoryList
+            .map(
+              (category) => ProductIcon(
+                model: category,
+                onSelected: (model) {
+                },
+              ),
+            )
+            .toList(),
+      ),
+    );
   }
 }

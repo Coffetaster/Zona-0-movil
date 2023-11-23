@@ -1,5 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
 
 import 'product_card_view.dart';
@@ -56,7 +58,11 @@ class _ProductsHorizontalListViewState extends State<ProductsHorizontalListView>
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) =>
-                FadeInRight(child: _Slice(product: widget.products[index])),
+                FadeInRight(child: ProductCardView(
+                  product: widget.products[index],
+                  onTap: (id){
+                    context.push(RouterPath.PRODUCT_DETAIL_PAGE);
+                  })),
             )
           ),
 
@@ -64,18 +70,6 @@ class _ProductsHorizontalListViewState extends State<ProductsHorizontalListView>
         ],
       )
     );
-  }
-}
-
-class _Slice extends StatelessWidget {
-
-  final Product product;
-
-  const _Slice({required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return ProductCardView(product: product);
   }
 }
 

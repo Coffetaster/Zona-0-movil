@@ -37,12 +37,15 @@ class MainLayout extends StatelessWidget {
               context.go(RouterPath.HOME_PAGE);
               break;
             case 1:
-              context.go(RouterPath.FAVORITES_PAGE);
+              context.go(RouterPath.SEARCH_PAGE);
               break;
             case 2:
-              context.go(RouterPath.WALLET_PAGE);
+              context.go(RouterPath.SHOPPING_CART_PAGE);
               break;
             case 3:
+              context.go(RouterPath.WALLET_PAGE);
+              break;
+            case 4:
               context.go(RouterPath.SETTINGS_PAGE);
               break;
           }

@@ -58,7 +58,7 @@ class ShoppingCartPage extends StatelessWidget {
                     children: <Widget>[
                       TitleText(
                         text: '\$ ',
-                        color: Colors.red.shade400,
+                        // color: Colors.red.shade400,
                         fontSize: 12,
                       ),
                       TitleText(
@@ -90,7 +90,7 @@ class ShoppingCartPage extends StatelessWidget {
       children: <Widget>[
         TitleText(
           text: '${AppData.allProducts.where((e) => e.isliked).length} Items',
-          color: Colors.grey.shade300,
+          // color: Colors.grey.shade300,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -118,7 +118,7 @@ class ShoppingCartPage extends StatelessWidget {
         // width: AppTheme.fullWidth(context) * .75,
         child: TitleText(
           text: 'Next',
-          color: Theme.of(context).colorScheme.background,
+          // color: Theme.of(context).colorScheme.background,
           fontWeight: FontWeight.w500,
         ),
       ),

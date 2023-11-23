@@ -8,7 +8,7 @@ import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/presentation/widgets/extensions/ripple_extension.dart';
 import 'package:zona0_apk/presentation/widgets/products/product_card_view.dart';
-import 'package:zona0_apk/presentation/widgets/test/product_icon.dart';
+import 'package:zona0_apk/presentation/widgets/products/product_icon.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);

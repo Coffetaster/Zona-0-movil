@@ -18,18 +18,12 @@ final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: RouterPath.INITIAL_PAGE,
   routes: [
-    // GoRoute(
-    //   path: RouterPath.HOME_PAGE,
-    //   pageBuilder: (context, state) =>
-    //     RouterTransition.fadeTransitionPage(
-    //       key: state.pageKey, child:  HomePage()),
-    // ),
-    // GoRoute(
-    //   path: RouterPath.PRODUCT_DETAIL_PAGE,
-    //   pageBuilder: (context, state) =>
-    //     RouterTransition.fadeTransitionPage(
-    //       key: state.pageKey, child:  ProductDetailPage()),
-    // ),
+    GoRoute(
+      path: RouterPath.PRODUCT_DETAIL_PAGE,
+      pageBuilder: (context, state) =>
+        RouterTransition.fadeTransitionPage(
+          key: state.pageKey, child:  ProductDetailPage()),
+    ),
 
     GoRoute(
       path: RouterPath.INITIAL_PAGE,
@@ -50,10 +44,16 @@ final appRouter = GoRouter(
                     key: state.pageKey, child: const HomePage()),
           ),
           GoRoute(
-            path: RouterPath.FAVORITES_PAGE,
+            path: RouterPath.SEARCH_PAGE,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: MyHomePage()),
+                    key: state.pageKey, child: SearchPage()),
+          ),
+          GoRoute(
+            path: RouterPath.SHOPPING_CART_PAGE,
+            pageBuilder: (context, state) =>
+                RouterTransition.fadeTransitionPage(
+                    key: state.pageKey, child: ShoppingCartPage()),
           ),
           GoRoute(
             path: RouterPath.WALLET_PAGE,
@@ -65,7 +65,7 @@ final appRouter = GoRouter(
             path: RouterPath.SETTINGS_PAGE,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: const ShoppingCartPage()),
+                    key: state.pageKey, child: const SettingsPage()),
           ),
         ]),
   ],

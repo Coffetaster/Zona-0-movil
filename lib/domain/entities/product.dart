@@ -23,4 +23,6 @@ class Product {
     this.isSelected = false,
     this.cant = 0,
   });
+
+  double get realPrice => (price - (price * discount / 100));
 }

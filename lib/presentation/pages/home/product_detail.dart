@@ -112,7 +112,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
           TitleText(
             text: "AIP",
             fontSize: 160,
-            color: Colors.grey.shade300,
+            // color: Colors.grey.shade300,
           ),
           Image.asset('assets/imagen/1.png')
         ],
@@ -207,7 +207,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                               TitleText(
                                 text: "\$ ",
                                 fontSize: 18,
-                                color: Colors.red.shade400,
+                                // color: Colors.red.shade400,
                               ),
                               TitleText(
                                 text: "240",
@@ -292,7 +292,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
       child: TitleText(
         text: text,
         fontSize: 16,
-        color: isSelected ? Theme.of(context).colorScheme.background : Colors.black87,
+        // color: isSelected ? Theme.of(context).colorScheme.background : Colors.black87,
       ),
     ).ripple(() {}, borderRadius: const BorderRadius.all(Radius.circular(13)));
   }

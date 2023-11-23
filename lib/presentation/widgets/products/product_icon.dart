@@ -12,6 +12,7 @@ class ProductIcon extends StatelessWidget {
   const ProductIcon({Key? key, this.model, required this.onSelected}) : super(key: key);
 
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
     return model == null
         ? Container(width: 5)
         : Container(
@@ -22,20 +23,12 @@ class ProductIcon extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
                 color: model!.isSelected
-                    ? Theme.of(context).colorScheme.background
+                    ? color.background
                     : Colors.transparent,
                 border: Border.all(
-                  color: model!.isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade300,
+                  color: model!.isSelected ? color.primary : Colors.grey.shade300,
                   width: model!.isSelected ? 2 : 1,
                 ),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: model!.isSelected ? const Color(0xfffbf2ef) : Colors.white,
-                    blurRadius: 10,
-                    spreadRadius: 5,
-                    offset: const Offset(5, 5),
-                  ),
-                ],
               ),
               child: Row(
                 children: <Widget>[
