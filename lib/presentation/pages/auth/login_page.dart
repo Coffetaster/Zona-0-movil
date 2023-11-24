@@ -105,7 +105,7 @@ class LoginPage extends StatelessWidget {
           CustomTextButton(
               label: "Registrar",
               onPressed: () {
-                context.push(RouterPath.REGISTER_PAGE);
+                context.push(RouterPath.AUTH_REGISTER_PAGE);
               })
         ],
       ),

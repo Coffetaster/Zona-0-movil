@@ -15,7 +15,10 @@ class RouterPath {
   static const String PRODUCT_DETAIL_PAGE = '/product';
 
   //* Auth pages
-  static const String LOGIN_PAGE = '/auth/login';
-  static const String REGISTER_PAGE = '/auth/register';
+  static const String AUTH_LOGIN_PAGE = '/auth/login';
+  static const String AUTH_REGISTER_PAGE = '/auth/register';
+
+  //* Wallet pages
+  static const String WALLET_TRANSFER_PAGE = '/wallet/transfer';
 
 }

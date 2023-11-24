@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:zona0_apk/presentation/layouts/layouts.dart';
 import 'package:zona0_apk/presentation/pages/auth/login_page.dart';
 import 'package:zona0_apk/presentation/pages/home/home_page.dart';
+import 'package:zona0_apk/presentation/pages/test/money_transfer_page.dart';
 import 'package:zona0_apk/presentation/pages/test/product_detail.dart';
 import 'package:zona0_apk/presentation/pages/pages.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zona0_apk/presentation/pages/test/wallet_page2.dart';
+import 'package:zona0_apk/presentation/pages/home/wallet_page.dart';
 
 import 'router_path.dart';
 import 'router_transition.dart';
@@ -31,19 +32,27 @@ final appRouter = GoRouter(
           key: state.pageKey, child:  ProductDetailPage()),
     ),
 
-    //* Auth Pages
+    //* Wallet pages
     GoRoute(
-      path: RouterPath.LOGIN_PAGE,
+      path: RouterPath.WALLET_TRANSFER_PAGE,
       pageBuilder: (context, state) =>
         RouterTransition.fadeTransitionPage(
-          key: state.pageKey, child: LoginPage()),
+          key: state.pageKey, child:  MoneyTransferPage()),
+    ),
+
+    //* Auth Pages
+    GoRoute(
+      path: RouterPath.AUTH_LOGIN_PAGE,
+      pageBuilder: (context, state) =>
+        RouterTransition.fadeTransitionPage(
+          key: state.pageKey, child: const LoginPage()),
     ),
 
     GoRoute(
-      path: RouterPath.REGISTER_PAGE,
+      path: RouterPath.AUTH_REGISTER_PAGE,
       pageBuilder: (context, state) =>
         RouterTransition.fadeTransitionPage(
-          key: state.pageKey, child: RegisterPage()),
+          key: state.pageKey, child: const RegisterPage()),
     ),
 
     //* Home Pages
@@ -69,19 +78,19 @@ final appRouter = GoRouter(
             path: RouterPath.SEARCH_PAGE,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: SearchPage()),
+                    key: state.pageKey, child: const SearchPage()),
           ),
           GoRoute(
             path: RouterPath.SHOPPING_CART_PAGE,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: ShoppingCartPage()),
+                    key: state.pageKey, child: const ShoppingCartPage()),
           ),
           GoRoute(
             path: RouterPath.WALLET_PAGE,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: WalletPage2()),
+                    key: state.pageKey, child: const WalletPage()),
           ),
           GoRoute(
             path: RouterPath.SETTINGS_PAGE,

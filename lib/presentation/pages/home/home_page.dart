@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
                       children: <Widget>[
                         const SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () => context.go(RouterPath.LOGIN_PAGE),
+                          onTap: () => context.go(RouterPath.AUTH_LOGIN_PAGE),
                           child: const CircleAvatar(
                             minRadius: 25,
                             maxRadius: 25,
@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
                   : CustomTextButton(
                       label: "Autenticar",
                       icon: Icons.login_rounded,
-                      onPressed: () => context.go(RouterPath.LOGIN_PAGE)),
+                      onPressed: () => context.go(RouterPath.AUTH_LOGIN_PAGE)),
               const Spacer(),
               const ThemeChangeWidget(),
               if (isLogin)
