@@ -3,12 +3,12 @@ import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/category.dart';
 import 'package:zona0_apk/presentation/widgets/extensions/ripple_extension.dart';
 
-class ProductIcon extends StatelessWidget {
+class CategoryChip extends StatelessWidget {
   // final String imagePath;
   // final String text;
   final ValueChanged<Category> onSelected;
   final Category? model;
-  const ProductIcon({Key? key, this.model, required this.onSelected}) : super(key: key);
+  const CategoryChip({Key? key, this.model, required this.onSelected}) : super(key: key);
 
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;

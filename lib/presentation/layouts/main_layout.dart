@@ -31,7 +31,8 @@ class MainLayout extends StatelessWidget {
           backgroundColor: color.background,
           items: const <Widget>[
             Icon(Icons.home_outlined, size: 30),
-            Icon(Icons.search_outlined, size: 30),
+            Icon(Icons.list_alt_outlined, size: 30),
+            // Icon(Icons.search_outlined, size: 30),
             Icon(Icons.shopping_cart_outlined, size: 30),
             Icon(Icons.wallet_outlined, size: 30),
             Icon(Icons.settings_outlined, size: 30),
@@ -42,7 +43,7 @@ class MainLayout extends StatelessWidget {
                 context.go(RouterPath.HOME_PAGE);
                 break;
               case 1:
-                context.go(RouterPath.SEARCH_PAGE);
+                context.go(RouterPath.CATEGORIES_PAGE);
                 break;
               case 2:
                 context.go(RouterPath.SHOPPING_CART_PAGE);

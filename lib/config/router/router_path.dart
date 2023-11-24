@@ -5,6 +5,7 @@ class RouterPath {
 
   //* Home pages
   static const String HOME_PAGE = '/home';
+  static const String CATEGORIES_PAGE = '/categories';
   static const String SEARCH_PAGE = '/search';
   static const String SHOPPING_CART_PAGE = '/shopping_cart';
   static const String WALLET_PAGE = '/wallet';

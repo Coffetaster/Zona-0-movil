@@ -7,14 +7,27 @@ class CustomIconButton extends StatelessWidget {
       {super.key,
       required this.icon,
       this.onPressed,
-      this.iconButtonType = IconButtonType.normal});
+      this.iconButtonType = IconButtonType.normal,
+      this.badgeInfo,
+      this.badgeAlignment});
 
   final IconData icon;
+  final String? badgeInfo;
+  final AlignmentGeometry? badgeAlignment;
   final VoidCallback? onPressed;
   final IconButtonType iconButtonType;
 
   @override
   Widget build(BuildContext context) {
+    return badgeInfo == null || badgeInfo!.isEmpty
+        ? getIconButton()
+        : Badge(
+            child: getIconButton(),
+            label: Text(badgeInfo!),
+            alignment: badgeAlignment ?? Alignment(.25,-.35));
+  }
+
+  Widget getIconButton() {
     ButtonStyle buttonStyle = IconButton.styleFrom(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))));

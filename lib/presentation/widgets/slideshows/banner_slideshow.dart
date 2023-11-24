@@ -13,7 +13,7 @@ class BannerSlideshow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return SizedBox(
-      height: 210,
+      height: 250,
       width: double.infinity,
       child: Swiper(
         viewportFraction: 0.8,
@@ -41,12 +41,12 @@ class _Slide extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final decoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(10),
       boxShadow: const [
         BoxShadow(
           color: Colors.black45,
           blurRadius: 10,
-          offset: Offset(2, 4),
+          offset: Offset(1, 2),
         )
       ]
     );
@@ -55,7 +55,7 @@ class _Slide extends StatelessWidget {
       child: DecoratedBox(
         decoration: decoration,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           child: Image.asset(promo.image, fit: BoxFit.cover,),
           // child: WidgetsGI.CacheImageNetworkGI(promo.image),
         ),

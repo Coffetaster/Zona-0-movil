@@ -59,6 +59,12 @@ final appRouter = GoRouter(
                     key: state.pageKey, child: const HomePage()),
           ),
           GoRoute(
+            path: RouterPath.CATEGORIES_PAGE,
+            pageBuilder: (context, state) =>
+                RouterTransition.fadeTransitionPage(
+                    key: state.pageKey, child: const CategoriesPage()),
+          ),
+          GoRoute(
             path: RouterPath.SEARCH_PAGE,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(

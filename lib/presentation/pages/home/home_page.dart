@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
-import 'package:zona0_apk/presentation/widgets/products/product_icon.dart';
+import 'package:zona0_apk/presentation/widgets/categories/category_chip.dart';
 import 'package:zona0_apk/presentation/widgets/products/products_horizontal_listview.dart';
 import 'package:zona0_apk/presentation/widgets/slideshows/banner_slideshow.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLogin = false;
+    final isLogin = true;
     return CustomScrollView(slivers: [
       //* toolbar
       SliverToBoxAdapter(
@@ -23,26 +23,26 @@ class HomePage extends StatelessWidget {
             children: <Widget>[
               isLogin
                   ? Row(
-                    children: <Widget>[
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: (){},
-                        child: const CircleAvatar(
-                          minRadius: 25,
-                          maxRadius: 25,
-                          backgroundImage:
-                              AssetImage('assets/imagen/avatar.jpg'),
+                      children: <Widget>[
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () => context.go(RouterPath.LOGIN_PAGE),
+                          child: const CircleAvatar(
+                            minRadius: 25,
+                            maxRadius: 25,
+                            backgroundImage:
+                                AssetImage('assets/imagen/avatar.jpg'),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Text("Hola, "),
-                      Text('Hola, John Doe',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          style: Theme.of(context).textTheme.titleMedium)
-                    ],
-                  )
+                        const SizedBox(width: 8),
+                        // Text("Hola, "),
+                        Text('Hola,\nJohn Doe',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: Theme.of(context).textTheme.titleMedium)
+                      ],
+                    )
                   : CustomTextButton(
                       label: "Autenticar",
                       icon: Icons.login_rounded,
@@ -50,7 +50,12 @@ class HomePage extends StatelessWidget {
               const Spacer(),
               const ThemeChangeWidget(),
               CustomIconButton(
-                  icon: Icons.notifications_outlined, onPressed: () {}),
+                  icon: Icons.notifications_outlined,
+                  badgeInfo: "15",
+                  onPressed: () {}),
+              CustomIconButton(icon: Icons.search_outlined, onPressed: () {
+                context.push(RouterPath.SEARCH_PAGE);
+              }),
             ],
           ),
         ),
@@ -63,7 +68,7 @@ class HomePage extends StatelessWidget {
             BannerSlideshow(promos: AppData.allPromos),
             _categoryWidget(context),
             ProductsHorizontalListView(
-                products: AppData.allProducts..shuffle()),
+                products: AppData.allProducts.where((element) => element.category == 1).toList()),
             ProductsHorizontalListView(
                 title: "En descuento",
                 subtitle: "Consíguelo ya",
@@ -87,7 +92,7 @@ class HomePage extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: AppData.categoryList
             .map(
-              (category) => ProductIcon(
+              (category) => CategoryChip(
                 model: category,
                 onSelected: (model) {},
               ),
