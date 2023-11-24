@@ -51,19 +51,22 @@ class _ProductsHorizontalListViewState extends State<ProductsHorizontalListView>
           if(widget.title != null || widget.subtitle != null)
           _Title(title: widget.title, subtitle: widget.subtitle),
 
-          Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: widget.products.length,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) =>
-                FadeInRight(child: ProductCardView(
-                  product: widget.products[index],
-                  onTap: (id){
-                    context.push(RouterPath.PRODUCT_DETAIL_PAGE);
-                  })),
-            )
+          SizedBox(
+            height: 300,
+            child: Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: widget.products.length,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) =>
+                  FadeInRight(child: ProductCardView(
+                    product: widget.products[index],
+                    onTap: (id){
+                      context.push(RouterPath.PRODUCT_DETAIL_PAGE);
+                    })),
+              )
+            ),
           ),
 
 

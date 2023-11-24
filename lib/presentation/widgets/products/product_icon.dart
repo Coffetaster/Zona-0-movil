@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/category.dart';
 import 'package:zona0_apk/presentation/widgets/extensions/ripple_extension.dart';
-import 'package:zona0_apk/presentation/widgets/test/title_text.dart';
 
 class ProductIcon extends StatelessWidget {
   // final String imagePath;
@@ -33,10 +32,9 @@ class ProductIcon extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   Image.asset(model!.image),
-                  TitleText(
-                    text: model!.name,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
+                  Text(
+                    model!.name,
+                    style: Theme.of(context).textTheme.titleMedium,
                   )
                 ],
               ),

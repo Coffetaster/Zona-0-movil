@@ -12,9 +12,9 @@ class AppData {
       brand: 'Dell',
       price: 345.00,
       discount: 10,
-      isliked: true,
       image: 'assets/imagen/1.png',
-      category: 1
+      category: 1,
+      cantMax: 1
     ),
     Product(
       id: 2,
@@ -23,7 +23,9 @@ class AppData {
       price: 280.00,
       discount: 0,
       image: 'assets/imagen/2.png',
-      category: 2
+      category: 2,
+      cantInCart: 1,
+      cantMax: 3
     ),
     Product(
       id: 3,
@@ -31,9 +33,10 @@ class AppData {
       brand: 'Nike',
       price: 20.00,
       discount: 5,
-      isliked: true,
       image: 'assets/imagen/3.png',
-      category: 3
+      category: 3,
+      cantInCart: 2,
+      cantMax: 6
     ),
     Product(
       id: 4,
@@ -41,9 +44,10 @@ class AppData {
       brand: 'Thaba Cuba',
       price: 28.00,
       discount: 0,
-      isliked: true,
       image: 'assets/imagen/4.png',
-      category: 5
+      category: 5,
+      cantInCart: 1,
+      cantMax: 4
     ),
     Product(
       id: 5,
@@ -52,7 +56,8 @@ class AppData {
       price: 260.00,
       discount: 15,
       image: 'assets/imagen/5.png',
-      category: 1
+      category: 1,
+      cantMax: 2
     ),
     Product(
       id: 6,
@@ -61,7 +66,9 @@ class AppData {
       price: 65.00,
       discount: 5,
       image: 'assets/imagen/6.png',
-      category: 4
+      category: 4,
+      cantInCart: 3,
+      cantMax: 3
     ),
     Product(
       id: 7,
@@ -70,7 +77,8 @@ class AppData {
       price: 15.00,
       discount: 0,
       image: 'assets/imagen/7.png',
-      category: 5
+      category: 5,
+      cantMax: 7
     ),
     Product(
       id: 8,
@@ -79,7 +87,8 @@ class AppData {
       price: 720.00,
       discount: 15,
       image: 'assets/imagen/8.png',
-      category: 2
+      category: 2,
+      cantMax: 2
     ),
     Product(
       id: 9,
@@ -88,7 +97,8 @@ class AppData {
       price: 32.00,
       discount: 3,
       image: 'assets/imagen/9.png',
-      category: 3
+      category: 3,
+      cantMax: 12
     ),
     Product(
       id: 10,
@@ -97,7 +107,9 @@ class AppData {
       price: 180.00,
       discount: 0,
       image: 'assets/imagen/10.png',
-      category: 1
+      category: 1,
+      cantInCart: 1,
+      cantMax: 2
     ),
     Product(
       id: 11,
@@ -106,7 +118,8 @@ class AppData {
       price: 45.00,
       discount: 0,
       image: 'assets/imagen/11.png',
-      category: 4
+      category: 4,
+      cantMax: 5
     ),
     Product(
       id: 12,
@@ -114,9 +127,10 @@ class AppData {
       brand: 'Microsoft Xbox',
       price: 175.00,
       discount: 15,
-      isliked: true,
       image: 'assets/imagen/12.png',
-      category: 6
+      category: 6,
+      cantInCart: 2,
+      cantMax: 6
     ),
     Product(
       id: 13,
@@ -124,9 +138,10 @@ class AppData {
       brand: 'Google',
       price: 355.00,
       discount: 0,
-      isliked: true,
       image: 'assets/imagen/13.png',
-      category: 2
+      category: 2,
+      cantInCart: 1,
+      cantMax: 1
     ),
   ];
 

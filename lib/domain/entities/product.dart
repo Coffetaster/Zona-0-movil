@@ -7,9 +7,9 @@ class Product {
   String image;
   double price;
   double discount;
-  bool isliked;
   bool isSelected;
-  int cant;
+  int cantInCart;
+  int cantMax;
   Product({
     required this.id,
     required this.name,
@@ -19,9 +19,9 @@ class Product {
     required this.image,
     required this.price,
     this.discount = 0,
-    this.isliked = false,
     this.isSelected = false,
-    this.cant = 0,
+    this.cantInCart = 0,
+    this.cantMax = 10,
   });
 
   double get realPrice => (price - (price * discount / 100));

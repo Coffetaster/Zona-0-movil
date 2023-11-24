@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/presentation/widgets/extensions/ripple_extension.dart';
-import 'package:zona0_apk/presentation/widgets/test/title_text.dart';
 
 class ProductDetailPage extends StatefulWidget {
   ProductDetailPage({Key? key}) : super(key: key);
@@ -109,9 +108,11 @@ class _ProductDetailPageState extends State<ProductDetailPage>
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: <Widget>[
-          TitleText(
-            text: "AIP",
-            fontSize: 160,
+          Text(
+            "AIP",
+            style: TextStyle(
+              fontSize: 160,
+            ),
             // color: Colors.grey.shade300,
           ),
           Image.asset('assets/imagen/1.png')
@@ -197,21 +198,19 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      TitleText(text: "NIKE AIR MAX 200", fontSize: 25),
+                      Text("NIKE AIR MAX 200", style: TextStyle(fontSize: 25)),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              TitleText(
-                                text: "\$ ",
-                                fontSize: 18,
-                                // color: Colors.red.shade400,
+                              Text(
+                                "\$ ",
+                                style: TextStyle(fontSize: 18)
                               ),
-                              TitleText(
-                                text: "240",
-                                fontSize: 25,
+                              Text(
+                                "240", style: TextStyle(fontSize: 25)
                               ),
                             ],
                           ),
@@ -260,9 +259,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        TitleText(
-          text: "Available Size",
-          fontSize: 14,
+        Text(
+          "Available Size", style: TextStyle(fontSize: 14)
         ),
         const SizedBox(height: 20),
         Row(
@@ -289,10 +287,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         color:
             isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).backgroundColor,
       ),
-      child: TitleText(
-        text: text,
-        fontSize: 16,
-        // color: isSelected ? Theme.of(context).colorScheme.background : Colors.black87,
+      child: Text(
+        text, style: TextStyle(fontSize: 16)
       ),
     ).ripple(() {}, borderRadius: const BorderRadius.all(Radius.circular(13)));
   }
@@ -301,9 +297,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        TitleText(
-          text: "Available Size",
-          fontSize: 14,
+        Text(
+          "Available Size", style: TextStyle(fontSize: 14)
         ),
         const SizedBox(height: 20),
         Row(
@@ -350,9 +345,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        TitleText(
-          text: "Available Size",
-          fontSize: 14,
+        Text(
+          "Available Size", style: TextStyle(fontSize: 14)
         ),
         const SizedBox(height: 20),
         Text(AppData.description),

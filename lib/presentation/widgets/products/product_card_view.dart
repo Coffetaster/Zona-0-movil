@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
+import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
 
 class ProductCardView extends StatelessWidget {
   const ProductCardView({
     Key? key,
     required this.product,
-    this.imageAlignment = Alignment.bottomCenter,
     this.onTap,
   }) : super(key: key);
 
   final Product product;
-  final Alignment imageAlignment;
   final Function(String)? onTap;
 
   @override
@@ -18,17 +17,16 @@ class ProductCardView extends StatelessWidget {
     final color = Theme.of(context).colorScheme;
     final size = MediaQuery.of(context).size;
     return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      elevation: 3,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      elevation: 1,
       child: Material(
         child: InkWell(
           onTap: () => onTap?.call(product.id.toString()),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
-              width: size.width * 0.5,
-              height: size.height * 0.4,
+              width: size.width * 0.45,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,13 +35,13 @@ class ProductCardView extends StatelessWidget {
                       alignment: AlignmentDirectional.bottomStart,
                       children: [
                         SizedBox(
-                            height: size.height * 0.2,
+                            height: size.height * 0.20,
                             width: MediaQuery.of(context).size.width,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Image(
                                 image: AssetImage(product.image),
-                                alignment: imageAlignment,
+                                alignment: Alignment.bottomCenter,
                                 fit: BoxFit.contain,
                               ),
                             )),
@@ -54,11 +52,13 @@ class ProductCardView extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Container(
-                                color: Colors.red.shade400,
+                                color: color.primary,
+                                // color: Colors.red.shade400,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 4, horizontal: 8),
-                                  child: Text("-${product.discount}%",
+                                  child: Text(
+                                      "-${product.discount.toStringAsFixed(2)}%",
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleMedium
@@ -86,7 +86,7 @@ class ProductCardView extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyLarge)),
                     Row(
                       children: [
-                        Text('\$${product.realPrice}',
+                        Text('\$${product.realPrice.toStringAsFixed(2)}',
                             maxLines: 1,
                             overflow: TextOverflow.clip,
                             softWrap: false,
@@ -95,12 +95,11 @@ class ProductCardView extends StatelessWidget {
                                 .bodyMedium
                                 ?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: color.secondary)),
-                        // color: AppTheme.vividOrange)),
+                                    color: color.primary)),
                         if (product.discount > 0)
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text('\$${product.price}',
+                            child: Text('\$${product.price.toStringAsFixed(2)}',
                                 maxLines: 1,
                                 overflow: TextOverflow.clip,
                                 softWrap: false,
@@ -113,11 +112,46 @@ class ProductCardView extends StatelessWidget {
                           ),
                       ],
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () {},
-                      label: Text("Al carro"),
-                      icon: Icon(Icons.add_shopping_cart_outlined),
-                    )
+                    product.cantInCart <= 0
+                        ? SizedBox(
+                            width: double.infinity,
+                            child: CustomElevatedButton(
+                              icon: Icons.add_shopping_cart_outlined,
+                              label: "Al carro",
+                              onPressed: (){},
+                            ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              CustomIconButton(
+                                iconButtonType: IconButtonType.filledTonal,
+                                icon: Icons.horizontal_rule_outlined,
+                                onPressed: (){},
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(13)),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
+                                child: Text("x${product.cantInCart}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                              ),
+                              CustomIconButton(
+                                iconButtonType: IconButtonType.filledTonal,
+                                icon: Icons.add_outlined,
+                                onPressed: (){},
+                              ),
+                            ],
+                          )
                   ]),
             ),
           ),

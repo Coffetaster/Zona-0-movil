@@ -1,4 +1,7 @@
-export 'home_page.dart';
-export 'wallet_page.dart';
-export 'settings_page.dart';
-export 'search_page.dart';
+export 'home/home_page.dart';
+export 'home/wallet_page.dart';
+export 'home/settings_page.dart';
+export 'home/search_page.dart';
+export 'home/shopping_cart_page.dart';
+export 'auth/login_page.dart';
+export 'auth/register_page.dart';

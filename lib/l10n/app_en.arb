@@ -1,5 +1,11 @@
 {
     "helloWorld": "Hola mundo",
     "eliminar": "Eliminar",
-    "aceptar": "Aceptar"
+    "aceptar": "Aceptar",
+    "cancelar": "Cancelar",
+    "buscarProductos": "Buscar productos",
+    "password": "Contraseña",
+    "correoEjemplo": "correo@dominio.com",
+    "usuarioCorreo": "Usuario o correo",
+    "forgetPassword": "¿Contraseña olvidada?"
 }

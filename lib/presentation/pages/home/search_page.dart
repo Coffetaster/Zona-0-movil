@@ -8,6 +8,8 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final size = MediaQuery.of(context).size;
+    final products = AppData.allProducts..shuffle();
     return Column(
       children: [
         CustomTextFormField(
@@ -15,13 +17,20 @@ class SearchPage extends StatelessWidget {
           prefixIcon: Icons.search_outlined,
         ),
 
-        ListView.builder(
-          itemCount: AppData.allProducts.length,
+        Expanded(
+          child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: products.length,
           itemBuilder: (_, index){
-            return Placeholder();
+            return ProductItemView(product: products[index]);
             // return ProductItemView(AppData.allProducts[index]);
           }
+                  ),
+        ),
+        SizedBox(
+          height: 20,
         )
+
       ],
     );
   }
