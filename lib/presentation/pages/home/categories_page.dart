@@ -12,20 +12,25 @@ class CategoriesPage extends StatelessWidget {
     int index = 0;
     return SingleChildScrollView(
       child: FadeInUp(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text("Categorías", style: Theme.of(context).textTheme.titleLarge)),
-            const Divider(
-              thickness: 1,
-              height: 30,
-            ),
-            ...categories.map((e) => CategoryCard(category: e, reverseColor: (index++)%2==0)),
-            const SizedBox(
-              height: 20,
-            )
-          ],
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 40,
+              ),
+              Text("Categorías", style: Theme.of(context).textTheme.titleLarge),
+              const Divider(
+                thickness: 1,
+                height: 30,
+              ),
+              ...categories.map((e) => CategoryCard(category: e, reverseColor: (index++)%2==0)),
+              const SizedBox(
+                height: 20,
+              )
+            ],
+          ),
         ),
       ),
     );

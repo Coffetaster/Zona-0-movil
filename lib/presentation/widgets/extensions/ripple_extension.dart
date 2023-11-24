@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 extension OnPressed on Widget {
   Widget ripple(Function onPressed,
           {BorderRadiusGeometry borderRadius =
-              const BorderRadius.all(Radius.circular(5))}) =>
+              const BorderRadius.all(Radius.circular(10))}) =>
       Stack(
         children: <Widget>[
           this,

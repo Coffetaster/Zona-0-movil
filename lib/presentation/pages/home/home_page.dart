@@ -49,13 +49,16 @@ class HomePage extends StatelessWidget {
                       onPressed: () => context.go(RouterPath.LOGIN_PAGE)),
               const Spacer(),
               const ThemeChangeWidget(),
+              if (isLogin)
+                CustomIconButton(
+                    icon: Icons.notifications_outlined,
+                    badgeInfo: "15",
+                    onPressed: () {}),
               CustomIconButton(
-                  icon: Icons.notifications_outlined,
-                  badgeInfo: "15",
-                  onPressed: () {}),
-              CustomIconButton(icon: Icons.search_outlined, onPressed: () {
-                context.push(RouterPath.SEARCH_PAGE);
-              }),
+                  icon: Icons.search_outlined,
+                  onPressed: () {
+                    context.push(RouterPath.SEARCH_PAGE);
+                  }),
             ],
           ),
         ),
@@ -68,7 +71,9 @@ class HomePage extends StatelessWidget {
             BannerSlideshow(promos: AppData.allPromos),
             _categoryWidget(context),
             ProductsHorizontalListView(
-                products: AppData.allProducts.where((element) => element.category == 1).toList()),
+                products: AppData.allProducts
+                    .where((element) => element.category == 1)
+                    .toList()),
             ProductsHorizontalListView(
                 title: "En descuento",
                 subtitle: "Consíguelo ya",

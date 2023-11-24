@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const List<Color> colorThemes = [
   Color(0xffe46b10),
@@ -28,6 +29,7 @@ class AppTheme {
   }
 
   ThemeData _theme(bool isDarkMode) {
+    // GoogleFonts.mulish()
     Color colorPrimary = colorThemes[selectedColor % colorThemes.length];
     ThemeData td = ThemeData(
       useMaterial3: true,
@@ -75,6 +77,8 @@ class AppTheme {
       isDark: isDark ?? this.isDark,
     );
   }
+
+  static Color perfectGrey = Color(0xfff1f1f1);
 
   static List<BoxShadow> shadow = <BoxShadow>[
     BoxShadow(color: Color(0xfff8f8f8), blurRadius: 10, spreadRadius: 15),

@@ -5,6 +5,7 @@ import 'package:zona0_apk/presentation/pages/home/home_page.dart';
 import 'package:zona0_apk/presentation/pages/test/product_detail.dart';
 import 'package:zona0_apk/presentation/pages/pages.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/presentation/pages/test/wallet_page2.dart';
 
 import 'router_path.dart';
 import 'router_transition.dart';
@@ -80,7 +81,7 @@ final appRouter = GoRouter(
             path: RouterPath.WALLET_PAGE,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: const WalletPage()),
+                    key: state.pageKey, child: WalletPage2()),
           ),
           GoRoute(
             path: RouterPath.SETTINGS_PAGE,
