@@ -1,7 +1,9 @@
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
+import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/backgrounds/bezier_background.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
@@ -17,7 +19,7 @@ class RegisterPage extends StatelessWidget {
       btnBack: true,
       child: FadeInUp(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -25,31 +27,38 @@ class RegisterPage extends StatelessWidget {
               children: <Widget>[
                 SizedBox(height: size.height * .2),
                 _title(context),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
-                const CustomTextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  hint: "johndoe",
-                  label: "Usuario",
-                ),
-                const CustomTextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  hint: "johndoe@dominio.com",
-                  label: "Correo",
-                ),
-                const CustomTextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  hint: "* * * * * *",
-                  label: "Contraseña",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CustomGradientButton(
-                    label: "Registrar",
-                    onPressed: () => context.go(RouterPath.HOME_PAGE)),
+                CustomCard(
+                    padding: const EdgeInsets.all(8),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: size.height * .4,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(AppLocalizations.of(context)!.tipoRegistro,
+                              style: Theme.of(context).textTheme.titleMedium),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              IconSubtextButton(
+                                  icon: Icons.person_outline,
+                                  label: AppLocalizations.of(context)!.cliente,
+                                  onTap: () => context.push(RouterPath.AUTH_REGISTER_CLIENT_PAGE)),
+                              IconSubtextButton(
+                                  icon: Icons.factory_outlined,
+                                  label: AppLocalizations.of(context)!.company,
+                                  onTap: () => context.push(RouterPath.AUTH_REGISTER_COMPANY_PAGE)),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          )
+                        ],
+                      ),
+                    )),
                 SizedBox(height: size.height * .055),
                 _loginAccountLabel(context, color.primary),
               ],
@@ -62,7 +71,7 @@ class RegisterPage extends StatelessWidget {
 
   Widget _title(BuildContext context) {
     return Text(
-      "Registro",
+      AppLocalizations.of(context)!.registro,
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.titleLarge!.copyWith(
             fontSize: 30,
@@ -79,12 +88,12 @@ class RegisterPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Text(
-            '¿Ya tienes cuenta?',
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          Text(
+            AppLocalizations.of(context)!.yaTienesCuenta,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           ),
           CustomTextButton(
-              label: "Autenticar",
+              label: AppLocalizations.of(context)!.autenticar,
               onPressed: () {
                 context.pop();
               })

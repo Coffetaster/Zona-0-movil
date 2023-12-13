@@ -1,108 +1,157 @@
-import 'package:go_router/go_router.dart';
-import 'package:zona0_apk/config/router/router_path.dart';
-import 'package:zona0_apk/domain/entities/data.dart';
-import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
-import 'package:zona0_apk/presentation/widgets/categories/category_chip.dart';
-import 'package:zona0_apk/presentation/widgets/products/products_horizontal_listview.dart';
-import 'package:zona0_apk/presentation/widgets/slideshows/banner_slideshow.dart';
-import 'package:zona0_apk/presentation/widgets/widgets.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/router/router_path.dart';
+import 'package:zona0_apk/presentation/views/views.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({
+    super.key,
+    required this.pageIndex,
+  });
+
+  final int pageIndex;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
+  late PageController pageController;
+
+  final viewRoutes = const <Widget>[
+    HomeView(),
+    CategoriesView(),
+    ShoppingCartView(),
+    WalletView(),
+    SettingsView()
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController(keepPage: true);
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
-    final isLogin = true;
-    return CustomScrollView(slivers: [
-      //* toolbar
-      SliverToBoxAdapter(
-        child: Container(
-          height: isLogin ? 100 : 60,
-          child: Row(
-            children: <Widget>[
-              isLogin
-                  ? Row(
-                      children: <Widget>[
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: () => context.go(RouterPath.AUTH_LOGIN_PAGE),
-                          child: const CircleAvatar(
-                            minRadius: 25,
-                            maxRadius: 25,
-                            backgroundImage:
-                                AssetImage('assets/imagen/avatar.jpg'),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        // Text("Hola, "),
-                        Text('Hola,\nJohn Doe',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: false,
-                            style: Theme.of(context).textTheme.titleMedium)
-                      ],
-                    )
-                  : CustomTextButton(
-                      label: "Autenticar",
-                      icon: Icons.login_rounded,
-                      onPressed: () => context.go(RouterPath.AUTH_LOGIN_PAGE)),
-              const Spacer(),
-              const ThemeChangeWidget(),
-              if (isLogin)
-                CustomIconButton(
-                    icon: Icons.notifications_outlined,
-                    badgeInfo: "15",
-                    onPressed: () {}),
-              CustomIconButton(
-                  icon: Icons.search_outlined,
-                  onPressed: () {
-                    context.push(RouterPath.SEARCH_PAGE);
-                  }),
-            ],
+    super.build(context);
+    //WillPopScope
+    //para controlar cuando se de atras
+
+    Future.delayed(const Duration(milliseconds: 0), () {
+      if (pageController.hasClients) {
+        pageController.animateToPage(
+          widget.pageIndex,
+          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 250),
+        );
+      }
+    });
+
+  // if(widget.pageIndex == 0) {
+  //   return BezierBackground(
+  //     child: SafeArea(
+  //       child: Material(
+  //         color: Colors.transparent,
+  //         child: Stack(children: [
+  //           PageView(
+  //             //para evitar que scroll horizontalmente
+  //             physics: const NeverScrollableScrollPhysics(),
+  //             controller: pageController,
+  //             children: viewRoutes,
+  //           ),
+  //           Positioned(
+  //             left: 0,
+  //             right: 0,
+  //             bottom: 0,
+  //             child: CustomBottomNavigationBar(widget.pageIndex))
+  //         ]),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+    return PopScope(
+      canPop: widget.pageIndex == 0,
+      onPopInvoked: (canPop){
+        if(!canPop) context.go(RouterPath.HOME_PAGE);
+      },
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: SafeArea(
+          child: Material(
+            color: Colors.transparent,
+            child: Stack(children: [
+              PageView(
+                //para evitar que scroll horizontalmente
+                physics: const NeverScrollableScrollPhysics(),
+                controller: pageController,
+                children: viewRoutes,
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: CustomBottomNavigationBar(widget.pageIndex))
+            ]),
           ),
         ),
       ),
-
-      SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-        return Column(
-          children: [
-            BannerSlideshow(promos: AppData.allPromos),
-            _categoryWidget(context),
-            ProductsHorizontalListView(
-                products: AppData.allProducts
-                    .where((element) => element.category == 1)
-                    .toList()),
-            ProductsHorizontalListView(
-                title: "En descuento",
-                subtitle: "Consíguelo ya",
-                products:
-                    AppData.allProducts.where((p) => p.discount > 0).toList()),
-            ProductsHorizontalListView(
-                title: "Populares", products: AppData.allProducts..shuffle()),
-            const SizedBox(height: 10),
-          ],
-        );
-      }, childCount: 1)),
-    ]);
+    );
   }
 
-  Widget _categoryWidget(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: AppData.categoryList
-            .map(
-              (category) => CategoryChip(
-                model: category,
-                onSelected: (model) {},
-              ),
-            )
-            .toList(),
+  Widget CustomBottomNavigationBar(int currentIndex) {
+    final color = Theme.of(context).colorScheme;
+    return FadeInUp(
+      child: CurvedNavigationBar(
+        index: currentIndex,
+        height: 60.0,
+        animationCurve: Curves.easeInOut,
+        animationDuration: const Duration(milliseconds: 600),
+        color: color.secondaryContainer,
+        // color: color.primaryContainer,
+        backgroundColor: Colors.transparent,
+        // backgroundColor: color.background,
+        items: const <Widget>[
+          Icon(Icons.home_outlined, size: 30),
+          Icon(Icons.list_alt_outlined, size: 30),
+          Icon(Icons.shopping_cart_outlined, size: 30),
+          Icon(Icons.wallet_outlined, size: 30),
+          Icon(Icons.settings_outlined, size: 30),
+        ],
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              context.go(RouterPath.HOME_PAGE);
+              break;
+            case 1:
+              context.go(RouterPath.CATEGORIES_PAGE);
+              break;
+            case 2:
+              context.go(RouterPath.SHOPPING_CART_PAGE);
+              break;
+            case 3:
+              context.go(RouterPath.WALLET_PAGE);
+              break;
+            case 4:
+              context.go(RouterPath.SETTINGS_PAGE);
+              break;
+          }
+        },
+        letIndexChange: (index) => true,
       ),
     );
   }

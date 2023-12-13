@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/theme/app_theme.dart';
 
 enum IconButtonType { normal, filled, filledTonal, outlined }
 
@@ -29,8 +30,8 @@ class CustomIconButton extends StatelessWidget {
 
   Widget getIconButton() {
     ButtonStyle buttonStyle = IconButton.styleFrom(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))));
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))));
     switch (iconButtonType) {
       case IconButtonType.normal:
         return IconButton(

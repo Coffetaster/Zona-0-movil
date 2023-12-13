@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zona0_apk/config/constants/constants.dart';
+import 'package:zona0_apk/config/theme/app_theme.dart';
+import 'package:zona0_apk/main.dart';
 
 class BalanceCard extends StatelessWidget {
   const BalanceCard({Key? key}) : super(key: key);
@@ -8,11 +11,11 @@ class BalanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(40)),
+          borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * .27,
-            color: Color(0xff15294a),
+            color: const Color(0xff15294a),
             child: Stack(
               fit: StackFit.expand,
               children: <Widget>[
@@ -21,13 +24,13 @@ class BalanceCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Balance Total',
+                      AppLocalizations.of(context)!.balanceTotal,
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Color(0xff6d7f99)),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -37,14 +40,14 @@ class BalanceCard extends StatelessWidget {
                               textStyle: Theme.of(context).textTheme.headline4,
                               fontSize: 35,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xffe7ad03)),
+                              color: const Color(0xffe7ad03)),
                         ),
                         Text(
-                          ' ZOP',
+                          ' ${Constants.namePoints}',
                           style: TextStyle(
                               fontSize: 35,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xfffbbd5c).withAlpha(200)),
+                              color: const Color(0xfffbbd5c).withAlpha(200)),
                         ),
                       ],
                     ),
@@ -93,7 +96,7 @@ class BalanceCard extends StatelessWidget {
                     //     ))
                   ],
                 ),
-                Positioned(
+                const Positioned(
                   left: -170,
                   top: -170,
                   child: CircleAvatar(
@@ -101,7 +104,7 @@ class BalanceCard extends StatelessWidget {
                     backgroundColor: Color(0xff3554d3),
                   ),
                 ),
-                Positioned(
+                const Positioned(
                   left: -160,
                   top: -190,
                   child: CircleAvatar(
@@ -109,15 +112,15 @@ class BalanceCard extends StatelessWidget {
                     backgroundColor: Color(0xff375efd),
                   ),
                 ),
-                Positioned(
+                const Positioned(
                   right: -170,
                   bottom: -170,
-                  child: CircleAvatar(
+                  child: const CircleAvatar(
                     radius: 130,
                     backgroundColor: Color(0xffe7ad03),
                   ),
                 ),
-                Positioned(
+                const Positioned(
                   right: -160,
                   bottom: -190,
                   child: CircleAvatar(

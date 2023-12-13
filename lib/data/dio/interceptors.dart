@@ -3,15 +3,19 @@ part of "my_dio.dart";
 class CustomInterceptors extends Interceptor {
 
   // static final _header = {"content-type": "application/json; charset=utf-8"};
-  // String token;
+  String _token;
 
-  // CustomInterceptors(this.token);
+  CustomInterceptors(this._token);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
 
     // options.headers.addAll(_header);
     // options.headers.addAll({'x-token': token});
+
+    if(_token.isNotEmpty) {
+      options.headers.addAll({'authorization': "Bearer $_token"});
+    }
 
     if (kDebugMode) {
       print('REQUEST[${options.method}] => PATH: ${options.path}');

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/theme/app_theme.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String? initialValue;
@@ -6,6 +7,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? hint;
   final String? errorMessage;
   final IconData? prefixIcon;
+  final Widget? prefix;
   final bool enabled;
   final bool readOnly;
   final bool obscureText;
@@ -13,6 +15,7 @@ class CustomTextFormField extends StatelessWidget {
   final int maxLines;
   final int? maxLength;
   final Widget? suffix;
+  final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
@@ -29,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
     this.onChanged,
     this.onFieldSubmitted,
     this.validator,
+    this.prefix,
     this.prefixIcon,
     this.minLines,
     this.maxLines = 1,
@@ -36,6 +40,7 @@ class CustomTextFormField extends StatelessWidget {
     this.enabled = true,
     this.readOnly = false,
     this.suffix,
+    this.suffixIcon,
   });
 
   @override
@@ -49,7 +54,7 @@ class CustomTextFormField extends StatelessWidget {
 
     return Card(
       shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.borderRadius)),
       elevation: 0,
       child: TextFormField(
         initialValue: initialValue,
@@ -65,6 +70,7 @@ class CustomTextFormField extends StatelessWidget {
         keyboardType: keyboardType,
         style: const TextStyle(fontSize: 20),
         decoration: InputDecoration(
+          prefix: prefix,
           prefixIcon: prefixIcon != null
               ? Icon(prefixIcon, color: colors.primary)
               : null,
@@ -82,6 +88,7 @@ class CustomTextFormField extends StatelessWidget {
           errorText: errorMessage,
           focusColor: colors.primary,
           suffix: suffix,
+          suffixIcon: suffixIcon,
           // icon: Icon( Icons.supervised_user_circle_outlined, color: colors.primary, )
         ),
       ),

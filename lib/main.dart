@@ -7,11 +7,11 @@ import 'package:zona0_apk/config/router/router.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/l10n/l10n.dart';
 import 'package:zona0_apk/presentation/providers/language/locale_provider.dart';
-import 'package:zona0_apk/presentation/providers/theme/is_dark_theme_provider.dart';
 
 //* cambio de idioma
 //? Nota: este archivo se genera luego de compilar
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:zona0_apk/presentation/providers/theme/theme_provider.dart';
 export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /*
@@ -72,11 +72,11 @@ class MyApp extends StatelessWidget {
     return Consumer(
       builder: (context, ref, child) {
         final locale = ref.watch(localeProvider);
-        final isDarkTheme = ref.watch(isDarkThemeProvider);
+        final theme = ref.watch(themeProvider);
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: 'Zona 0',
-          theme: AppTheme(isDark: isDarkTheme).theme(),
+          theme: AppTheme(isDark: theme.isDark).theme(),
           darkTheme: AppTheme().themeDark(),
           themeMode: ThemeMode.system,
           routerConfig: appRouter,

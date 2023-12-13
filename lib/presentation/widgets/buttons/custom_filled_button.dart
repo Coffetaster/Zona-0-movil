@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/theme/app_theme.dart';
 
 enum FilledButtonType {
   normal,
@@ -21,8 +22,8 @@ class CustomFilledButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))));
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))));
 
     if (filledButtonType == FilledButtonType.normal) {
       return icon != null

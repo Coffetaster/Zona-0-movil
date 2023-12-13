@@ -5,10 +5,11 @@ import 'package:zona0_apk/presentation/widgets/curves/bezierContainer.dart';
 
 class BezierBackground extends StatelessWidget {
   const BezierBackground(
-      {super.key, required this.child, this.btnBack = false});
+      {super.key, required this.child, this.btnBack = false, this.onPressed});
 
   final Widget child;
   final bool btnBack;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class BezierBackground extends StatelessWidget {
                   left: 0,
                   child: CustomIconButton(
                     icon: Icons.arrow_back_ios_new_rounded,
-                    onPressed: () => context.pop(),
+                    onPressed: onPressed ?? () => context.pop(),
                   )),
           ],
         ),

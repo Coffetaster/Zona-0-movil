@@ -1,5 +1,6 @@
 # Own
 assets/
+.env
 
 # Miscellaneous
 *.class

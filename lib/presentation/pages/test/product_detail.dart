@@ -356,6 +356,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
 
   FloatingActionButton _flotingButton() {
     return FloatingActionButton(
+      heroTag: null,
       onPressed: () {},
       backgroundColor: Theme.of(context).colorScheme.primary,
       child: Icon(Icons.shopping_basket,

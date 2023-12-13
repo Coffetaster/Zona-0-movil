@@ -1,2 +1,3 @@
 export 'language/locale_provider.dart';
-export 'theme/is_dark_theme_provider.dart';
+export 'theme/theme_provider.dart';
+export 'shared/shared.dart';

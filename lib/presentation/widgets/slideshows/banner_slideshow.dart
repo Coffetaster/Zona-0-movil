@@ -1,7 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:zona0_apk/domain/entities/promo.dart';
-import 'package:zona0_apk/presentation/widgets/shared/widgets_gi.dart';
 
 class BannerSlideshow extends StatelessWidget {
 

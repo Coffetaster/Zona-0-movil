@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 const List<Color> colorThemes = [
   Color(0xffe46b10),
@@ -11,7 +10,7 @@ const List<Color> colorThemes = [
 ];
 
 class AppTheme {
-  final int selectedColor;
+  int selectedColor;
   final bool isDark;
 
   AppTheme({this.selectedColor = 0, this.isDark = false});
@@ -35,7 +34,8 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         seedColor: colorPrimary,
-        primary: isDarkMode ? null : colorPrimary,
+        primary: colorPrimary,
+        // primary: isDarkMode ? null : colorPrimary,
         brightness: isDarkMode ? Brightness.dark : Brightness.light,
       ),
       appBarTheme: const AppBarTheme(
@@ -88,4 +88,7 @@ class AppTheme {
   static EdgeInsets hPadding = const EdgeInsets.symmetric(
     horizontal: 10,
   );
+
+  static double borderRadius = 20;
+  static bool isLogin = true;
 }

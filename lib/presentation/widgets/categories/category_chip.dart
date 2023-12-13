@@ -20,7 +20,7 @@ class CategoryChip extends StatelessWidget {
               padding: AppTheme.hPadding,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
                 color: model!.isSelected
                     ? color.background
                     : Colors.transparent,
@@ -42,7 +42,7 @@ class CategoryChip extends StatelessWidget {
               () {
                 onSelected(model!);
               },
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
             ),
           );
   }

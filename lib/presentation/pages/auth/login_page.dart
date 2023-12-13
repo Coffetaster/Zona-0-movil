@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
+import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/backgrounds/bezier_background.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
@@ -14,44 +15,55 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final color = Theme.of(context).colorScheme;
-    return BezierBackground(
-      child: FadeInUp(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: size.height * .2),
-                _title(context),
-                const SizedBox(height: 50),
-                CustomTextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  hint: AppLocalizations.of(context)!.correoEjemplo,
-                  label: AppLocalizations.of(context)!.usuarioCorreo,
-                ),
-                CustomTextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  hint: "* * * * * *",
-                  label: AppLocalizations.of(context)!.password,
-                ),
-                // _emailPasswordWidget(),
-                const SizedBox(height: 20),
-                CustomGradientButton(
-                    label: "Autenticar",
-                    onPressed: () => context.go(RouterPath.HOME_PAGE)),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  alignment: Alignment.centerRight,
-                  child: CustomTextButton(
-                      label: AppLocalizations.of(context)!.forgetPassword,
-                      onPressed: () {}),
-                ),
-                SizedBox(height: size.height * .055),
-                _createAccountLabel(context, color.primary),
-              ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (canPop){
+        context.go(RouterPath.HOME_PAGE);
+      },
+      child: BezierBackground(
+        btnBack: true,
+        onPressed: () => context.go(RouterPath.HOME_PAGE),
+        child: FadeInUp(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: size.height * .2),
+                  _title(context),
+                  const SizedBox(height: 50),
+                  CustomTextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    hint: AppLocalizations.of(context)!.correoEjemplo,
+                    label: AppLocalizations.of(context)!.usuarioCorreo,
+                  ),
+                  CustomTextFormField(
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: true,
+                    hint: "* * * * * *",
+                    label: AppLocalizations.of(context)!.password,
+                  ),
+                  // _emailPasswordWidget(),
+                  const SizedBox(height: 20),
+                  CustomGradientButton(
+                      label: AppLocalizations.of(context)!.autenticar,
+                      onPressed: () {
+                        AppTheme.isLogin = !AppTheme.isLogin;
+                        context.go(RouterPath.HOME_PAGE);
+                      }),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.centerRight,
+                    child: CustomTextButton(
+                        label: AppLocalizations.of(context)!.forgetPassword,
+                        onPressed: () {}),
+                  ),
+                  SizedBox(height: size.height * .055),
+                  _createAccountLabel(context, color.primary),
+                ],
+              ),
             ),
           ),
         ),
@@ -61,7 +73,7 @@ class LoginPage extends StatelessWidget {
 
   Widget _title(BuildContext context) {
     return Text(
-      "Zona 0",
+      AppLocalizations.of(context)!.nameApp,
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.titleLarge!.copyWith(
             fontSize: 30,
@@ -98,12 +110,12 @@ class LoginPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Text(
-            '¿No tienes cuenta?',
+          Text(
+            AppLocalizations.of(context)!.noTienesCuenta,
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           ),
           CustomTextButton(
-              label: "Registrar",
+              label: AppLocalizations.of(context)!.registrar,
               onPressed: () {
                 context.push(RouterPath.AUTH_REGISTER_PAGE);
               })

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/theme/app_theme.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton(
@@ -11,8 +12,8 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))));
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))));
     return icon != null
         ? ElevatedButton.icon(
             style: buttonStyle,

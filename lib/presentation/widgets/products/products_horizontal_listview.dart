@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
+import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 import 'product_card_view.dart';
 
@@ -25,7 +26,6 @@ class _ProductsHorizontalListViewState extends State<ProductsHorizontalListView>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     scrollController.addListener(() {
@@ -45,7 +45,7 @@ class _ProductsHorizontalListViewState extends State<ProductsHorizontalListView>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: (widget.title != null || widget.subtitle != null) ? 350 : 300,
       child: Column(
         children: [
           if(widget.title != null || widget.subtitle != null)
@@ -53,19 +53,17 @@ class _ProductsHorizontalListViewState extends State<ProductsHorizontalListView>
 
           SizedBox(
             height: 300,
-            child: Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: widget.products.length,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) =>
-                  FadeInRight(child: ProductCardView(
-                    product: widget.products[index],
-                    onTap: (id){
-                      context.push(RouterPath.PRODUCT_DETAIL_PAGE);
-                    })),
-              )
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: widget.products.length,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) =>
+                FadeInRight(child: ProductCardView(
+                  product: widget.products[index],
+                  onTap: (id){
+                    context.push(RouterPath.PRODUCT_DETAIL_PAGE(id));
+                  })),
             ),
           ),
 
@@ -91,7 +89,7 @@ class _Title extends StatelessWidget {
       child: Row(
         children: [
           if(title != null)
-            Text(title!, style: Theme.of(context).textTheme.titleLarge),
+            CustomTitle(title!),
           const Spacer(),
           if(subtitle != null)
             FilledButton.tonal(
