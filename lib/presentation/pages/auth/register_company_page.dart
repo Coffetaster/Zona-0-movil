@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/widgets/backgrounds/bezier_background.dart';
@@ -12,12 +13,14 @@ import 'package:zona0_apk/presentation/widgets/widgets.dart';
 class RegisterCompanyPage extends ConsumerWidget {
   const RegisterCompanyPage({super.key});
 
+  final String idConfirmExitProvider = "RegisterCompanyPage";
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
 
-    final confirmExit = ref.watch(confirmExitProvider);
-    if (confirmExit) {
+    final confirmExit = ref.watch(confirmExitProvider(idConfirmExitProvider));
+    if (confirmExit == 1) {
       Future.delayed(Duration(milliseconds: 0), () {
         context.pop();
         context.pop();
@@ -25,11 +28,12 @@ class RegisterCompanyPage extends ConsumerWidget {
     }
     return BezierBackground(
       btnBack: true,
+      onPressed: () => Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider),
       child: FadeInUp(
         child: PopScope(
-          canPop: confirmExit,
+          canPop: confirmExit != 0,
           onPopInvoked: (canPop) {
-            showDialogConfirmSalir(context, ref);
+            Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -185,13 +189,6 @@ class RegisterCompanyPage extends ConsumerWidget {
             ),
           ],
         ));
-  }
-
-  void showDialogConfirmSalir(BuildContext context, WidgetRef ref) {
-    DialogGI.showAlertDialog(context,
-        title: AppLocalizations.of(context)!.salir, content: AppLocalizations.of(context)!.salirContent, actionOk: () {
-      ref.read(confirmExitProvider.notifier).state = true;
-    });
   }
 }
 

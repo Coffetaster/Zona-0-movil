@@ -6,7 +6,7 @@ class AccountsApi extends AccountsRemoteRepository {
   final MyDio _myDio;
   AccountsApi(this._myDio);
 
-  final String localUrl = "accounts/";
+  final String localUrl = "accounts";
 
   @override
   Future<void> login(

@@ -34,7 +34,8 @@ class CustomInterceptors extends Interceptor {
   @override
   Future onError(DioException err, ErrorInterceptorHandler handler) {
     if (kDebugMode) {
-      print('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.data}');
+      print('ERROR[${err.response?.statusCode}] => DATA: ${err.response?.data}');
+      // print('ERROR[${err.response?.statusCode}] => DATA: ${err.requestOptions.data}');
     }
     super.onError(err, handler);
     return Future(() => err);

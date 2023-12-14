@@ -9,7 +9,7 @@ class RegisterApi extends RegisterRemoteRepository {
   final MyDio _myDio;
   RegisterApi(this._myDio);
 
-  final String localUrl = "register/";
+  final String localUrl = "register";
 
   @override
   Future<Client?> registerClient(Client client) async {

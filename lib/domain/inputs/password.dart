@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:zona0_apk/main.dart';
 
+import 'inputs.dart';
+
 // Define input validation errors
-enum PasswordErrorInput { empty, length, format, confirm }
+enum PasswordErrorInput { empty, length, format, confirm, personalValidation }
 
 // Extend FormzInput and provide the input type and error type.
 class PasswordInput extends FormzInput<String, PasswordErrorInput> {
@@ -16,21 +18,24 @@ class PasswordInput extends FormzInput<String, PasswordErrorInput> {
   final bool beStrict;
   final int minLength;
   final String? passwordConfirm;
+  final PersonalValidation? personalValidation;
 
   // Call super.pure to represent an unmodified form input.
   const PasswordInput.pure({
     this.isRequired = true,
     this.beStrict = false,
-    this.minLength = 6,
+    this.minLength = 8,
     this.passwordConfirm,
+    this.personalValidation,
   }) : super.pure('');
 
   // Call super.dirty to represent a modified form input.
   const PasswordInput.dirty(String value, {
     this.isRequired = true,
     this.beStrict = false,
-    this.minLength = 6,
+    this.minLength = 8,
     this.passwordConfirm,
+    this.personalValidation,
   }) : super.dirty(value);
 
   String? errorMessage(BuildContext context) {
@@ -39,6 +44,8 @@ class PasswordInput extends FormzInput<String, PasswordErrorInput> {
     if ( displayError == PasswordErrorInput.format ) return AppLocalizations.of(context)!.validForm_formatoIncorrecto;
     if ( displayError == PasswordErrorInput.length ) return AppLocalizations.of(context)!.validForm_longitud(minLength);
     if ( displayError == PasswordErrorInput.confirm ) return AppLocalizations.of(context)!.validForm_confirmPassword;
+    if (displayError == PasswordErrorInput.personalValidation)
+      return personalValidation!(value).message ?? "Error";
     return null;
   }
 
@@ -53,6 +60,8 @@ class PasswordInput extends FormzInput<String, PasswordErrorInput> {
     if(value.length < minLength) return PasswordErrorInput.length;
     if(!passwordRegExp.hasMatch(value) && beStrict) return PasswordErrorInput.format;
     if(passwordConfirm != null && value != passwordConfirm) return PasswordErrorInput.confirm;
+    if (personalValidation != null && !personalValidation!(value).isValid)
+      return PasswordErrorInput.personalValidation;
     return null;
   }
 

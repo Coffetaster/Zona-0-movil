@@ -1,63 +1,53 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:zona0_apk/main.dart';
 
 import 'inputs.dart';
 
 // Define input validation errors
-enum UsernameErrorInput { empty, format, personalValidation }
+enum PhoneErrorInput { empty, format, personalValidation }
 
 // Extend FormzInput and provide the input type and error type.
-class UsernameInput extends FormzInput<String, UsernameErrorInput> {
-  static bool isValidUsername(String value) {
-    if (!RegExp(r'^[a-z]+$').hasMatch(value[0]) || value.length < 3)
-      return false;
-    for (var c in value.characters) {
-      if (c == "_") continue;
-      if (RegExp(r'^[a-z]+$').hasMatch(c)) continue;
-      if (RegExp(r'^[0-9]+$').hasMatch(c)) continue;
-
-      return false;
-    }
-    return true;
-  }
+class PhoneInput extends FormzInput<String, PhoneErrorInput> {
+  static final RegExp phoneRegExp =
+      RegExp(r'^[+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$');
 
   final bool isRequired;
   final PersonalValidation? personalValidation;
 
   // Call super.pure to represent an unmodified form input.
-  const UsernameInput.pure({this.isRequired = true, this.personalValidation})
+  const PhoneInput.pure({this.isRequired = true, this.personalValidation})
       : super.pure('');
 
   // Call super.dirty to represent a modified form input.
-  const UsernameInput.dirty(String value,
+  const PhoneInput.dirty(String value,
       {this.isRequired = true, this.personalValidation})
       : super.dirty(value);
 
   String? errorMessage(BuildContext context) {
     if (isValid || isPure) return null;
-    if (displayError == UsernameErrorInput.empty)
+    if (displayError == PhoneErrorInput.empty)
       return AppLocalizations.of(context)!.validForm_campoRequerido;
-    if (displayError == UsernameErrorInput.format)
+    if (displayError == PhoneErrorInput.format)
       return AppLocalizations.of(context)!.validForm_formatoIncorrecto;
-    if (displayError == UsernameErrorInput.personalValidation)
+    if (displayError == PhoneErrorInput.personalValidation)
       return personalValidation!(value).message ?? "Error";
     return null;
   }
 
   // Override validator to handle validating a given input value.
   @override
-  UsernameErrorInput? validator(String value) {
+  PhoneErrorInput? validator(String value) {
     value = value.trim();
     if (value.isEmpty) {
       if (isRequired)
-        return UsernameErrorInput.empty;
+        return PhoneErrorInput.empty;
       else
         return null;
     }
-    if (!isValidUsername(value)) return UsernameErrorInput.format;
+    // if (!phoneRegExp.hasMatch(value)) return PhoneErrorInput.format;
     if (personalValidation != null && !personalValidation!(value).isValid)
-      return UsernameErrorInput.personalValidation;
+      return PhoneErrorInput.personalValidation;
     return null;
   }
 

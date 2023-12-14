@@ -47,6 +47,12 @@ final appRouter = GoRouter(
     ),
 
     GoRoute(
+      path: RouterPath.AUTH_VERIFY_CODE_PAGE,
+      pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
+          key: state.pageKey, child: const VerifyCodePage()),
+    ),
+
+    GoRoute(
         path: RouterPath.AUTH_REGISTER_PAGE,
         pageBuilder: (context, state) => RouterTransition.fadeTransitionPage(
             key: state.pageKey, child: const RegisterPage()),

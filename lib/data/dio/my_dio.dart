@@ -28,16 +28,16 @@ class MyDio{
     _dio = Dio(
     BaseOptions(
         baseUrl: Environment.baseUrl,
-        // headers: {
-        //   "Access-Control-Allow-Origin": "*",
-        //   "Access-Control-Allow-Credentials": "true",
-        //   // "Access-Control-Allow-Headers": "Access-Control-Allow-Origin, Accept",
-        //   "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-        //   "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-        //   // "Access-Control-Allow-Methods": "*",
-        //   "Referrer-Policy": "no-referrer-when-downgrade",
-        //   "content-type": "application/json; charset=utf-8"
-        // }
+        headers: {
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Credentials": "true",
+          // "Access-Control-Allow-Headers": "Access-Control-Allow-Origin, Accept",
+          // "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+          // "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
+          "Access-Control-Allow-Methods": "*",
+          // "Referrer-Policy": "no-referrer-when-downgrade",
+          "content-type": "application/json; charset=utf-8"
+        }
       )
   );
     _dio.interceptors.add(CustomInterceptors(""));
@@ -68,10 +68,10 @@ class MyDio{
           );
           break;
         case RequestType.POST:
-          response = await _dio.get(path, data: data);
+          response = await _dio.post(path, data: data);
           break;
         case RequestType.PATCH:
-          response = await _dio.get(path, data: data);
+          response = await _dio.patch(path, data: data);
           break;
         case RequestType.DELETE:
           response = await _dio.delete(path);

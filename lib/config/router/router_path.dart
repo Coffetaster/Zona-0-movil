@@ -24,6 +24,7 @@ class RouterPath {
   static const String AUTH_REGISTER_CLIENT_PAGE = '$AUTH_REGISTER_PAGE/$AUTH_REGISTER_CLIENT_PAGE_PATH';
   static const String AUTH_REGISTER_COMPANY_PAGE_PATH = 'company';
   static const String AUTH_REGISTER_COMPANY_PAGE = '$AUTH_REGISTER_PAGE/$AUTH_REGISTER_COMPANY_PAGE_PATH';
+  static const String AUTH_VERIFY_CODE_PAGE = '/verify_code';
 
   //* Wallet pages
   static const String WALLET_TRANSFER_PAGE = '/wallet/transfer';

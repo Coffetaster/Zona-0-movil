@@ -5,7 +5,7 @@ import 'package:zona0_apk/main.dart';
 import 'inputs.dart';
 
 // Define input validation errors
-enum NumberErrorInput { empty, format, value}
+enum NumberErrorInput { empty, format, personalValidation }
 
 // Extend FormzInput and provide the input type and error type.
 class NumberInput extends FormzInput<String, NumberErrorInput> {
@@ -29,7 +29,8 @@ class NumberInput extends FormzInput<String, NumberErrorInput> {
     if ( isValid || isPure ) return null;
     if ( displayError == NumberErrorInput.empty ) return AppLocalizations.of(context)!.validForm_campoRequerido;
     if ( displayError == NumberErrorInput.format ) return AppLocalizations.of(context)!.validForm_formatoIncorrecto;
-    if ( displayError == NumberErrorInput.value ) return personalError ?? "Error";
+    if (displayError == NumberErrorInput.personalValidation)
+      return personalValidation!(value).message ?? "Error";
     return null;
   }
 
@@ -43,7 +44,8 @@ class NumberInput extends FormzInput<String, NumberErrorInput> {
     }
     final isInteger = int.tryParse(value);
     if(isInteger == null) return NumberErrorInput.format;
-    if(personalValidation != null && !personalValidation!<int>(isInteger)) return NumberErrorInput.value;
+    if(personalValidation != null && !personalValidation!(value).isValid)
+      return NumberErrorInput.personalValidation;
     return null;
   }
 

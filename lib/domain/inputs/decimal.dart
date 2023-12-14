@@ -5,7 +5,7 @@ import 'package:zona0_apk/main.dart';
 import 'inputs.dart';
 
 // Define input validation errors
-enum DecimalErrorInput { empty, format, value }
+enum DecimalErrorInput { empty, format, personalValidation }
 
 // Extend FormzInput and provide the input type and error type.
 class DecimalInput extends FormzInput<String, DecimalErrorInput> {
@@ -29,8 +29,8 @@ class DecimalInput extends FormzInput<String, DecimalErrorInput> {
     if ( isValid || isPure ) return null;
     if ( displayError == DecimalErrorInput.empty ) return AppLocalizations.of(context)!.validForm_campoRequerido;
     if ( displayError == DecimalErrorInput.format ) return AppLocalizations.of(context)!.validForm_formatoIncorrecto;
-    if ( displayError == DecimalErrorInput.value ) return personalError ?? "Error";
-    return null;
+    if (displayError == DecimalErrorInput.personalValidation)
+      return personalValidation!(value).message ?? "Error";return null;
   }
 
   // Override validator to handle validating a given input value.
@@ -43,7 +43,8 @@ class DecimalInput extends FormzInput<String, DecimalErrorInput> {
     }
     final isDouble = double.tryParse(value);
     if(isDouble == null) return DecimalErrorInput.format;
-    if(personalValidation != null && !personalValidation!<double>(isDouble)) return DecimalErrorInput.value;
+    if(personalValidation != null && !personalValidation!(value).isValid)
+      return DecimalErrorInput.personalValidation;
     return null;
   }
 

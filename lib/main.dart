@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/router/router.dart';
@@ -57,6 +58,9 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  //* cargar todo el enviroment
+  await dotenv.load(fileName: ".env");
 
   //para saltarse protocolos de red
   // HttpOverrides.global = MyHttpOverrides();

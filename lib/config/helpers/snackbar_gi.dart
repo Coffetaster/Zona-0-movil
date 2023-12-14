@@ -34,9 +34,11 @@ class SnackBarGI {
         child: CustomCard(
           color: color.secondary,
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: color.onSecondary
-          )),
+          child: Flexible(
+            child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: color.onSecondary
+            )),
+          ),
         ),
       ),
       action: action,
@@ -69,9 +71,11 @@ class SnackBarGI {
             children: [
               Icon(icon, color: color.onSecondary),
               const SizedBox(width: 10),
-              Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: color.onSecondary
-              )),
+              Flexible(
+                child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: color.onSecondary
+                )),
+              ),
             ],
           ),
         ),
@@ -108,9 +112,11 @@ class SnackBarGI {
             children: [
               Lottie.asset(lottiePath.path, height: 60, width: 60, fit: BoxFit.fill, repeat: false),
               const SizedBox(width: 10),
-              Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: color.onSecondary
-              )),
+              Flexible(
+                child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: color.onSecondary
+                )),
+              ),
             ],
           ),
         ),
