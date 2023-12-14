@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/constants/lotties_path.dart';
+import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
+import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
 import 'package:zona0_apk/presentation/widgets/cards/cards.dart';
 
 class ProductItemView extends StatelessWidget {
-  const ProductItemView({Key? key, required this.product, this.onTap})
+  const ProductItemView({Key? key, required this.product, this.onTap, this.canEdit = false})
       : super(key: key);
 
   final Product product;
   final Function(String)? onTap;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -18,49 +23,51 @@ class ProductItemView extends StatelessWidget {
         onTap: () => onTap?.call(product.id.toString()),
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          height: 140,
+          height: 160,
           child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Stack(
-                  alignment: AlignmentDirectional.bottomStart,
-                  children: [
-                    SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: Image(
-                          image: AssetImage(product.image),
-                          alignment: Alignment.center,
-                          fit: BoxFit.contain,
-                        )),
-                    // child: Image.network('${product.image}',
-                    //     alignment: imageAlignment, fit: BoxFit.cover)),
-                    if (product.discount > 0)
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                          child: Container(
-                            color: color.primary,
-                            // color: Colors.red.shade400,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 8),
-                              child: Text(
-                                  "-${product.discount.toStringAsFixed(2)}%",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(color: Colors.white)
-                                  // backgroundColor: AppTheme.darkPink)
-                                  ),
+                Center(
+                  child: Stack(
+                    alignment: AlignmentDirectional.bottomStart,
+                    children: [
+                      SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Image(
+                            image: AssetImage(product.image),
+                            alignment: Alignment.center,
+                            fit: BoxFit.contain,
+                          )),
+                      // child: Image.network('${product.image}',
+                      //     alignment: imageAlignment, fit: BoxFit.cover)),
+                      if (product.discount > 0)
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(AppTheme.borderRadius),
+                            child: Container(
+                              color: color.primary,
+                              // color: Colors.red.shade400,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 8),
+                                child: Text(
+                                    "-${product.discount}%",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(color: Colors.white)
+                                    // backgroundColor: AppTheme.darkPink)
+                                    ),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                  ],
+                        )
+                    ],
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -71,15 +78,12 @@ class ProductItemView extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           softWrap: false,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium),
+                          style: Theme.of(context).textTheme.titleMedium),
                       Text(product.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           softWrap: false,
-                          style:
-                              Theme.of(context).textTheme.bodyLarge),
+                          style: Theme.of(context).textTheme.bodyLarge),
                       if (product.description.isNotEmpty)
                         Text('${product.description}',
                             maxLines: 2,
@@ -89,12 +93,10 @@ class ProductItemView extends StatelessWidget {
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                    fontSize: 12,
-                                    color: color.secondary)),
+                                    fontSize: 12, color: color.secondary)),
                       Row(
                         children: [
-                          Text(
-                              '\$${product.realPrice.toStringAsFixed(2)}',
+                          Text('\$${product.realPrice.toStringAsFixed(2)}',
                               maxLines: 1,
                               overflow: TextOverflow.clip,
                               softWrap: false,
@@ -106,8 +108,7 @@ class ProductItemView extends StatelessWidget {
                                       color: color.primary)),
                           if (product.discount > 0)
                             Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 8.0),
+                              padding: const EdgeInsets.only(left: 8.0),
                               child: Text(
                                   '\$${product.price.toStringAsFixed(2)}',
                                   maxLines: 1,
@@ -117,46 +118,64 @@ class ProductItemView extends StatelessWidget {
                                       .textTheme
                                       .bodyMedium
                                       ?.copyWith(
-                                          decoration: TextDecoration
-                                              .lineThrough)),
+                                          decoration:
+                                              TextDecoration.lineThrough)),
                             ),
                         ],
                       ),
-                    ],
+
+                    if (product.cantInCart <= 0) const Spacer(),
+              if (product.cantInCart <= 0)
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomFilledButton(
+                    filledButtonType: FilledButtonType.tonal,
+                    icon: Icons.add_shopping_cart_outlined,
+                    label: AppLocalizations.of(context)!.loQuiero,
+                    onPressed: () {
+                      // SnackbarGI.showWithIcon(context, icon: Icons.add_shopping_cart_outlined, text: "Agregado al carrito");
+                      SnackBarGI.showWithLottie(context,
+                          lottiePath: LottiesPath.add_cart,
+                          text: AppLocalizations.of(context)!.addCart);
+                    },
                   ),
                 ),
-                const SizedBox(width: 8),
-                product.cantInCart <= 0
-                    ? CustomIconButton(
-                        iconButtonType: IconButtonType.filledTonal,
-                        icon: Icons.add_shopping_cart_outlined,
-                        onPressed: () {},
-                      )
-                    : Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                if(product.cantInCart > 0 && canEdit)
+                Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           CustomIconButton(
-                            iconButtonType:
-                                IconButtonType.filledTonal,
-                            icon: Icons.add_outlined,
-                            onPressed: () {},
+                            iconButtonType: IconButtonType.filledTonal,
+                            icon: Icons.delete_outline,
+                            onPressed: () {
+                              Utils.showSnackbarEnDesarrollo(context);
+                            },
                           ),
-                          Text("x${product.cantInCart}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall!
-                                  .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  )),
                           CustomIconButton(
-                            iconButtonType:
-                                IconButtonType.filledTonal,
+                            iconButtonType: IconButtonType.filledTonal,
                             icon: Icons.horizontal_rule_outlined,
-                            onPressed: () {},
+                            onPressed: () {
+                              Utils.showSnackbarEnDesarrollo(context);
+                            },
+                          ),
+                          CustomTextButton(
+                            label: "x${product.cantInCart}",
+                            onPressed: (){
+                              Utils.showSnackbarEnDesarrollo(context);
+                            },
+                          ),
+                          CustomIconButton(
+                            iconButtonType: IconButtonType.filledTonal,
+                            icon: Icons.add_outlined,
+                            onPressed: () {
+                              Utils.showSnackbarEnDesarrollo(context);
+                            },
                           ),
                         ],
                       )
+                    ],
+                  ),
+                ),
               ]),
         ));
   }

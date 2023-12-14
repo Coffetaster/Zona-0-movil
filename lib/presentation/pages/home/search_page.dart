@@ -18,9 +18,12 @@ class SearchPage extends StatelessWidget {
           color: Colors.transparent,
           child: Column(
           children: [
-            CustomTextFormField(
-              hint: AppLocalizations.of(context)!.buscarProductos,
-              prefixIcon: Icons.search_outlined,
+            Hero(
+              tag: "text_form_search_productos",
+              child: CustomTextFormField(
+                hint: AppLocalizations.of(context)!.buscarProductos,
+                prefixIcon: Icons.search_outlined,
+              ),
             ),
           
             Expanded(

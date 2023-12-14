@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
@@ -58,7 +59,9 @@ class LoginPage extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: CustomTextButton(
                         label: AppLocalizations.of(context)!.forgetPassword,
-                        onPressed: () {}),
+                        onPressed: () {
+                          Utils.showSnackbarEnDesarrollo(context);
+                        }),
                   ),
                   SizedBox(height: size.height * .055),
                   _createAccountLabel(context, color.primary),

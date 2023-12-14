@@ -5,3 +5,4 @@ export 'widgets_gi.dart';
 export 'steps_widget_gi.dart';
 export 'dialog_gi.dart';
 export 'animated_icon_gi.dart';
+export 'loading_page.dart';

@@ -18,92 +18,80 @@ class _HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return CustomScrollView(
-      slivers: [
-      //* toolbar
-      SliverToBoxAdapter(
-        child: Container(
-          height: AppTheme.isLogin ? 100 : 60,
-          child: Row(
-            children: <Widget>[
-              AppTheme.isLogin
-                  ? Row(
-                      children: <Widget>[
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: () => context.go(RouterPath.AUTH_LOGIN_PAGE),
-                          child: const CircleAvatar(
-                            minRadius: 25,
-                            maxRadius: 25,
-                            backgroundImage:
-                                AssetImage('assets/imagen/avatar.jpg'),
+    final colorPrimary = Theme.of(context).colorScheme.primary;
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Hero(
+              tag: "text_form_search_productos",
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                  width: double.infinity,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border.all(
+                      color: colorPrimary,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => context.push(RouterPath.SEARCH_PAGE),
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 8),
+                          Icon(Icons.search_outlined, color: colorPrimary),
+                          const SizedBox(width: 8),
+                          Text(
+                            AppLocalizations.of(context)!.buscarProductos,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        // Text("Hola, "),
-                        Text('Hola,\nJohn Doe',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: false,
-                            style: Theme.of(context).textTheme.titleMedium),
-                      ],
-                    )
-                  : CustomTextButton(
-                      label: AppLocalizations.of(context)!.autenticar,
-                      icon: Icons.login_rounded,
-                      onPressed: () => context.go(RouterPath.AUTH_LOGIN_PAGE)),
-              const Spacer(),
-              const ThemeChangeWidget(),
-              if (AppTheme.isLogin)
-                CustomIconButton(
-                    icon: Icons.notifications_outlined,
-                    badgeInfo: "15",
-                    onPressed: () {}),
-              CustomIconButton(
-                  icon: Icons.search_outlined,
-                  onPressed: () {
-                    context.push(RouterPath.SEARCH_PAGE);
-                  }),
-            ],
+                        ],
+                      ),
+                    ),
+                  )),
+              // child: CustomTextFormField(
+              //             hint: AppLocalizations.of(context)!.buscarProductos,
+              //             prefixIcon: Icons.search_outlined,
+              //           ),
+            ),
           ),
-        ),
+          BannerSlideshow(promos: AppData.allPromos),
+          const SizedBox(
+            height: 16,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: CustomTitle(AppLocalizations.of(context)!.categorias),
+          ),
+          _categoryWidget(context),
+          ProductsHorizontalListView(
+              products: AppData.allProducts
+                  .where((element) => element.category == 1)
+                  .toList()),
+          const SizedBox(
+            height: 16,
+          ),
+          ProductsHorizontalListView(
+              title: AppLocalizations.of(context)!.enDescuento,
+              subtitle: AppLocalizations.of(context)!.consigueloYa,
+              products:
+                  AppData.allProducts.where((p) => p.discount > 0).toList()),
+          const SizedBox(
+            height: 16,
+          ),
+          ProductsHorizontalListView(
+              title: AppLocalizations.of(context)!.populares,
+              products: AppData.allProducts..shuffle()),
+          const SizedBox(height: 80),
+        ],
       ),
-    
-      SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-        return Column(
-          children: [
-            BannerSlideshow(promos: AppData.allPromos),
-            const SizedBox(
-              height: 16,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: CustomTitle(AppLocalizations.of(context)!.categorias),
-            ),
-            _categoryWidget(context),
-            ProductsHorizontalListView(
-                products: AppData.allProducts
-                    .where((element) => element.category == 1)
-                    .toList()),
-            const SizedBox(
-              height: 16,
-            ),
-            ProductsHorizontalListView(
-                title: AppLocalizations.of(context)!.enDescuento,
-                subtitle: AppLocalizations.of(context)!.consigueloYa,
-                products:
-                    AppData.allProducts.where((p) => p.discount > 0).toList()),
-            const SizedBox(
-              height: 16,
-            ),
-            ProductsHorizontalListView(
-                title: AppLocalizations.of(context)!.populares, products: AppData.allProducts..shuffle()),
-            const SizedBox(height: 80),
-          ],
-        );
-      }, childCount: 1)),
-    ]);
+    );
   }
 
   Widget _categoryWidget(BuildContext context) {

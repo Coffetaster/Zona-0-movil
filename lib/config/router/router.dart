@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/presentation/pages/test/money_transfer_page.dart';
-import 'package:zona0_apk/presentation/pages/test/product_detail.dart';
 import 'package:zona0_apk/presentation/pages/pages.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zona0_apk/presentation/pages/test/vip_account_screen.dart';
-import 'package:zona0_apk/presentation/pages/vicky.dart';
 
 import 'router_path.dart';
 import 'router_transition.dart';
@@ -33,7 +29,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouterPath.SEARCH_PAGE,
       pageBuilder: (context, state) => RouterTransition.fadeTransitionPage(
-          key: state.pageKey, child: const Vickypage()),
+          key: state.pageKey, child: const SearchPage()),
     ),
 
     //* Wallet pages

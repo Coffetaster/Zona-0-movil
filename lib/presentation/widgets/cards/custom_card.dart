@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 
 class CustomCard extends StatelessWidget {
-  const CustomCard({super.key, required this.child, this.onTap, this.padding, this.elevation = 1});
+  const CustomCard({super.key, required this.child, this.onTap, this.padding, this.elevation = 1, this.color});
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
   final double elevation;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,7 @@ class CustomCard extends StatelessWidget {
           );
     }
     return Card(
+        color: color,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))),
         elevation: elevation,

@@ -6,7 +6,7 @@ class Product {
   int category;
   String image;
   double price;
-  double discount;
+  int discount;
   bool isSelected;
   int cantInCart;
   int cantMax;

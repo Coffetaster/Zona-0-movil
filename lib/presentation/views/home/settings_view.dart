@@ -1,6 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lottie/lottie.dart';
+import 'package:zona0_apk/config/constants/lotties_path.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
@@ -20,9 +23,6 @@ class _SettingsViewState extends ConsumerState<SettingsView>
   Widget build(BuildContext context) {
     super.build(context);
     return SingleChildScrollView(
-      physics: PageScrollPhysics(),
-      // physics: BouncingScrollPhysics(),
-      // physics: ClampingScrollPhysics(),
       child: FadeInUp(
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -63,17 +63,6 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                 ),
                 infoBloc(),
                 infoBloc2(),
-                // const SizedBox(
-                //   height: 30,
-                // ),
-
-                // //* Cuenta
-                // CustomTitle("Cuenta"),
-                // const SizedBox(
-                //   height: 10,
-                // ),
-                // acountBloc(),
-                // acountBloc2(),
 
                 const SizedBox(
                   height: 80,
@@ -100,7 +89,6 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                             AssetImage('assets/imagen/avatar.jpg'),
                       ),
                       const SizedBox(width: 8),
-                      // Text("Hola, "),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,43 +115,16 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                   icon: Icons.edit_outlined,
                   title: AppLocalizations.of(context)!.editarDatos,
                   trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                  onTap: () {},
+                  onTap: () {
+                    Utils.showSnackbarEnDesarrollo(context);
+                  },
                 ),
               ),
-          
               acountBloc(),
               acountBloc2(),
-          
-              // SizedBox(
-              //   width: double.infinity,
-              //   child: CustomFilledButton(
-              //     label: "Editar datos",
-              //     filledButtonType: FilledButtonType.tonal,
-              //     icon: Icons.edit_outlined,
-              //     onPressed: () {},
-              //   ),
-              // )
             ],
           ));
 
-  Widget settingsBloc() => CustomCard(
-          child: Column(
-        children: <Widget>[
-          SettingOption(
-            icon: Icons.sync_outlined,
-            title: AppLocalizations.of(context)!.cambiarContrasena,
-            trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
-          ),
-          const Divider(thickness: 1, height: 1),
-          SettingOption(
-            icon: Icons.logout_outlined,
-            title: AppLocalizations.of(context)!.logout,
-            trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
-          ),
-        ],
-      ));
 
   Widget settingsBloc2() => CustomCard(
           child: Column(
@@ -192,14 +153,18 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             icon: Icons.contact_support_outlined,
             title: AppLocalizations.of(context)!.sobreNosotros,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
           ),
           const Divider(thickness: 1, height: 1),
           SettingOption(
             icon: Icons.info_outline,
             title: AppLocalizations.of(context)!.acercaDe,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
           ),
         ],
       ));
@@ -211,7 +176,9 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             icon: Icons.chat_bubble_outline,
             title: AppLocalizations.of(context)!.enviarComentarios,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
           ),
         ],
       ));
@@ -223,14 +190,18 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             icon: Icons.sync_outlined,
             title: AppLocalizations.of(context)!.cambiarContrasena,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
           ),
           const Divider(thickness: 1, height: 1),
           SettingOption(
             icon: Icons.logout_outlined,
             title: AppLocalizations.of(context)!.logout,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
           ),
         ],
       ));
@@ -242,7 +213,9 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             icon: Icons.delete_outline,
             title: AppLocalizations.of(context)!.eliminar,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            onTap: () {},
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
           ),
         ],
       ));

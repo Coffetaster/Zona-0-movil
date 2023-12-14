@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/domain/entities/category.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
@@ -34,7 +35,9 @@ class CategoryCard extends StatelessWidget {
           CustomFilledButton(
               label: AppLocalizations.of(context)!.verMas,
               filledButtonType: FilledButtonType.tonal,
-              onPressed: () {}),
+              onPressed: () {
+                Utils.showSnackbarEnDesarrollo(context);
+              }),
         ],
             ),
       ),

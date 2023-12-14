@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
@@ -34,9 +35,6 @@ class _WalletViewState extends State<WalletView>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(
-                  height: 40,
-                ),
                 CustomTitle(AppLocalizations.of(context)!.miBilletera),
                 const SizedBox(
                   height: 20,
@@ -58,7 +56,9 @@ class _WalletViewState extends State<WalletView>
                 Center(
                     child: CustomFilledButton(
                         label: AppLocalizations.of(context)!.verTodas,
-                        onPressed: () {})),
+                        onPressed: () {
+                          Utils.showSnackbarEnDesarrollo(context);
+                        })),
                 const SizedBox(
                   height: 80,
                 ),
@@ -81,11 +81,15 @@ class _WalletViewState extends State<WalletView>
                 IconSubtextButton(
                     icon: Icons.attach_money_outlined,
                     label: AppLocalizations.of(context)!.comprarZOP,
-                    onTap: () {}),
+                    onTap: () {
+                      Utils.showSnackbarEnDesarrollo(context);
+                    }),
                 IconSubtextButton(
                     icon: Icons.payment_outlined,
                     label: AppLocalizations.of(context)!.cambiarZOP,
-                    onTap: () {}),
+                    onTap: () {
+                      Utils.showSnackbarEnDesarrollo(context);
+                    }),
                 IconSubtextButton(
                     icon: Icons.swap_horiz_outlined,
                     label: AppLocalizations.of(context)!.transferir,
@@ -95,15 +99,21 @@ class _WalletViewState extends State<WalletView>
                 IconSubtextButton(
                     icon: Icons.qr_code_scanner_outlined,
                     label: AppLocalizations.of(context)!.pagarQr,
-                    onTap: () {}),
+                    onTap: () {
+                      Utils.showSnackbarEnDesarrollo(context);
+                    }),
                 IconSubtextButton(
                     icon: Icons.qr_code_outlined,
                     label: AppLocalizations.of(context)!.generarQr,
-                    onTap: () {}),
+                    onTap: () {
+                      Utils.showSnackbarEnDesarrollo(context);
+                    }),
                 IconSubtextButton(
                     icon: Icons.play_arrow_outlined,
                     label: AppLocalizations.of(context)!.ganarZOP,
-                    onTap: () {}),
+                    onTap: () {
+                      Utils.showSnackbarEnDesarrollo(context);
+                    }),
               ])),
     );
   }

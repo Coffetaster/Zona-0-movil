@@ -3,7 +3,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/config/helpers/show_image.dart';
+import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
@@ -50,7 +52,7 @@ class ProductDetailsPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               vertical: 4, horizontal: 8),
                           child: Text(
-                              "-${product.discount.toStringAsFixed(2)}%",
+                              "-${product.discount}%",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium
@@ -81,27 +83,14 @@ class ProductDetailsPage extends StatelessWidget {
           ? BounceInUp(
               child: FloatingActionButton(
                 heroTag: null,
-                  onPressed: () {},
+                  onPressed: () {
+                    SnackBarGI.showWithLottie(context,
+                          lottiePath: LottiesPath.add_cart,
+                          text: AppLocalizations.of(context)!.addCart);
+                  },
                   child: Icon(Icons.add_shopping_cart_outlined)),
             )
-          : FadeInUp(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  FloatingActionButton.small(
-                    heroTag: null,
-                      onPressed: () {}, child: Icon(Icons.add_outlined)),
-                  Text("x${product.cantInCart}",
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          )),
-                  FloatingActionButton.small(
-                    heroTag: null,
-                      onPressed: () {},
-                      child: Icon(Icons.horizontal_rule_outlined)),
-                ],
-              ),
-            ),
+          : null
     );
   }
 

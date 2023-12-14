@@ -17,36 +17,6 @@ class _CategoriesViewState extends State<CategoriesView> with AutomaticKeepAlive
   Widget build(BuildContext context) {
     super.build(context);
     final categories = AppData.categoryList;
-    // return CategoriesMasonry(categories: categories);
-    // return CustomScrollView(
-    //   slivers: [
-    //     SliverToBoxAdapter(
-    //       child: FadeInUp(
-    //     child: Container(
-    //       padding: const EdgeInsets.symmetric(horizontal: 8),
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           const SizedBox(
-    //             height: 40,
-    //           ),
-    //           const CustomTitle("Categorías"),
-    //           const Divider(
-    //             thickness: 1,
-    //             height: 30,
-    //           ),
-    //           CategoriesMasonry(categories: categories),
-    //           // ...categories.map((e) => CategoryCard(category: e)),
-    //           const SizedBox(
-    //             height: 80,
-    //           )
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    //     ),
-    //   ],
-    // );
     return SingleChildScrollView(
       child: FadeInUp(
         child: Container(
@@ -54,9 +24,6 @@ class _CategoriesViewState extends State<CategoriesView> with AutomaticKeepAlive
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 40,
-              ),
               CustomTitle(AppLocalizations.of(context)!.categorias),
               const Divider(
                 thickness: 1,

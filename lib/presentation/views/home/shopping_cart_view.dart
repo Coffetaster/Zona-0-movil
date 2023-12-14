@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/main.dart';
@@ -34,15 +35,12 @@ class _ShoppingCartViewState extends State<ShoppingCartView> with AutomaticKeepA
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 40,
-              ),
               CustomTitle(AppLocalizations.of(context)!.miCarrito),
               const Divider(
                 thickness: 1,
                 height: 30,
               ),
-              ...products.map((e) => ProductItemView(product: e)),
+              ...products.map((e) => ProductItemView(product: e, canEdit: true)),
               const Divider(
                 thickness: 1,
                 height: 30,
@@ -52,7 +50,9 @@ class _ShoppingCartViewState extends State<ShoppingCartView> with AutomaticKeepA
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(child: CustomFilledButton(onPressed: () {}, label: AppLocalizations.of(context)!.continuar))
+                  Expanded(child: CustomFilledButton(onPressed: () {
+                    Utils.showSnackbarEnDesarrollo(context);
+                  }, label: AppLocalizations.of(context)!.continuar))
                 ],
               ),
               const SizedBox(

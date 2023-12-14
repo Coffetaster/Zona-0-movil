@@ -74,6 +74,7 @@
     "terminar": "Terminar",
     "balanceTotal": "Balance Total",
     "addCart": "Añadido al carrito",
+    "cargando": "Cargando",
 
     "validForm_campoRequerido": "Campo requerido",
     "validForm_formatoIncorrecto": "Formato incorrecto",

@@ -46,7 +46,7 @@ class RegisterCompanyPage extends ConsumerWidget {
                   StepsWidgetGI(
                     textFinish: AppLocalizations.of(context)!.registrar,
                     onTapFinish: () {
-                      SnackbarGI.show(context, text: "En desarrollo");
+                      SnackBarGI.showCustom(context, text: "En desarrollo");
                     },
                     children: [
                       widgetStep1(context),

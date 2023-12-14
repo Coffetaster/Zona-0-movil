@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
@@ -29,13 +30,13 @@ class ProductCardView extends StatelessWidget {
         width: size.width * 0.45,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Stack(
                 alignment: AlignmentDirectional.bottomStart,
                 children: [
                   SizedBox(
-                      height: size.height * 0.20,
+                      height: 120,
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -59,7 +60,7 @@ class ProductCardView extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 8),
                             child: Text(
-                                "-${product.discount.toStringAsFixed(2)}%",
+                                "-${product.discount}%",
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
@@ -85,76 +86,37 @@ class ProductCardView extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       softWrap: false,
                       style: Theme.of(context).textTheme.bodyLarge)),
-              Row(
-                children: [
-                  Text('\$${product.realPrice.toStringAsFixed(2)}',
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      softWrap: false,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold, color: color.primary)),
-                  if (product.discount > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text('\$${product.price.toStringAsFixed(2)}',
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                          softWrap: false,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  decoration: TextDecoration.lineThrough)),
-                    ),
-                ],
-              ),
-              // Consumer(
-              //   builder: (context, ref, child) {
-              //     return InkWell(
-              //       onTap: () =>
-              //         ref.read(animatedIconGIProvider(product.id.toString()).notifier).toggleAnim(),
-              //       child: AnimatedIconGI(
-              //         id: product.id.toString(),
-              //         icon: AnimatedIcons.add_event,
-              //         color: color.primary,
-              //       ),
-              //     );
-              //   },
-              // ),
-              product.cantInCart <= 0
-                  ? SizedBox(
-                      width: double.infinity,
-                      child: CustomFilledButton(
-                        filledButtonType: FilledButtonType.tonal,
-                        icon: Icons.add_shopping_cart_outlined,
-                        label: AppLocalizations.of(context)!.loQuiero,
-                        onPressed: () {
-                          SnackbarGI.showWithIcon(context, icon: Icons.add_shopping_cart_outlined, text: "Agregado al carrito");
-                        },
-                      ),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        CustomIconButton(
-                          iconButtonType: IconButtonType.filledTonal,
-                          icon: Icons.horizontal_rule_outlined,
-                          onPressed: () {},
-                        ),
-                        Text("x${product.cantInCart}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                )),
-                        CustomIconButton(
-                          iconButtonType: IconButtonType.filledTonal,
-                          icon: Icons.add_outlined,
-                          onPressed: () {},
-                        ),
-                      ],
-                    )
+              if (product.discount > 0)
+                Text('\$${product.price.toStringAsFixed(2)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    softWrap: false,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(decoration: TextDecoration.lineThrough)),
+              Text('\$${product.realPrice.toStringAsFixed(2)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                  softWrap: false,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold, color: color.primary)),
+              if (product.cantInCart <= 0) const Spacer(),
+              if (product.cantInCart <= 0)
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomFilledButton(
+                    filledButtonType: FilledButtonType.tonal,
+                    icon: Icons.add_shopping_cart_outlined,
+                    label: AppLocalizations.of(context)!.loQuiero,
+                    onPressed: () {
+                      // SnackbarGI.showWithIcon(context, icon: Icons.add_shopping_cart_outlined, text: "Agregado al carrito");
+                      SnackBarGI.showWithLottie(context,
+                          lottiePath: LottiesPath.add_cart,
+                          text: AppLocalizations.of(context)!.addCart);
+                    },
+                  ),
+                )
             ]),
       ),
     );
