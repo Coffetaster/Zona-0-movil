@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zona0_apk/presentation/pages/test/money_transfer_page.dart';
 import 'package:zona0_apk/presentation/pages/pages.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,13 +31,6 @@ final appRouter = GoRouter(
           key: state.pageKey, child: const SearchPage()),
     ),
 
-    //* Wallet pages
-    GoRoute(
-      path: RouterPath.WALLET_TRANSFER_PAGE,
-      pageBuilder: (context, state) => RouterTransition.fadeTransitionPage(
-          key: state.pageKey, child: MoneyTransferPage()),
-    ),
-
     //* Auth Pages
     GoRoute(
       path: RouterPath.AUTH_LOGIN_PAGE,
@@ -61,13 +53,13 @@ final appRouter = GoRouter(
             path: RouterPath.AUTH_REGISTER_CLIENT_PAGE_PATH,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: RegisterClientPage()),
+                    key: state.pageKey, child: const RegisterFormPage(isClient: true)),
           ),
           GoRoute(
             path: RouterPath.AUTH_REGISTER_COMPANY_PAGE_PATH,
             pageBuilder: (context, state) =>
                 RouterTransition.fadeTransitionPage(
-                    key: state.pageKey, child: const RegisterCompanyPage()),
+                    key: state.pageKey, child: const RegisterFormPage(isClient: false)),
           ),
         ]),
 

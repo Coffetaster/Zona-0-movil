@@ -88,6 +88,9 @@
     "codigo": "Código",
     "entreCodigo": "Entre el código",
     "reenviarCodigo": "Reenviar código",
+    "debeSeleccionarImagen": "Debe seleccionar una imagen",
+    "enviandoEsperePlis": "Enviando\nPor favor, espere",
+    "compruebeConexion": "Compruebe su conexión",
 
     "validForm_campoRequerido": "Campo requerido",
     "validForm_formatoIncorrecto": "Formato incorrecto",

@@ -199,7 +199,7 @@ class ProductDetailsPage extends StatelessWidget {
                       ListTile(
                         title: Text("${AppLocalizations.of(context)!.categoria}:"),
                         subtitle: Text(category.name),
-                        trailing: Image.asset(category.image),
+                        trailing: Image.asset(category.image, width: 120, height: 120, fit: BoxFit.cover),
                       ),
                     ],
                   )),

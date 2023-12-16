@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
@@ -67,8 +68,8 @@ class _HomePageState extends State<HomePage>
 
     return PopScope(
       canPop: widget.pageIndex == 0,
-      onPopInvoked: (canPop){
-        if(!canPop) context.go(RouterPath.HOME_PAGE);
+      onPopInvoked: (canPop) {
+        if (!canPop) context.go(RouterPath.HOME_PAGE);
       },
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
@@ -76,81 +77,90 @@ class _HomePageState extends State<HomePage>
           child: Material(
             color: Colors.transparent,
             child: NestedScrollView(
-              physics: const BouncingScrollPhysics(),
-              body: Stack(children: [
-                PageView(
-                  //para evitar que scroll horizontalmente
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  children: viewRoutes,
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: CustomBottomNavigationBar(widget.pageIndex))
-              ]),
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  if(widget.pageIndex < 4)
-                  SliverAppBar(
-                    onStretchTrigger: () async {},
-                    stretchTriggerOffset: 50.0,
-                    expandedHeight: AppTheme.isLogin ? 100 : 60,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Center(
-                        child: Container(
-                          height: AppTheme.isLogin ? 100 : 60,
-                          child: Row(
-                            children: <Widget>[
-                              AppTheme.isLogin
-                                  ? Row(
-                                      children: <Widget>[
-                                        const SizedBox(width: 8),
-                                        GestureDetector(
-                                          onTap: () => context.go(RouterPath.AUTH_LOGIN_PAGE),
-                                          child: const CircleAvatar(
-                                            minRadius: 25,
-                                            maxRadius: 25,
-                                            backgroundImage:
-                                                AssetImage('assets/imagen/avatar.jpg'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        // Text("Hola, "),
-                                        Text('Hola,\nJohn Doe',
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            softWrap: false,
-                                            style: Theme.of(context).textTheme.titleMedium),
-                                      ],
-                                    )
-                                  : CustomTextButton(
-                                      label: AppLocalizations.of(context)!.autenticar,
-                                      icon: Icons.login_rounded,
-                                      onPressed: () => context.go(RouterPath.AUTH_LOGIN_PAGE)),
-                              const Spacer(),
-                              const ThemeChangeWidget(),
-                              if (AppTheme.isLogin)
-                                CustomIconButton(
-                                    icon: Icons.notifications_outlined,
-                                    badgeInfo: "15",
-                                    onPressed: () {
-                                      Utils.showSnackbarEnDesarrollo(context);
-                                    }),
-                              CustomIconButton(
-                                  icon: Icons.search_outlined,
-                                  onPressed: () {
-                                    context.push(RouterPath.SEARCH_PAGE);
-                                  }),
-                            ],
+                physics: const BouncingScrollPhysics(),
+                body: Stack(children: [
+                  PageView(
+                    //para evitar que scroll horizontalmente
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: pageController,
+                    children: viewRoutes,
+                  ),
+                  Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: CustomBottomNavigationBar(widget.pageIndex))
+                ]),
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    if (widget.pageIndex < 4)
+                      SliverAppBar(
+                        onStretchTrigger: () async {},
+                        stretchTriggerOffset: 50.0,
+                        expandedHeight: AppTheme.isLogin ? 100 : 60,
+                        flexibleSpace: FlexibleSpaceBar(
+                          background: Center(
+                            child: Container(
+                              height: AppTheme.isLogin ? 100 : 60,
+                              child: Row(
+                                children: <Widget>[
+                                  AppTheme.isLogin
+                                      ? Row(
+                                          children: <Widget>[
+                                            const SizedBox(width: 8),
+                                            GestureDetector(
+                                              onTap: () => context.go(
+                                                  RouterPath.AUTH_LOGIN_PAGE),
+                                              child: SizedBox(
+                                                width: 50,
+                                                height: 50,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(50),
+                                                    child: Image.asset(ImagesPath
+                                                        .user_placeholder.path, width: 50, height: 50, fit: BoxFit.cover)),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            // Text("Hola, "),
+                                            Text('Hola,\nJohn Doe',
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                softWrap: false,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium),
+                                          ],
+                                        )
+                                      : CustomTextButton(
+                                          label: AppLocalizations.of(context)!
+                                              .autenticar,
+                                          icon: Icons.login_rounded,
+                                          onPressed: () => context
+                                              .go(RouterPath.AUTH_LOGIN_PAGE)),
+                                  const Spacer(),
+                                  const ThemeChangeWidget(),
+                                  if (AppTheme.isLogin)
+                                    CustomIconButton(
+                                        icon: Icons.notifications_outlined,
+                                        badgeInfo: "15",
+                                        onPressed: () {
+                                          Utils.showSnackbarEnDesarrollo(
+                                              context);
+                                        }),
+                                  CustomIconButton(
+                                      icon: Icons.search_outlined,
+                                      onPressed: () {
+                                        context.push(RouterPath.SEARCH_PAGE);
+                                      }),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ];
-              }),
+                  ];
+                }),
           ),
         ),
       ),

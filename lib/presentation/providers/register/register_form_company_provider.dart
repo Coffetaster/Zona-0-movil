@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 
 import 'package:zona0_apk/data/dio/my_dio.dart';
 import 'package:zona0_apk/domain/entities/entities.dart';
@@ -15,7 +16,8 @@ final registerFormCompanyProvider = StateNotifierProvider.autoDispose<
   return RegisterFormCompanyNotifier(ref.read(registerProvider.notifier));
 });
 
-class RegisterFormCompanyNotifier extends StateNotifier<RegisterFormCompanyStatus> {
+class RegisterFormCompanyNotifier
+    extends StateNotifier<RegisterFormCompanyStatus> {
   RegisterFormCompanyNotifier(this.registerNotifier)
       : super(RegisterFormCompanyStatus());
   final RegisterNotifier registerNotifier;
@@ -27,7 +29,7 @@ class RegisterFormCompanyNotifier extends StateNotifier<RegisterFormCompanyStatu
   }
 
   void companyCodeChanged(String value) {
-    final companyCode = GeneralInput.dirty(value);
+    final companyCode = NumberInput.dirty(value);
     state = state.copyWith(
         companyCode: companyCode,
         isvalid: validateForm(companyCode: companyCode));
@@ -42,7 +44,7 @@ class RegisterFormCompanyNotifier extends StateNotifier<RegisterFormCompanyStatu
 
   bool validateForm({
     GeneralInput? company,
-    GeneralInput? companyCode,
+    NumberInput? companyCode,
     GeneralInput? companyType,
   }) =>
       Formz.validate([
@@ -51,34 +53,45 @@ class RegisterFormCompanyNotifier extends StateNotifier<RegisterFormCompanyStatu
         companyType ?? state.companyType,
       ]);
 
-  Future<int> onSubmit(RegisterFormClientNotifier registerClientNotifier) async {
-    registerClientNotifier.closeValidateForm();
-    state = state.copyWith(
-        formStatus: FormStatus.validating,
-        company: GeneralInput.dirty(state.company.value),
-        companyCode: GeneralInput.dirty(state.companyCode.value),
-        companyType: GeneralInput.dirty(state.companyType.value),
-        isvalid: validateForm(),
-        isFormDirty: true);
-
-    if (!state.isvalid || !registerClientNotifier.currentState.isvalid) {
-      state = state.copyWith(formStatus: FormStatus.invalid);
-      return 412;
-    }
-
+  Future<String> onSubmit(
+      RegisterFormClientNotifier registerClientNotifier) async {
     try {
-      await registerNotifier.registerCompany(Company.fromClient(
-          client: registerClientNotifier.createClient(),
-          companyName: state.company.realValue,
-          companyCode: state.companyCode.realValue,
-          companyType: state.companyType.realValue,));
+      registerClientNotifier.closeValidateForm();
+      registerClientNotifier.invalidFormStatus();
+      state = state.copyWith(
+          formStatus: FormStatus.validating,
+          company: GeneralInput.dirty(state.company.value),
+          companyCode: NumberInput.dirty(state.companyCode.value),
+          companyType: GeneralInput.dirty(state.companyType.value),
+          isvalid: validateForm(),
+          isFormDirty: true);
+
+      if (!state.isvalid || !registerClientNotifier.currentState.isvalid) {
+        state = state.copyWith(formStatus: FormStatus.invalid);
+        return "412";
+      }
+
+      if (registerClientNotifier.currentState.imagePath == null) {
+        state = state.copyWith(formStatus: FormStatus.invalid);
+        return "499";
+      }
+      final code = await registerNotifier.registerCompany(
+          Company.fromClient(
+              client: registerClientNotifier.createClient(),
+              companyName: state.company.realValue,
+              companyCode: state.companyCode.value.trim(),
+              companyType: state.companyType.realValue),
+          registerClientNotifier.currentState.imagePath!);
 
       state = state.copyWith(formStatus: FormStatus.invalid);
-      return 200;
+      return code.toString();
     } on CustomDioError catch (e) {
-      return e.code;
+      state = state.copyWith(formStatus: FormStatus.invalid);
+      return Utils.getErrorsFromRegister(e.data);
     } catch (e) {
-      return 400;
+      print(e.toString());
+      state = state.copyWith(formStatus: FormStatus.invalid);
+      return "";
     }
   }
 }
@@ -89,7 +102,7 @@ class RegisterFormCompanyStatus {
   final bool isFormDirty;
 
   final GeneralInput company;
-  final GeneralInput companyCode;
+  final NumberInput companyCode;
   final GeneralInput companyType;
 
   RegisterFormCompanyStatus({
@@ -97,7 +110,7 @@ class RegisterFormCompanyStatus {
     this.isvalid = false,
     this.isFormDirty = false,
     this.company = const GeneralInput.pure(),
-    this.companyCode = const GeneralInput.pure(),
+    this.companyCode = const NumberInput.pure(),
     this.companyType = const GeneralInput.pure(),
   });
 
@@ -106,7 +119,7 @@ class RegisterFormCompanyStatus {
     bool? isvalid,
     bool? isFormDirty,
     GeneralInput? company,
-    GeneralInput? companyCode,
+    NumberInput? companyCode,
     GeneralInput? companyType,
   }) {
     return RegisterFormCompanyStatus(

@@ -94,7 +94,7 @@ class _WalletViewState extends State<WalletView>
                     icon: Icons.swap_horiz_outlined,
                     label: AppLocalizations.of(context)!.transferir,
                     onTap: () {
-                      context.push(RouterPath.WALLET_TRANSFER_PAGE);
+                      Utils.showSnackbarEnDesarrollo(context);
                     }),
                 IconSubtextButton(
                     icon: Icons.qr_code_scanner_outlined,

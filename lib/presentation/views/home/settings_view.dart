@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
@@ -38,9 +39,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                 const SizedBox(
                   height: 10,
                 ),
-                AppTheme.isLogin
-                ? profileBloc()
-                : const NoLoginAlert(),
+                AppTheme.isLogin ? profileBloc() : const NoLoginAlert(),
                 const SizedBox(
                   height: 30,
                 ),
@@ -74,57 +73,57 @@ class _SettingsViewState extends ConsumerState<SettingsView>
   }
 
   Widget profileBloc() => CustomGradientCard(
-        padding: const EdgeInsets.all(8.0),
-          child: Column(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: <Widget>[
+          Row(
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Row(
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.asset(ImagesPath.user_placeholder.path, width: 100, height: 100, fit: BoxFit.cover)),
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      const SizedBox(width: 8),
-                      const CircleAvatar(
-                        minRadius: 50,
-                        maxRadius: 50,
-                        backgroundImage:
-                            AssetImage('assets/imagen/avatar.jpg'),
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('John Doe',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Text('johndoe@correo.com',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                              style: Theme.of(context).textTheme.titleSmall),
-                        ],
-                      )
+                      Text('John Doe',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: Theme.of(context).textTheme.titleMedium),
+                      Text('johndoe@correo.com',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: Theme.of(context).textTheme.titleSmall),
                     ],
                   )
                 ],
-              ),
-              const Divider(thickness: 1, height: 20),
-              CustomCard(
-                child: SettingOption(
-                  icon: Icons.edit_outlined,
-                  title: AppLocalizations.of(context)!.editarDatos,
-                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                  onTap: () {
-                    Utils.showSnackbarEnDesarrollo(context);
-                  },
-                ),
-              ),
-              acountBloc(),
-              acountBloc2(),
+              )
             ],
-          ));
-
+          ),
+          const Divider(thickness: 1, height: 20),
+          CustomCard(
+            child: SettingOption(
+              icon: Icons.edit_outlined,
+              title: AppLocalizations.of(context)!.editarDatos,
+              trailing: const Icon(Icons.arrow_forward_ios_outlined),
+              onTap: () {
+                Utils.showSnackbarEnDesarrollo(context);
+              },
+            ),
+          ),
+          acountBloc(),
+          acountBloc2(),
+        ],
+      ));
 
   Widget settingsBloc2() => CustomCard(
           child: Column(
@@ -135,10 +134,13 @@ class _SettingsViewState extends ConsumerState<SettingsView>
               return SettingOption(
                 icon: Icons.dark_mode_outlined,
                 title: AppLocalizations.of(context)!.modoOscuro,
-                subtitle: theme.isDark ? AppLocalizations.of(context)!.cambiarClaro : AppLocalizations.of(context)!.cambiarOscuro,
+                subtitle: theme.isDark
+                    ? AppLocalizations.of(context)!.cambiarClaro
+                    : AppLocalizations.of(context)!.cambiarOscuro,
                 trailing: Switch(
                     value: theme.isDark,
-                    onChanged: (value) => ref.read(themeProvider.notifier).toggleDark()),
+                    onChanged: (value) =>
+                        ref.read(themeProvider.notifier).toggleDark()),
                 onTap: () => ref.read(themeProvider.notifier).toggleDark(),
               );
             },

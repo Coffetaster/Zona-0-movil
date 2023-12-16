@@ -5,7 +5,9 @@ import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/main.dart';
 
 class LoadingPage extends StatelessWidget {
-  const LoadingPage({super.key});
+  const LoadingPage({super.key, this.message});
+
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +21,22 @@ class LoadingPage extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Lottie.asset(LottiesPath.loading_1.path, height: 200, width: 200, fit: BoxFit.fill),
-              Image.asset(ImagesPath.logo.path, height: 50, width: 50, fit: BoxFit.fill)
+              Lottie.asset(LottiesPath.loading_1.path,
+                  height: 200, width: 200, fit: BoxFit.fill),
+              Image.asset(ImagesPath.logo.path,
+                  height: 50, width: 50, fit: BoxFit.fill)
             ],
           ),
         ),
-        Text(AppLocalizations.of(context)!.cargando, style: Theme.of(context).textTheme.titleLarge!.copyWith(
-          color: Theme.of(context).colorScheme.primary
-        )),
-        Lottie.asset(LottiesPath.loading_3.path, height: 50, width: 100, fit: BoxFit.fill),
+        Text(
+            message == null ? AppLocalizations.of(context)!.cargando : message!,
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(color: Theme.of(context).colorScheme.primary)),
+        Lottie.asset(LottiesPath.loading_3.path,
+            height: 50, width: 100, fit: BoxFit.fill),
       ],
     );
   }

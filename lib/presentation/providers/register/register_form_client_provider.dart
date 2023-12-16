@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 
@@ -61,7 +63,8 @@ class RegisterFormClientNotifier
         personalValidation: passwordPersonalValidation);
     value = value.trim();
     bool passwordRequired1 = value.length >= 8;
-    bool passwordRequired2 = value.toLowerCase() != value && value.toUpperCase() != value;
+    bool passwordRequired2 =
+        value.toLowerCase() != value && value.toUpperCase() != value;
     bool passwordRequired3 = value.contains(RegExp(r'[0-9]'));
     bool passwordRequired4 = value
         .toLowerCase()
@@ -75,6 +78,10 @@ class RegisterFormClientNotifier
         passwordRequired3: passwordRequired3,
         passwordRequired4: passwordRequired4,
         isvalid: validateForm(password: password));
+  }
+
+  void imageSelect(String? imagePath) {
+    state = state.copyWith(imagePath: () => imagePath);
   }
 
   void toggleObscurePassword() {
@@ -122,28 +129,43 @@ class RegisterFormClientNotifier
       name: state.name.realValue,
       last_name: state.lastName.realValue,
       email: state.email.realValue,
-      movil: state.telephone.realValue.toString(),
+      movil: state.telephone.value,
       ci: state.ci.realValue);
 
   Future<String> onSubmit() async {
-    closeValidateForm();
-
-    if (!state.isvalid) {
-      state = state.copyWith(formStatus: FormStatus.invalid);
-      return "412";
-    }
-
     try {
-      final code = await registerNotifier.registerClient(createClient());
+      closeValidateForm();
 
+      if (!state.isvalid) {
+        state = state.copyWith(formStatus: FormStatus.invalid);
+        return "412";
+      }
+
+      if (state.imagePath == null) {
+        state = state.copyWith(formStatus: FormStatus.invalid);
+        return "499";
+      }
+
+      // if (await Utils.checkedConection()) {
+      //   state = state.copyWith(formStatus: FormStatus.invalid);
+      //   return "498";
+      // }
+
+      final code = await registerNotifier.registerClient(
+          createClient(), state.imagePath!);
       state = state.copyWith(formStatus: FormStatus.invalid);
       return code.toString();
     } on CustomDioError catch (e) {
+      state = state.copyWith(formStatus: FormStatus.invalid);
       return Utils.getErrorsFromRegister(e.data);
     } catch (e) {
-      return "Error";
+      state = state.copyWith(formStatus: FormStatus.invalid);
+      return "";
     }
   }
+
+  void invalidFormStatus() =>
+      state = state.copyWith(formStatus: FormStatus.invalid);
 
   RegisterFormClientStatus get currentState => state;
 }
@@ -165,7 +187,8 @@ PersonalValidationResult ciPersonalValidation(String value) {
 PersonalValidationResult passwordPersonalValidation(String value) {
   value = value.trim();
   bool passwordRequired1 = value.length >= 8;
-  bool passwordRequired2 = value.toLowerCase() != value && value.toUpperCase() != value;
+  bool passwordRequired2 =
+      value.toLowerCase() != value && value.toUpperCase() != value;
   bool passwordRequired3 = value.contains(RegExp(r'[0-9]'));
   bool passwordRequired4 = value
       .toLowerCase()
@@ -203,6 +226,9 @@ class RegisterFormClientStatus {
 
   final bool isObscurePassword;
 
+  //*image
+  final String? imagePath;
+
   double get percentSecurePassword {
     int cant = 0;
     if (passwordRequired1) cant++;
@@ -212,25 +238,26 @@ class RegisterFormClientStatus {
     return cant / 4;
   }
 
-  RegisterFormClientStatus({
-    this.formStatus = FormStatus.invalid,
-    this.isvalid = false,
-    this.isFormDirty = false,
-    this.name = const NameInput.pure(),
-    this.lastName = const NameInput.pure(),
-    this.telephone =
-        const PhoneInput.pure(personalValidation: telephonePersonalValidation),
-    this.ci = const GeneralInput.pure(personalValidation: ciPersonalValidation),
-    this.username = const UsernameInput.pure(),
-    this.email = const EmailInput.pure(),
-    this.password = const PasswordInput.pure(
-        personalValidation: passwordPersonalValidation),
-    this.isObscurePassword = true,
-    this.passwordRequired1 = false,
-    this.passwordRequired2 = false,
-    this.passwordRequired3 = false,
-    this.passwordRequired4 = false,
-  });
+  RegisterFormClientStatus(
+      {this.formStatus = FormStatus.invalid,
+      this.isvalid = false,
+      this.isFormDirty = false,
+      this.name = const NameInput.pure(),
+      this.lastName = const NameInput.pure(),
+      this.telephone = const PhoneInput.pure(
+          personalValidation: telephonePersonalValidation),
+      this.ci =
+          const GeneralInput.pure(personalValidation: ciPersonalValidation),
+      this.username = const UsernameInput.pure(),
+      this.email = const EmailInput.pure(),
+      this.password = const PasswordInput.pure(
+          personalValidation: passwordPersonalValidation),
+      this.isObscurePassword = true,
+      this.passwordRequired1 = false,
+      this.passwordRequired2 = false,
+      this.passwordRequired3 = false,
+      this.passwordRequired4 = false,
+      this.imagePath = null});
 
   RegisterFormClientStatus copyWith({
     FormStatus? formStatus,
@@ -248,6 +275,7 @@ class RegisterFormClientStatus {
     bool? passwordRequired3,
     bool? passwordRequired4,
     bool? isObscurePassword,
+    ValueGetter<String?>? imagePath,
   }) {
     return RegisterFormClientStatus(
       formStatus: formStatus ?? this.formStatus,
@@ -265,6 +293,7 @@ class RegisterFormClientStatus {
       passwordRequired3: passwordRequired3 ?? this.passwordRequired3,
       passwordRequired4: passwordRequired4 ?? this.passwordRequired4,
       isObscurePassword: isObscurePassword ?? this.isObscurePassword,
+      imagePath: imagePath?.call() ?? this.imagePath,
     );
   }
 }

@@ -27,6 +27,6 @@ class RouterPath {
   static const String AUTH_VERIFY_CODE_PAGE = '/verify_code';
 
   //* Wallet pages
-  static const String WALLET_TRANSFER_PAGE = '/wallet/transfer';
+  // static const String WALLET_TRANSFER_PAGE = '/wallet/transfer';
 
 }

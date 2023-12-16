@@ -1,24 +1,28 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-// ignore_for_file: must_be_immutable
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
+import 'package:zona0_apk/domain/entities/entities.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
+import 'package:zona0_apk/presentation/providers/register/register_form_company_provider.dart';
 import 'package:zona0_apk/presentation/widgets/backgrounds/bezier_background.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
-class RegisterClientPage extends ConsumerWidget {
-  const RegisterClientPage({super.key});
+class RegisterFormPage extends ConsumerWidget {
+  const RegisterFormPage({super.key, required this.isClient});
 
+  final bool isClient;
   final String idConfirmExitProvider = "RegisterClientPage";
 
   @override
@@ -31,8 +35,7 @@ class RegisterClientPage extends ConsumerWidget {
         context.pop();
         context.pop();
       });
-    }
-    else if (confirmExit == 2) {
+    } else if (confirmExit == 2) {
       Future.delayed(Duration(milliseconds: 0), () {
         context.go(RouterPath.AUTH_VERIFY_CODE_PAGE);
         SnackBarGI.showWithIcon(context,
@@ -43,35 +46,64 @@ class RegisterClientPage extends ConsumerWidget {
 
     //* registerClientProvider
     final registerClientStatus = ref.watch(registerFormClientProvider);
+    //* registerCompanyProvider
+    final registerCompanyStatus = ref.watch(registerFormCompanyProvider);
 
     void onSubmit() async {
-      // final code =
-      //     await ref.read(registerFormClientProvider.notifier).onSubmit();
-      // if (code != "200") {
-      //   switch (code) {
-      //     case "412":
-      //       SnackBarGI.showWithIcon(context,
-      //           icon: Icons.error_outline,
-      //           text: AppLocalizations.of(context)!.camposConError);
-      //       break;
-      //     default:
-      // SnackBarGI.showWithIcon(context,
-      //     icon: Icons.error_outline, text: code);
-      //   }
-      // } else {
-      //   context.pop();
-      // }
-      ref.read(confirmExitProvider(idConfirmExitProvider).notifier).state = 2;
+      String code;
+      if (isClient) {
+        code = await ref.read(registerFormClientProvider.notifier).onSubmit();
+      } else {
+        code = await ref
+            .read(registerFormCompanyProvider.notifier)
+            .onSubmit(ref.read(registerFormClientProvider.notifier));
+      }
+      if (code != "200") {
+        switch (code) {
+          case "412":
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.error_outline,
+                text: AppLocalizations.of(context)!.camposConError);
+            break;
+          case "498":
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.error_outline,
+                text: AppLocalizations.of(context)!.compruebeConexion);
+            break;
+          case "499":
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.error_outline,
+                text: AppLocalizations.of(context)!.debeSeleccionarImagen);
+            break;
+          default:
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.error_outline,
+                text: code.isEmpty
+                    ? AppLocalizations.of(context)!.haOcurridoError
+                    : code);
+        }
+      } else {
+        ref.read(confirmExitProvider(idConfirmExitProvider).notifier).state = 2;
+      }
     }
 
+    bool verifyForm() => (isClient
+        ? registerClientStatus.formStatus == FormStatus.validating
+        : registerCompanyStatus.formStatus == FormStatus.validating);
+
     return BezierBackground(
-      btnBack: true,
-      onPressed: () => Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider),
+      btnBack: !verifyForm(),
+      // btnBack: registerClientStatus.formStatus == FormStatus.invalid,
+      onPressed: () =>
+          Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider),
       child: FadeInUp(
         child: PopScope(
-          canPop: confirmExit != 0,
+          canPop: confirmExit != 0 && !verifyForm(),
+              // registerClientStatus.formStatus == FormStatus.invalid,
           onPopInvoked: (canPop) {
-            Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider);
+            if (!verifyForm())
+            // if (registerClientStatus.formStatus == FormStatus.invalid)
+              Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -85,16 +117,29 @@ class RegisterClientPage extends ConsumerWidget {
                   const SizedBox(
                     height: 50,
                   ),
-                  StepsWidgetGI(
-                    textFinish: AppLocalizations.of(context)!.registrar,
-                    onTapFinish: () {
-                      onSubmit();
-                    },
-                    children: [
-                      widgetStep1(context, ref, registerClientStatus, onSubmit),
-                      widgetStep2(context, ref, registerClientStatus, onSubmit),
-                    ],
-                  ),
+                  verifyForm()
+                      ? ZoomIn(
+                          child: SizedBox(
+                              width: double.infinity,
+                              child: LoadingPage(
+                                  message: AppLocalizations.of(context)!
+                                      .enviandoEsperePlis)),
+                        )
+                      : StepsWidgetGI(
+                          textFinish: AppLocalizations.of(context)!.registrar,
+                          onTapFinish: () {
+                            onSubmit();
+                          },
+                          children: [
+                            widgetStep1(
+                                context, ref, registerClientStatus, onSubmit),
+                            widgetStep2(
+                                context, ref, registerClientStatus, onSubmit),
+                            if (!isClient)
+                              widgetStep3(context, ref, registerCompanyStatus,
+                                  onSubmit),
+                          ],
+                        ),
                   const SizedBox(
                     height: 80,
                   ),
@@ -219,11 +264,13 @@ class RegisterClientPage extends ConsumerWidget {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        minRadius: 50,
-                        maxRadius: 50,
-                        backgroundImage:
-                            AssetImage(ImagesPath.user_placeholder.path),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: registerClientStatus.imagePath == null
+                            ? Image.asset(ImagesPath.user_placeholder.path,
+                                width: 120, height: 120, fit: BoxFit.cover)
+                            : Image.file(File(registerClientStatus.imagePath!),
+                                width: 120, height: 120, fit: BoxFit.cover),
                       ),
                     ),
                   ),
@@ -231,8 +278,10 @@ class RegisterClientPage extends ConsumerWidget {
                     right: 0,
                     bottom: 0,
                     child: FloatingActionButton.small(
-                      onPressed: () {},
-                      child: Icon(Icons.add_a_photo_outlined),
+                      onPressed: () {
+                        selectImagen(ref);
+                      },
+                      child: Icon(Icons.add_photo_alternate_outlined),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
@@ -364,5 +413,76 @@ class RegisterClientPage extends ConsumerWidget {
               )
           ],
         ));
+  }
+
+  Widget widgetStep3(BuildContext context, WidgetRef ref,
+      RegisterFormCompanyStatus registerCompanyStatus, VoidCallback onSubmit) {
+    return CustomCard(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            const SizedBox(height: 8),
+            Text(AppLocalizations.of(context)!.datosCompany,
+                style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            CustomTextFormField(
+              keyboardType: TextInputType.text,
+              label: AppLocalizations.of(context)!.company,
+              initialValue: registerCompanyStatus.company.value,
+              onFieldSubmitted: (_) {
+                if (registerCompanyStatus.formStatus != FormStatus.validating) {
+                  onSubmit();
+                }
+              },
+              onChanged:
+                  ref.read(registerFormCompanyProvider.notifier).companyChanged,
+              errorMessage: registerCompanyStatus.isFormDirty
+                  ? registerCompanyStatus.company.errorMessage(context)
+                  : null,
+            ),
+            CustomTextFormField(
+              keyboardType: TextInputType.number,
+              label: AppLocalizations.of(context)!.codigoCompany,
+              initialValue: registerCompanyStatus.companyCode.value,
+              onFieldSubmitted: (_) {
+                if (registerCompanyStatus.formStatus != FormStatus.validating) {
+                  onSubmit();
+                }
+              },
+              onChanged: ref
+                  .read(registerFormCompanyProvider.notifier)
+                  .companyCodeChanged,
+              errorMessage: registerCompanyStatus.isFormDirty
+                  ? registerCompanyStatus.companyCode.errorMessage(context)
+                  : null,
+            ),
+            CustomDropdownButton<CompanyType>(
+              value: registerCompanyStatus.companyType.value.isEmpty
+                  ? null
+                  : CompanyType(registerCompanyStatus.companyType.value),
+              hint: AppLocalizations.of(context)!.tipoCompany,
+              items: Utils.companyTypes,
+              onChanged: (CompanyType? newValue) {
+                if (newValue != null) {
+                  ref
+                      .read(registerFormCompanyProvider.notifier)
+                      .companyTypeChanged(newValue.titleDrop);
+                }
+              },
+              error: registerCompanyStatus.isFormDirty &&
+                      registerCompanyStatus.companyType.value.isEmpty
+                  ? registerCompanyStatus.companyType.errorMessage(context)
+                  // ? AppLocalizations.of(context)!.validForm_campoRequerido
+                  : null,
+            ),
+          ],
+        ));
+  }
+
+  Future<void> selectImagen(WidgetRef ref) async {
+    XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      ref.read(registerFormClientProvider.notifier).imageSelect(image.path);
+    }
   }
 }

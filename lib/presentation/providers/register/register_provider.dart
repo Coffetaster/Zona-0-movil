@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -27,28 +29,32 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
 
   RegisterState get currentState => state;
 
-  Future<int> registerClient(Client client) async {
+  Future<int> registerClient(Client client, String imagePath) async {
     try {
-      Client? response = await registerRemoteRepository.registerClient(client);
+      Client? response = await registerRemoteRepository.registerClient(client, imagePath);
       state = state.copyWith(
         client: () => response
       );
       return 200;
-    } on CustomDioError catch (e) {
-      throw e;
+    } on CustomDioError catch (_) {
+      rethrow;
     } catch (e) {
       throw CustomDioError(code: 400);
     }
   }
 
-  Future<int> registerCompany(Company company) async {
+  Future<int> registerCompany(Company company, String imagePath) async {
     try {
-      await registerRemoteRepository.registerCompany(company);
+      Company? response = await registerRemoteRepository.registerCompany(company, imagePath);
+      state = state.copyWith(
+        company: () => response
+      );
       return 200;
-    } on CustomDioError catch (e) {
-      return e.code;
-    } catch (e) {}
-    return 400;
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      return 400;
+    }
   }
 }
 
