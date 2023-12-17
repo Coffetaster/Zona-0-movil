@@ -1,5 +1,4 @@
 import 'package:zona0_apk/data/dio/my_dio.dart';
-import 'package:zona0_apk/data/mappers/company_mapper.dart';
 import 'package:zona0_apk/data/mappers/mappers.dart';
 import 'package:zona0_apk/data/models/models.dart';
 import 'package:zona0_apk/domain/entities/entities.dart';
@@ -15,7 +14,7 @@ class AccountsApi extends AccountsRemoteRepository {
   Future<void> login(
       {required String usernameXemail,
       required String password,
-      required Function(String? token, Client? client, Company? company)
+      required Function(String? token, User? user)
           loginCallback}) async {
     try {
       final json = await _myDio.request(
@@ -29,11 +28,10 @@ class AccountsApi extends AccountsRemoteRepository {
       String? token = json["access"];
       Map<String, dynamic>? user = json["user"];
       if (token != null) _myDio.updateToken(token);
-      if(user == null) loginCallback(token, null, null);
-      else if (user['company_name'] != null) {
-        loginCallback(token, null, CompanyMapper.model_to_entity(CompanyModel.fromMap(user)));
+      if(user == null) {
+        loginCallback(token, null);
       } else {
-        loginCallback(token, ClientMapper.model_to_entity(ClientModel.fromMap(user)), null);
+        loginCallback(token, UserMapper.model_to_entity(UserModel.fromMap(user)));
       }
     } on CustomDioError catch (_) {
       rethrow;

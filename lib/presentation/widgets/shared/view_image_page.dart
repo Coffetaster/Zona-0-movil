@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ViewImagePage extends StatelessWidget {
   const ViewImagePage({super.key, required this.url, required this.file, required this.tag, this.isAssets = false});

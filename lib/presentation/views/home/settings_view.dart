@@ -1,9 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:lottie/lottie.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
-import 'package:zona0_apk/config/constants/lotties_path.dart';
+import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
@@ -39,7 +39,14 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                 const SizedBox(
                   height: 10,
                 ),
-                AppTheme.isLogin ? profileBloc() : const NoLoginAlert(),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final accountState = ref.watch(accountProvider);
+                    return accountState.isLogin
+                        ? profileBloc(accountState)
+                        : const NoLoginAlert();
+                  },
+                ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -72,7 +79,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
     );
   }
 
-  Widget profileBloc() => CustomGradientCard(
+  Widget profileBloc(AccountState accountState) => CustomGradientCard(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
@@ -84,21 +91,40 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                   SizedBox(
                     width: 100,
                     height: 100,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.asset(ImagesPath.user_placeholder.path, width: 100, height: 100, fit: BoxFit.cover)),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (accountState.imagePath.isNotEmpty) {
+                          ShowImage.show(
+                              context: context,
+                              foto: accountState.imagePath,
+                              tag: "ImageProfile2-${accountState.id}");
+                        }
+                      },
+                      child: Hero(
+                        tag: "ImageProfile2-${accountState.id}",
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: WidgetsGI.CacheImageNetworkGI(
+                                accountState.imagePath,
+                                placeholderPath:
+                                    ImagesPath.user_placeholder.path,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover)),
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('John Doe',
+                      Text('${accountState.name} ${accountState.last_name}',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           softWrap: false,
                           style: Theme.of(context).textTheme.titleMedium),
-                      Text('johndoe@correo.com',
+                      Text(accountState.username,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           softWrap: false,
@@ -202,7 +228,13 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             title: AppLocalizations.of(context)!.logout,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
             onTap: () {
-              Utils.showSnackbarEnDesarrollo(context);
+              DialogGI.showAlertDialog(context,
+                  title: AppLocalizations.of(context)!.dialog_title_logout,
+                  content: AppLocalizations.of(context)!.dialog_content_logout,
+                  actionOk: () {
+                ref.read(accountProvider.notifier).logout();
+                Future.delayed(Duration(milliseconds: 0), () => context.pop());
+              });
             },
           ),
         ],
@@ -213,7 +245,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
         children: <Widget>[
           SettingOption(
             icon: Icons.delete_outline,
-            title: AppLocalizations.of(context)!.eliminar,
+            title: AppLocalizations.of(context)!.eliminarCuenta,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
             onTap: () {
               Utils.showSnackbarEnDesarrollo(context);

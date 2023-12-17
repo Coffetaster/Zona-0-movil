@@ -19,6 +19,8 @@ class MyShared {
         return (prefs.getDouble(key) as T?) ?? defaultValue;
       case String:
         return (prefs.getString(key) as T?) ?? defaultValue;
+      case const (List<String>):
+        return (prefs.getString(key) as T?) ?? defaultValue;
       default:
         throw UnimplementedError(
             'GET not implemented for type ${T.runtimeType}');
@@ -35,6 +37,8 @@ class MyShared {
         return (await getValue(key, defaultValue)) ?? 0 as T;
       case String:
         return (await getValue(key, defaultValue)) ?? "" as T;
+      case const (List<String>):
+        return (await getValue(key, defaultValue)) ?? [] as T;
       default:
         throw UnimplementedError(
             'GET not implemented for type ${T.runtimeType}');
@@ -46,20 +50,23 @@ class MyShared {
     return await prefs.remove(key);
   }
 
-  Future<void> setKeyValue<T>(String key, T value) async {
+  Future<void> setKeyValue<T>(String key, T? value) async {
     final prefs = await getSharedPrefs();
     switch (T) {
       case int:
-        prefs.setInt(key, value as int);
+        prefs.setInt(key, value == null ? 0 : value as int);
         break;
       case bool:
-        prefs.setBool(key, value as bool);
+        prefs.setBool(key, value == null ? false : value as bool);
         break;
       case double:
-        prefs.setDouble(key, value as double);
+        prefs.setDouble(key, value == null ? 0 : value as double);
         break;
       case String:
-        prefs.setString(key, value as String);
+        prefs.setString(key, value == null ? '' : value as String);
+        break;
+      case const (List<String>):
+        prefs.setStringList(key, value == null ? [] : value as List<String>);
         break;
       default:
         throw UnimplementedError(

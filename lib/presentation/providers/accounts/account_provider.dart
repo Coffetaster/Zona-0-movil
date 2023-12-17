@@ -24,21 +24,28 @@ class AccountNotifier extends StateNotifier<AccountState> {
   AccountNotifier(
       {required this.accountsRemoteRepository, required this.myShared})
       : super(AccountState()) {
-        initAccountData();
-      }
+    initAccountData();
+  }
 
   Future<void> initAccountData() async {
-    String token = await myShared.getValueNoNull<String>(MySharedConstants.token, "");
-    if(token.isNotEmpty){
+    String token =
+        await myShared.getValueNoNull<String>(MySharedConstants.token, "");
+    if (token.isNotEmpty) {
       try {
         await accountsRemoteRepository.tokenVerify(token);
+        String userJson = await myShared.getValueNoNull(MySharedConstants.user_data);
+        state = state.copyWith(
+          token: token,
+          user: () => userJson.isNotEmpty ? User.fromJson(userJson) : null,
+        );
+        return;
       } on CustomDioError catch (_) {
         token = "";
       } catch (e) {
         token = "";
       }
     }
-    state = state.copyWith(token: () => token);
+    state = state.copyWith(token: token);
   }
 
   AccountState get currentState => state;
@@ -51,19 +58,25 @@ class AccountNotifier extends StateNotifier<AccountState> {
       await accountsRemoteRepository.login(
           usernameXemail: usernameXemail,
           password: password,
-          loginCallback: (String? token, Client? client, Company? company) {
-            myShared.setKeyValue(MySharedConstants.token, token ?? '');
-            state = state.copyWith(
-              token: () => token,
-              client: () => client,
-              company: () => company
-            );
+          loginCallback: (String? token, User? user) {
+            myShared.setKeyValue<String>(MySharedConstants.token, token ?? '');
+            myShared.setKeyValue<String>(
+                MySharedConstants.user_data, user?.toJson());
+
+            state = state.copyWith(token: token, user: () => user);
           });
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
       throw CustomDioError(code: 400);
     }
+  }
+
+  Future<void> logout() async {
+    myShared.setKeyValue<String>(MySharedConstants.token, '');
+    myShared.setKeyValue<String>(MySharedConstants.user_data, null);
+
+    state = state.copyWith(token: "", user: () => null);
   }
 
   Future<void> verifyCode(String code) async {
@@ -81,34 +94,70 @@ enum AccountStatus { checking, authenticated, notAuthenticated }
 
 class AccountState {
   final AccountStatus authStatus;
-  final String? token;
-  final Client? client;
-  final Company? company;
+  final String token;
+  final User? user;
   final String errorMessage;
   final int errorCode;
 
-  AccountState({
-    this.authStatus = AccountStatus.checking,
-    this.token,
-    this.client,
-    this.company,
-    this.errorMessage = '',
-    this.errorCode = 400
-  });
+  AccountState(
+      {this.authStatus = AccountStatus.checking,
+      this.token = '',
+      this.user,
+      this.errorMessage = '',
+      this.errorCode = 400});
+
+  bool get isLogin => token.isNotEmpty;
+  String get id {
+    if (!isLogin) return '';
+    if (user != null) {
+      return user!.id.toString();
+    }
+    return '';
+  }
+
+  String get username {
+    if (!isLogin) return '';
+    if (user != null) {
+      return user!.username;
+    }
+    return '';
+  }
+
+  String get imagePath {
+    if (!isLogin) return '';
+    if (user != null) {
+      return user!.image;
+    }
+    return '';
+  }
+
+  String get name {
+    if (!isLogin) return '';
+    if (user != null) {
+      return user!.name;
+    }
+    return '';
+  }
+
+  String get last_name {
+    if (!isLogin) return '';
+    if (user != null) {
+      return user!.last_name;
+    }
+    return '';
+  }
 
   AccountState copyWith({
     AccountStatus? authStatus,
-    ValueGetter<String?>? token,
-    ValueGetter<Client?>? client,
-    ValueGetter<Company?>? company,
+    String? token,
+    ValueGetter<User?>? user,
     String? errorMessage,
     int? errorCode,
   }) {
     return AccountState(
       authStatus: authStatus ?? this.authStatus,
-      token: token?.call() ?? this.token,
-      client: client?.call() ?? this.client,
-      company: company?.call() ?? this.company,
+      token: token ?? this.token,
+      user: user?.call() ?? this.user,
       errorMessage: errorMessage ?? this.errorMessage,
       errorCode: errorCode ?? this.errorCode,
     );

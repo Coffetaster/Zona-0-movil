@@ -1,30 +1,31 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
-import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
+import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
 import 'package:zona0_apk/presentation/widgets/wallet/balance_card.dart';
 import 'package:zona0_apk/presentation/widgets/wallet/wallet.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
-class WalletView extends StatefulWidget {
+class WalletView extends ConsumerStatefulWidget {
   const WalletView({super.key});
 
   @override
-  State<WalletView> createState() => _WalletViewState();
+  ConsumerState<WalletView> createState() => _WalletViewState();
 }
 
-class _WalletViewState extends State<WalletView>
+class _WalletViewState extends ConsumerState<WalletView>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
+    final accountState = ref.watch(accountProvider);
     //*si no login
-    if (!AppTheme.isLogin) {
+    if (!accountState.isLogin) {
       return const NoLoginPage();
     }
 

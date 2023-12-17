@@ -66,4 +66,5 @@ class Client {
       ci: ci ?? this.ci,
     );
   }
+
 }

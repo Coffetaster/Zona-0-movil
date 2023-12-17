@@ -2,7 +2,6 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/main.dart';
-import 'package:zona0_apk/presentation/widgets/categories/category_card.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class CategoriesView extends StatefulWidget {

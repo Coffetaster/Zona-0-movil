@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:zona0_apk/domain/entities/entities.dart';
 
 abstract class RegisterRemoteRepository {

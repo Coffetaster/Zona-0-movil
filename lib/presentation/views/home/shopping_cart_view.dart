@@ -1,28 +1,31 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/main.dart';
+import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
 import 'package:zona0_apk/presentation/widgets/products/product_item_view.dart';
 import 'package:zona0_apk/presentation/widgets/products/products_card_payment.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
-class ShoppingCartView extends StatefulWidget {
+class ShoppingCartView extends ConsumerStatefulWidget {
   const ShoppingCartView({super.key});
 
   @override
-  State<ShoppingCartView> createState() => _ShoppingCartViewState();
+  ConsumerState<ShoppingCartView> createState() => _ShoppingCartViewState();
 }
 
-class _ShoppingCartViewState extends State<ShoppingCartView> with AutomaticKeepAliveClientMixin {
+class _ShoppingCartViewState extends ConsumerState<ShoppingCartView> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
+    final accountState = ref.watch(accountProvider);
     //*si no login
-    if(!AppTheme.isLogin) {
+    if(!accountState.isLogin) {
       return const NoLoginPage();
     }
 

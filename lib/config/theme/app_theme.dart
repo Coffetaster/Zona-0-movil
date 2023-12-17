@@ -90,5 +90,4 @@ class AppTheme {
   );
 
   static double borderRadius = 20;
-  static bool isLogin = true;
 }

@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
+import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
+import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/views/views.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
@@ -74,94 +77,122 @@ class _HomePageState extends State<HomePage>
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: SafeArea(
-          child: Material(
-            color: Colors.transparent,
-            child: NestedScrollView(
-                physics: const BouncingScrollPhysics(),
-                body: Stack(children: [
-                  PageView(
-                    //para evitar que scroll horizontalmente
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: pageController,
-                    children: viewRoutes,
-                  ),
-                  Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: CustomBottomNavigationBar(widget.pageIndex))
-                ]),
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    if (widget.pageIndex < 4)
-                      SliverAppBar(
-                        onStretchTrigger: () async {},
-                        stretchTriggerOffset: 50.0,
-                        expandedHeight: AppTheme.isLogin ? 100 : 60,
-                        flexibleSpace: FlexibleSpaceBar(
-                          background: Center(
-                            child: Container(
-                              height: AppTheme.isLogin ? 100 : 60,
-                              child: Row(
-                                children: <Widget>[
-                                  AppTheme.isLogin
-                                      ? Row(
-                                          children: <Widget>[
-                                            const SizedBox(width: 8),
-                                            GestureDetector(
-                                              onTap: () => context.go(
-                                                  RouterPath.AUTH_LOGIN_PAGE),
-                                              child: SizedBox(
-                                                width: 50,
-                                                height: 50,
-                                                child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(50),
-                                                    child: Image.asset(ImagesPath
-                                                        .user_placeholder.path, width: 50, height: 50, fit: BoxFit.cover)),
+          child: NestedScrollView(
+              physics: const BouncingScrollPhysics(),
+              body: Stack(children: [
+                PageView(
+                  //para evitar que scroll horizontalmente
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: pageController,
+                  children: viewRoutes,
+                ),
+                Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: CustomBottomNavigationBar(widget.pageIndex))
+              ]),
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  if (widget.pageIndex < 4)
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final accountState = ref.watch(accountProvider);
+
+                        return SliverAppBar(
+                          onStretchTrigger: () async {},
+                          stretchTriggerOffset: 50.0,
+                          expandedHeight: accountState.isLogin ? 100 : 60,
+                          flexibleSpace: FlexibleSpaceBar(
+                            background: Center(
+                              child: Container(
+                                height: accountState.isLogin ? 100 : 60,
+                                child: Row(
+                                  children: <Widget>[
+                                    accountState.isLogin
+                                        ? Row(
+                                            children: <Widget>[
+                                              const SizedBox(width: 8),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  if (accountState
+                                                      .imagePath.isNotEmpty) {
+                                                    ShowImage.show(
+                                                        context: context,
+                                                        foto: accountState
+                                                            .imagePath,
+                                                        tag:
+                                                            "ImageProfile1-${accountState.id}");
+                                                  }
+                                                },
+                                                child: SizedBox(
+                                                  width: 50,
+                                                  height: 50,
+                                                  child: Hero(
+                                                    tag: "ImageProfile1-${accountState.id}",
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                50),
+                                                        child: WidgetsGI
+                                                            .CacheImageNetworkGI(
+                                                                accountState
+                                                                    .imagePath,
+                                                                placeholderPath:
+                                                                    ImagesPath
+                                                                        .user_placeholder
+                                                                        .path,
+                                                                width: 50,
+                                                                height: 50,
+                                                                fit: BoxFit
+                                                                    .cover)),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            // Text("Hola, "),
-                                            Text('Hola,\nJohn Doe',
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                softWrap: false,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium),
-                                          ],
-                                        )
-                                      : CustomTextButton(
-                                          label: AppLocalizations.of(context)!
-                                              .autenticar,
-                                          icon: Icons.login_rounded,
-                                          onPressed: () => context
-                                              .go(RouterPath.AUTH_LOGIN_PAGE)),
-                                  const Spacer(),
-                                  const ThemeChangeWidget(),
-                                  if (AppTheme.isLogin)
+                                              const SizedBox(width: 8),
+                                              // Text("Hola, "),
+                                              Text(
+                                                  '${AppLocalizations.of(context)!.bienvenido},\n${accountState.username}',
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium),
+                                            ],
+                                          )
+                                        : CustomTextButton(
+                                            label: AppLocalizations.of(context)!
+                                                .autenticar,
+                                            icon: Icons.login_rounded,
+                                            onPressed: () => context.go(
+                                                RouterPath.AUTH_LOGIN_PAGE)),
+                                    const Spacer(),
+                                    const ThemeChangeWidget(),
+                                    if (accountState.isLogin)
+                                      CustomIconButton(
+                                          icon: Icons.notifications_outlined,
+                                          badgeInfo: "15",
+                                          onPressed: () {
+                                            Utils.showSnackbarEnDesarrollo(
+                                                context);
+                                          }),
                                     CustomIconButton(
-                                        icon: Icons.notifications_outlined,
-                                        badgeInfo: "15",
+                                        icon: Icons.search_outlined,
                                         onPressed: () {
-                                          Utils.showSnackbarEnDesarrollo(
-                                              context);
+                                          context.push(RouterPath.SEARCH_PAGE);
                                         }),
-                                  CustomIconButton(
-                                      icon: Icons.search_outlined,
-                                      onPressed: () {
-                                        context.push(RouterPath.SEARCH_PAGE);
-                                      }),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                  ];
-                }),
-          ),
+                        );
+                      },
+                    ),
+                ];
+              }),
         ),
       ),
     );

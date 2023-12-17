@@ -1,7 +1,4 @@
-import 'dart:typed_data';
-
 import 'package:dio/dio.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:zona0_apk/data/dio/my_dio.dart';
 import 'package:zona0_apk/data/mappers/mappers.dart';
 import 'package:zona0_apk/data/models/models.dart';

@@ -93,6 +93,11 @@
     "compruebeConexion": "Compruebe su conexión",
     "verificar": "Verificar",
     "cuentaVerificada": "Cuenta verificada con éxito",
+    "bienvenido": "Bienvenido",
+    "eliminarCuenta": "Eliminar cuenta",
+
+    "dialog_title_logout": "Cerrar sesión",
+    "dialog_content_logout": "¿Está seguro que quiere cerrar la sesión actual?",
 
     "validForm_campoRequerido": "Campo requerido",
     "validForm_formatoIncorrecto": "Formato incorrecto",
