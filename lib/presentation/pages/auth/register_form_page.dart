@@ -15,6 +15,7 @@ import 'package:zona0_apk/domain/entities/entities.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
+import 'package:zona0_apk/presentation/providers/register/register.dart';
 import 'package:zona0_apk/presentation/providers/register/register_form_company_provider.dart';
 import 'package:zona0_apk/presentation/widgets/backgrounds/bezier_background.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
@@ -101,7 +102,7 @@ class RegisterFormPage extends ConsumerWidget {
           canPop: confirmExit != 0 && !verifyForm(),
               // registerClientStatus.formStatus == FormStatus.invalid,
           onPopInvoked: (canPop) {
-            if (!verifyForm())
+            if (!verifyForm() && confirmExit == 0)
             // if (registerClientStatus.formStatus == FormStatus.invalid)
               Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider);
           },

@@ -53,7 +53,7 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
-      return 400;
+      throw CustomDioError(code: 400);
     }
   }
 }

@@ -1,28 +1,69 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
+import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/main.dart';
+import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/widgets/backgrounds/bezier_background.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
 import 'package:zona0_apk/presentation/widgets/inputs/custom_text_form_field.dart';
+import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
     final color = Theme.of(context).colorScheme;
+
+    //* accountFormLoginProvider
+    final accountFormLoginStatus = ref.watch(accountFormLoginProvider);
+
+    void onSubmit() async {
+      final code = await ref.read(accountFormLoginProvider.notifier).onSubmit();
+      if (code != "200") {
+        switch (code) {
+          case "412":
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.error_outline,
+                text: AppLocalizations.of(context)!.camposConError);
+            break;
+          case "498":
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.error_outline,
+                text: AppLocalizations.of(context)!.compruebeConexion);
+            break;
+          default:
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.error_outline,
+                text: code.isEmpty
+                    ? AppLocalizations.of(context)!.haOcurridoError
+                    : code);
+            print("$code");
+            if(code == "- E-mail no verificado."){
+              context.go(RouterPath.AUTH_VERIFY_CODE_PAGE);
+            }
+        }
+      } else {
+        context.go(RouterPath.HOME_PAGE);
+      }
+    }
+
     return PopScope(
       canPop: false,
-      onPopInvoked: (canPop){
-        context.go(RouterPath.HOME_PAGE);
+      onPopInvoked: (canPop) {
+        if (accountFormLoginStatus.formStatus == FormStatus.invalid) {
+          context.go(RouterPath.HOME_PAGE);
+        }
       },
       child: BezierBackground(
-        btnBack: true,
+        btnBack: accountFormLoginStatus.formStatus != FormStatus.validating,
         onPressed: () => context.go(RouterPath.HOME_PAGE),
         child: FadeInUp(
           child: Container(
@@ -36,35 +77,83 @@ class LoginPage extends StatelessWidget {
                   _title(context),
                   const SizedBox(height: 50),
                   CustomTextFormField(
-                    keyboardType: TextInputType.emailAddress,
+                    enabled: accountFormLoginStatus.formStatus != FormStatus.validating,
+                    keyboardType: TextInputType.text,
                     hint: AppLocalizations.of(context)!.correoEjemplo,
                     label: AppLocalizations.of(context)!.usuarioCorreo,
+                    initialValue: accountFormLoginStatus.usernameXemail.value,
+                    onFieldSubmitted: (_) {
+                      if (accountFormLoginStatus.formStatus !=
+                          FormStatus.validating) {
+                        onSubmit();
+                      }
+                    },
+                    onChanged: ref
+                        .read(accountFormLoginProvider.notifier)
+                        .usernameXemailChanged,
+                    errorMessage: accountFormLoginStatus.isFormDirty
+                        ? accountFormLoginStatus.usernameXemail
+                            .errorMessage(context)
+                        : null,
                   ),
                   CustomTextFormField(
+                    enabled: accountFormLoginStatus.formStatus != FormStatus.validating,
                     keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
+                    obscureText: accountFormLoginStatus.isObscurePassword,
                     hint: "* * * * * *",
+                    suffix: CustomIconButton(
+                        onPressed: ref
+                            .read(accountFormLoginProvider.notifier)
+                            .toggleObscurePassword,
+                        icon: accountFormLoginStatus.isObscurePassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined),
                     label: AppLocalizations.of(context)!.password,
+                    initialValue: accountFormLoginStatus.password.value,
+                    onFieldSubmitted: (_) {
+                      if (accountFormLoginStatus.formStatus !=
+                          FormStatus.validating) {
+                        onSubmit();
+                      }
+                    },
+                    onChanged: ref
+                        .read(accountFormLoginProvider.notifier)
+                        .passwordChanged,
+                    errorMessage: accountFormLoginStatus.isFormDirty
+                        ? accountFormLoginStatus.password.errorMessage(context)
+                        : null,
                   ),
                   // _emailPasswordWidget(),
                   const SizedBox(height: 20),
-                  CustomGradientButton(
-                      label: AppLocalizations.of(context)!.autenticar,
-                      onPressed: () {
-                        AppTheme.isLogin = !AppTheme.isLogin;
-                        context.go(RouterPath.HOME_PAGE);
-                      }),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    alignment: Alignment.centerRight,
-                    child: CustomTextButton(
-                        label: AppLocalizations.of(context)!.forgetPassword,
-                        onPressed: () {
-                          Utils.showSnackbarEnDesarrollo(context);
-                        }),
-                  ),
+                  accountFormLoginStatus.formStatus != FormStatus.validating
+                      ? CustomGradientButton(
+                          label: AppLocalizations.of(context)!.autenticar,
+                          onPressed: () {
+                            onSubmit();
+                          })
+                      : ZoomIn(
+                          child: SizedBox(
+                              width: double.infinity,
+                              child: LoadingPage(
+                                  message: AppLocalizations.of(context)!
+                                      .enviandoEsperePlis)),
+                        ),
+                  if (accountFormLoginStatus.formStatus !=
+                      FormStatus.validating)
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      alignment: Alignment.centerRight,
+                      child: CustomTextButton(
+                          label: AppLocalizations.of(context)!.forgetPassword,
+                          onPressed: () {
+                            // context.push(RouterPath.AUTH_VERIFY_CODE_PAGE);
+                            Utils.showSnackbarEnDesarrollo(context);
+                          }),
+                    ),
                   SizedBox(height: size.height * .055),
-                  _createAccountLabel(context, color.primary),
+                  if (accountFormLoginStatus.formStatus !=
+                      FormStatus.validating)
+                    _createAccountLabel(context, color.primary),
                 ],
               ),
             ),

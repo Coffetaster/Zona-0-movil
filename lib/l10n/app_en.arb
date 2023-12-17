@@ -91,6 +91,8 @@
     "debeSeleccionarImagen": "Debe seleccionar una imagen",
     "enviandoEsperePlis": "Enviando\nPor favor, espere",
     "compruebeConexion": "Compruebe su conexión",
+    "verificar": "Verificar",
+    "cuentaVerificada": "Cuenta verificada con éxito",
 
     "validForm_campoRequerido": "Campo requerido",
     "validForm_formatoIncorrecto": "Formato incorrecto",

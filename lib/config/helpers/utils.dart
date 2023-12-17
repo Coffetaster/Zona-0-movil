@@ -27,6 +27,19 @@ class Utils {
     return cad;
   }
 
+  static String getErrorsFromXnon_field_errors(dynamic data) {
+    if(data == null) return "";
+    Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
+    String cad = "";
+    if(json["non_field_errors"] != null){
+      List<String>.from(json["non_field_errors"]).forEach((element) {
+          if (cad.isNotEmpty) cad += "\n";
+          cad += "- $element";
+        });
+    }
+    return cad;
+  }
+
   static void showDialogConfirmSalir(
       BuildContext context, WidgetRef ref, String idConfirmExitProvider) {
     DialogGI.showAlertDialog(context,
