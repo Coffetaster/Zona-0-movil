@@ -42,10 +42,10 @@ class AccountFormVerifyCodeNotifier
         return "412";
       }
 
-      await _accountNotifier.verifyCode(state.code.realValue);
+      final code = await _accountNotifier.verifyCode(state.code.realValue);
 
       state = state.copyWith(formStatus: FormStatus.invalid);
-      return "200";
+      return code.toString();
     } on CustomDioError catch (_) {
       state = state.copyWith(formStatus: FormStatus.invalid);
       // if (e.data == null) return "";

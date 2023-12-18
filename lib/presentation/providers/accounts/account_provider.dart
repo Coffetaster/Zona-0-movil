@@ -7,54 +7,68 @@ import 'package:zona0_apk/domain/repositories/remote/usecases/accounts_remote_re
 import 'package:zona0_apk/domain/shared_preferences/my_shared.dart';
 import 'package:zona0_apk/presentation/providers/data_providers/api_provider.dart';
 import 'package:zona0_apk/presentation/providers/data_providers/my_shared_provider.dart';
+import 'package:zona0_apk/presentation/providers/providers.dart';
 
 final accountProvider =
     StateNotifierProvider<AccountNotifier, AccountState>((ref) {
   final apiConsumer = ref.read(apiProvider);
   final myShared = ref.read(mySharedProvider);
+  final connectivityStatusNotifier =
+      ref.watch(connectivityStatusProvider.notifier);
 
   return AccountNotifier(
-      accountsRemoteRepository: apiConsumer.accounts, myShared: myShared);
+      accountsRemoteRepository: apiConsumer.accounts,
+      myShared: myShared,
+      connectivityStatusNotifier: connectivityStatusNotifier);
 });
 
 class AccountNotifier extends StateNotifier<AccountState> {
   final MyShared myShared;
   final AccountsRemoteRepository accountsRemoteRepository;
+  final ConnectivityStatusNotifier connectivityStatusNotifier;
 
   AccountNotifier(
-      {required this.accountsRemoteRepository, required this.myShared})
+      {required this.accountsRemoteRepository,
+      required this.myShared,
+      required this.connectivityStatusNotifier})
       : super(AccountState()) {
-    initAccountData();
+    connectivityStatusNotifier.addListener((connectivityStatusState) {
+      if (connectivityStatusState.isConnected) {
+        _verifyToken();
+      }
+    });
   }
 
-  Future<void> initAccountData() async {
-    String token =
+  Future<void> _verifyToken() async {
+    if (state.isLogin) return;
+    final token =
         await myShared.getValueNoNull<String>(MySharedConstants.token, "");
     if (token.isNotEmpty) {
       try {
         await accountsRemoteRepository.tokenVerify(token);
-        String userJson = await myShared.getValueNoNull(MySharedConstants.user_data);
+        String userJson =
+            await myShared.getValueNoNull(MySharedConstants.user_data);
         state = state.copyWith(
           token: token,
           user: () => userJson.isNotEmpty ? User.fromJson(userJson) : null,
         );
         return;
       } on CustomDioError catch (_) {
-        token = "";
       } catch (e) {
-        token = "";
       }
     }
-    state = state.copyWith(token: token);
   }
 
   AccountState get currentState => state;
 
-  Future<void> login({
+  Future<int> login({
     required String usernameXemail,
     required String password,
   }) async {
     try {
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
       await accountsRemoteRepository.login(
           usernameXemail: usernameXemail,
           password: password,
@@ -65,6 +79,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
 
             state = state.copyWith(token: token, user: () => user);
           });
+      return 200;
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -75,13 +90,16 @@ class AccountNotifier extends StateNotifier<AccountState> {
   Future<void> logout() async {
     myShared.setKeyValue<String>(MySharedConstants.token, '');
     myShared.setKeyValue<String>(MySharedConstants.user_data, null);
-
     state = state.copyWith(token: "", user: () => null);
   }
 
-  Future<void> verifyCode(String code) async {
+  Future<int> verifyCode(String code) async {
     try {
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
       await accountsRemoteRepository.emailVerifyToken(code);
+      return 200;
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {

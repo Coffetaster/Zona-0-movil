@@ -11,3 +11,4 @@ export 'slideshows/slideshows.dart';
 export 'texts/texts.dart';
 export 'users/users.dart';
 export 'wallet/wallet.dart';
+export 'loadings/loadings.dart';

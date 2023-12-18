@@ -143,11 +143,6 @@ class RegisterFormClientNotifier
         return "499";
       }
 
-      // if (await Utils.checkedConection()) {
-      //   state = state.copyWith(formStatus: FormStatus.invalid);
-      //   return "498";
-      // }
-
       final code = await registerNotifier.registerClient(
           createClient(), state.imagePath!);
       state = state.copyWith(formStatus: FormStatus.invalid);

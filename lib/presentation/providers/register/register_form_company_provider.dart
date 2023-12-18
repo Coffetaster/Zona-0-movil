@@ -87,7 +87,6 @@ class RegisterFormCompanyNotifier
       state = state.copyWith(formStatus: FormStatus.invalid);
       return Utils.getErrorsFromRegister(e.data);
     } catch (e) {
-      print(e.toString());
       state = state.copyWith(formStatus: FormStatus.invalid);
       return "";
     }

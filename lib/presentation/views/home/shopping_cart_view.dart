@@ -58,9 +58,7 @@ class _ShoppingCartViewState extends ConsumerState<ShoppingCartView> with Automa
                   }, label: AppLocalizations.of(context)!.continuar))
                 ],
               ),
-              const SizedBox(
-                height: 80,
-              )
+              // const SizedBox(height: 80)
             ],
           ),
         ),

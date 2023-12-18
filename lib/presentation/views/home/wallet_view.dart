@@ -60,9 +60,7 @@ class _WalletViewState extends ConsumerState<WalletView>
                         onPressed: () {
                           Utils.showSnackbarEnDesarrollo(context);
                         })),
-                const SizedBox(
-                  height: 80,
-                ),
+                // const SizedBox(height: 80),
               ],
             )),
       ),

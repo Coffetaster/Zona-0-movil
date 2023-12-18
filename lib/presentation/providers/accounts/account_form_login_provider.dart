@@ -57,12 +57,12 @@ class AccountFormLoginNotifier extends StateNotifier<AccountFormLoginState> {
         return "412";
       }
 
-      await _accountNotifier.login(
+      int code = await _accountNotifier.login(
           usernameXemail: state.usernameXemail.realValue,
           password: state.password.realValue);
 
       state = state.copyWith(formStatus: FormStatus.invalid);
-      return "200";
+      return code.toString();
     } on CustomDioError catch (e) {
       state = state.copyWith(formStatus: FormStatus.invalid);
       return Utils.getErrorsFromXnon_field_errors(e.data);

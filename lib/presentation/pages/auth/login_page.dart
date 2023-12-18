@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
@@ -44,8 +45,7 @@ class LoginPage extends ConsumerWidget {
                 text: code.isEmpty
                     ? AppLocalizations.of(context)!.haOcurridoError
                     : code);
-            print("$code");
-            if(code == "- E-mail no verificado."){
+            if (code.toLowerCase().contains("E-mail no verificado".toLowerCase())) {
               context.go(RouterPath.AUTH_VERIFY_CODE_PAGE);
             }
         }
@@ -76,7 +76,8 @@ class LoginPage extends ConsumerWidget {
                   _title(context),
                   const SizedBox(height: 50),
                   CustomTextFormField(
-                    enabled: accountFormLoginStatus.formStatus != FormStatus.validating,
+                    enabled: accountFormLoginStatus.formStatus !=
+                        FormStatus.validating,
                     keyboardType: TextInputType.text,
                     hint: AppLocalizations.of(context)!.correoEjemplo,
                     label: AppLocalizations.of(context)!.usuarioCorreo,
@@ -96,7 +97,8 @@ class LoginPage extends ConsumerWidget {
                         : null,
                   ),
                   CustomTextFormField(
-                    enabled: accountFormLoginStatus.formStatus != FormStatus.validating,
+                    enabled: accountFormLoginStatus.formStatus !=
+                        FormStatus.validating,
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: accountFormLoginStatus.isObscurePassword,
                     hint: "* * * * * *",
@@ -131,11 +133,9 @@ class LoginPage extends ConsumerWidget {
                             onSubmit();
                           })
                       : ZoomIn(
-                          child: SizedBox(
+                          child: const SizedBox(
                               width: double.infinity,
-                              child: LoadingPage(
-                                  message: AppLocalizations.of(context)!
-                                      .enviandoEsperePlis)),
+                              child: LoadingLogo()),
                         ),
                   if (accountFormLoginStatus.formStatus !=
                       FormStatus.validating)
@@ -163,13 +163,20 @@ class LoginPage extends ConsumerWidget {
   }
 
   Widget _title(BuildContext context) {
-    return Text(
-      AppLocalizations.of(context)!.nameApp,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-            fontSize: 30,
-            fontWeight: FontWeight.w700,
-          ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(ImagesPath.logo.path,
+            height: 50, width: 50, fit: BoxFit.fill),
+        Text(
+          AppLocalizations.of(context)!.nameApp.toUpperCase(),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+              ),
+        ),
+      ],
     );
     // return RichText(
     //   textAlign: TextAlign.center,
@@ -203,7 +210,7 @@ class LoginPage extends ConsumerWidget {
         children: <Widget>[
           Text(
             AppLocalizations.of(context)!.noTienesCuenta,
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           ),
           CustomTextButton(
               label: AppLocalizations.of(context)!.registrar,

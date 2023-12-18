@@ -72,11 +72,10 @@ class AccountsApi extends AccountsRemoteRepository {
   @override
   Future<dynamic> tokenVerify(String token) async {
     try {
-      final json = await _myDio.request(
+      await _myDio.request(
           path: '$localUrl/token/verify/',
           requestType: RequestType.POST,
           data: {'token': token});
-      print(json.toString());
       _myDio.updateToken(token);
     } on CustomDioError catch (_) {
       rethrow;

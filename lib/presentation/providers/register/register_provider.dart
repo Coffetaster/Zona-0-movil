@@ -7,32 +7,42 @@ import 'package:zona0_apk/domain/repositories/remote/usecases/register_remote_re
 import 'package:zona0_apk/domain/shared_preferences/my_shared.dart';
 import 'package:zona0_apk/presentation/providers/data_providers/api_provider.dart';
 import 'package:zona0_apk/presentation/providers/data_providers/my_shared_provider.dart';
+import 'package:zona0_apk/presentation/providers/providers.dart';
 
 final registerProvider =
     StateNotifierProvider<RegisterNotifier, RegisterState>((ref) {
   final apiConsumer = ref.read(apiProvider);
   final myShared = ref.read(mySharedProvider);
+  final connectivityStatusNotifier =
+      ref.watch(connectivityStatusProvider.notifier);
 
   return RegisterNotifier(
-      registerRemoteRepository: apiConsumer.register, myShared: myShared);
+      registerRemoteRepository: apiConsumer.register,
+      myShared: myShared,
+      connectivityStatusNotifier: connectivityStatusNotifier);
 });
 
 class RegisterNotifier extends StateNotifier<RegisterState> {
   final MyShared myShared;
   final RegisterRemoteRepository registerRemoteRepository;
+  final ConnectivityStatusNotifier connectivityStatusNotifier;
 
   RegisterNotifier(
-      {required this.registerRemoteRepository, required this.myShared})
+      {required this.registerRemoteRepository,
+      required this.myShared,
+      required this.connectivityStatusNotifier})
       : super(RegisterState()) {}
 
   RegisterState get currentState => state;
 
   Future<int> registerClient(Client client, String imagePath) async {
     try {
-      Client? response = await registerRemoteRepository.registerClient(client, imagePath);
-      state = state.copyWith(
-        client: () => response
-      );
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
+      Client? response =
+          await registerRemoteRepository.registerClient(client, imagePath);
+      state = state.copyWith(client: () => response);
       return 200;
     } on CustomDioError catch (_) {
       rethrow;
@@ -43,10 +53,12 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
 
   Future<int> registerCompany(Company company, String imagePath) async {
     try {
-      Company? response = await registerRemoteRepository.registerCompany(company, imagePath);
-      state = state.copyWith(
-        company: () => response
-      );
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
+      Company? response =
+          await registerRemoteRepository.registerCompany(company, imagePath);
+      state = state.copyWith(company: () => response);
       return 200;
     } on CustomDioError catch (_) {
       rethrow;
@@ -62,12 +74,11 @@ class RegisterState {
   final String errorMessage;
   final int errorCode;
 
-  RegisterState({
-      this.client,
+  RegisterState(
+      {this.client,
       this.company,
       this.errorMessage = '',
       this.errorCode = 400});
-
 
   RegisterState copyWith({
     ValueGetter<Client?>? client,

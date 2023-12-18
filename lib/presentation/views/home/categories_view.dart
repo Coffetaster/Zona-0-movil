@@ -33,9 +33,7 @@ class _CategoriesViewState extends State<CategoriesView> with AutomaticKeepAlive
                 height: MediaQuery.of(context).size.height * 1.2,
                 child: CategoriesMasonry(categories: categories)),
               // ...categories.map((e) => CategoryCard(category: e)),
-              const SizedBox(
-                height: 80,
-              )
+              // const SizedBox(height: 80)
             ],
           ),
         ),

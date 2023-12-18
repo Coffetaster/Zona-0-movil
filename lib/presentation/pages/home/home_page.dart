@@ -5,6 +5,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
+import 'package:zona0_apk/config/constants/providers_family.dart';
 import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
@@ -14,7 +15,7 @@ import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/views/views.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({
     super.key,
     required this.pageIndex,
@@ -23,12 +24,13 @@ class HomePage extends StatefulWidget {
   final int pageIndex;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
+class _HomePageState extends ConsumerState<HomePage>
     with AutomaticKeepAliveClientMixin {
   late PageController pageController;
+  final scrollController = ScrollController();
 
   final viewRoutes = const <Widget>[
     HomeView(),
@@ -42,11 +44,19 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     pageController = PageController(keepPage: true);
+
+    scrollController.addListener(() {
+      ref
+          .read(scrollControllerProvider(ProvidersFamily.scroll_controller_home)
+              .notifier)
+          .uptadeScroll(scrollController.position.pixels);
+    });
   }
 
   @override
   void dispose() {
     pageController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -56,8 +66,9 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    //WillPopScope
-    //para controlar cuando se de atras
+
+    final scrollControllerState = ref.watch(
+        scrollControllerProvider(ProvidersFamily.scroll_controller_home));
 
     Future.delayed(const Duration(milliseconds: 0), () {
       if (pageController.hasClients) {
@@ -69,6 +80,8 @@ class _HomePageState extends State<HomePage>
       }
     });
 
+    final colorPrimary = Theme.of(context).colorScheme.primary;
+
     return PopScope(
       canPop: widget.pageIndex == 0,
       onPopInvoked: (canPop) {
@@ -78,6 +91,7 @@ class _HomePageState extends State<HomePage>
         appBar: AppBar(toolbarHeight: 0),
         body: SafeArea(
           child: NestedScrollView(
+              controller: scrollController,
               physics: const BouncingScrollPhysics(),
               body: Stack(children: [
                 PageView(
@@ -86,103 +100,208 @@ class _HomePageState extends State<HomePage>
                   controller: pageController,
                   children: viewRoutes,
                 ),
-                Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: CustomBottomNavigationBar(widget.pageIndex))
+                if (scrollControllerState.isOpen)
+                  Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: CustomBottomNavigationBar(widget.pageIndex))
               ]),
               headerSliverBuilder: (context, innerBoxIsScrolled) {
+                if (innerBoxIsScrolled ==
+                        ref
+                            .read(scrollControllerProvider(
+                                ProvidersFamily.scroll_controller_home))
+                            .isOpen &&
+                    widget.pageIndex < 4) {
+                  Future.delayed(Duration.zero, () {
+                    ref
+                        .read(scrollControllerProvider(
+                                ProvidersFamily.scroll_controller_home)
+                            .notifier)
+                        .updateIsOpen(!innerBoxIsScrolled);
+                  });
+                }
                 return [
                   if (widget.pageIndex < 4)
                     Consumer(
                       builder: (context, ref, child) {
                         final accountState = ref.watch(accountProvider);
-
                         return SliverAppBar(
-                          onStretchTrigger: () async {},
-                          stretchTriggerOffset: 50.0,
-                          expandedHeight: accountState.isLogin ? 100 : 60,
+                          expandedHeight: widget.pageIndex == 0 ? 160 : 100,
+                          pinned: widget.pageIndex == 0,
+                          snap: widget.pageIndex != 0,
+                          floating: widget.pageIndex != 0,
+                          bottom: widget.pageIndex == 0
+                              ? PreferredSize(
+                                  preferredSize: Size.fromHeight(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 16),
+                                    child: Hero(
+                                      tag: "text_form_search_productos",
+                                      child: Container(
+                                          clipBehavior: Clip.hardEdge,
+                                          width: double.infinity,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            border: Border.all(
+                                              color: colorPrimary,
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                                AppTheme.borderRadius),
+                                          ),
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: InkWell(
+                                              onTap: () => context
+                                                  .push(RouterPath.SEARCH_PAGE),
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(width: 8),
+                                                  Icon(Icons.search_outlined,
+                                                      color: colorPrimary),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .buscarProductos,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )),
+                                    ),
+                                  ),
+                                )
+                              : null,
                           flexibleSpace: FlexibleSpaceBar(
                             background: Center(
                               child: Container(
-                                height: accountState.isLogin ? 100 : 60,
-                                child: Row(
-                                  children: <Widget>[
-                                    accountState.isLogin
-                                        ? Row(
-                                            children: <Widget>[
-                                              const SizedBox(width: 8),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  if (accountState
-                                                      .imagePath.isNotEmpty) {
-                                                    ShowImage.show(
-                                                        context: context,
-                                                        foto: accountState
-                                                            .imagePath,
-                                                        tag:
-                                                            "ImageProfile1-${accountState.id}");
-                                                  }
-                                                },
-                                                child: SizedBox(
-                                                  width: 50,
+                                height: widget.pageIndex == 0
+                                    ? 160
+                                    : 100,
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 100,
+                                      child: Row(
+                                        children: <Widget>[
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.asset(ImagesPath.logo.path,
                                                   height: 50,
-                                                  child: Hero(
-                                                    tag: "ImageProfile1-${accountState.id}",
-                                                    child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                50),
-                                                        child: WidgetsGI
-                                                            .CacheImageNetworkGI(
-                                                                accountState
-                                                                    .imagePath,
-                                                                placeholderPath:
-                                                                    ImagesPath
-                                                                        .user_placeholder
-                                                                        .path,
-                                                                width: 50,
-                                                                height: 50,
-                                                                fit: BoxFit
-                                                                    .cover)),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              // Text("Hola, "),
+                                                  width: 50,
+                                                  fit: BoxFit.fill),
                                               Text(
-                                                  '${AppLocalizations.of(context)!.bienvenido},\n${accountState.username}',
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  softWrap: false,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium),
+                                                AppLocalizations.of(context)!
+                                                    .nameApp
+                                                    .toUpperCase(),
+                                                textAlign: TextAlign.center,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge!
+                                                    .copyWith(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                              ),
                                             ],
-                                          )
-                                        : CustomTextButton(
-                                            label: AppLocalizations.of(context)!
-                                                .autenticar,
-                                            icon: Icons.login_rounded,
-                                            onPressed: () => context.go(
-                                                RouterPath.AUTH_LOGIN_PAGE)),
-                                    const Spacer(),
-                                    const ThemeChangeWidget(),
-                                    if (accountState.isLogin)
-                                      CustomIconButton(
-                                          icon: Icons.notifications_outlined,
-                                          badgeInfo: "15",
-                                          onPressed: () {
-                                            Utils.showSnackbarEnDesarrollo(
-                                                context);
-                                          }),
-                                    CustomIconButton(
-                                        icon: Icons.search_outlined,
-                                        onPressed: () {
-                                          context.push(RouterPath.SEARCH_PAGE);
-                                        }),
+                                          ),
+                                          const Spacer(),
+                                          accountState.isLogin
+                                              ? Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Text(
+                                                        '${accountState.username}',
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        softWrap: false,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .titleMedium),
+                                                    const SizedBox(width: 8),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        if (accountState
+                                                            .imagePath
+                                                            .isNotEmpty) {
+                                                          ShowImage.show(
+                                                              context: context,
+                                                              foto: accountState
+                                                                  .imagePath,
+                                                              tag:
+                                                                  "ImageProfile1-${accountState.id}");
+                                                        }
+                                                      },
+                                                      child: SizedBox(
+                                                        width: 30,
+                                                        height: 30,
+                                                        child: Hero(
+                                                          tag:
+                                                              "ImageProfile1-${accountState.id}",
+                                                          child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50),
+                                                              child: WidgetsGI.CacheImageNetworkGI(
+                                                                  accountState
+                                                                      .imagePath,
+                                                                  placeholderPath:
+                                                                      ImagesPath
+                                                                          .user_placeholder
+                                                                          .path,
+                                                                  width: 30,
+                                                                  height: 30,
+                                                                  fit: BoxFit
+                                                                      .cover)),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                  ],
+                                                )
+                                              : CustomTextButton(
+                                                  label: AppLocalizations.of(
+                                                          context)!
+                                                      .autenticar,
+                                                  icon: Icons.login_rounded,
+                                                  onPressed: () => context.go(
+                                                      RouterPath
+                                                          .AUTH_LOGIN_PAGE)),
+                                          // const ThemeChangeWidget(),
+                                          if (accountState.isLogin)
+                                            CustomIconButton(
+                                                icon: Icons
+                                                    .notifications_outlined,
+                                                badgeInfo: "15",
+                                                onPressed: () {
+                                                  Utils
+                                                      .showSnackbarEnDesarrollo(
+                                                          context);
+                                                }),
+                                          const SizedBox(width: 8),
+                                          // CustomIconButton(
+                                          //     icon: Icons.search_outlined,
+                                          //     onPressed: () {
+                                          //       context.push(RouterPath.SEARCH_PAGE);
+                                          //     }),
+                                        ],
+                                      ),
+                                    ),
+                                    if (widget.pageIndex == 0)
+                                      const SizedBox(height: 60.0)
                                   ],
                                 ),
                               ),
@@ -196,33 +315,6 @@ class _HomePageState extends State<HomePage>
         ),
       ),
     );
-    // return PopScope(
-    //   canPop: widget.pageIndex == 0,
-    //   onPopInvoked: (canPop){
-    //     if(!canPop) context.go(RouterPath.HOME_PAGE);
-    //   },
-    //   child: Scaffold(
-    //     appBar: AppBar(toolbarHeight: 0),
-    //     body: SafeArea(
-    //       child: Material(
-    //         color: Colors.transparent,
-    //         child: Stack(children: [
-    //           PageView(
-    //             //para evitar que scroll horizontalmente
-    //             physics: const NeverScrollableScrollPhysics(),
-    //             controller: pageController,
-    //             children: viewRoutes,
-    //           ),
-    //           Positioned(
-    //             left: 0,
-    //             right: 0,
-    //             bottom: 0,
-    //             child: CustomBottomNavigationBar(widget.pageIndex))
-    //         ]),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget CustomBottomNavigationBar(int currentIndex) {
