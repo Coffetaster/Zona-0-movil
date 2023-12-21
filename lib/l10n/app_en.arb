@@ -109,6 +109,8 @@
     "reviseCorreo": "Revise su correo, por favor",
     "idSolicitud": "Id de la solicitud",
     "passwordRestablecidaExito": "La contraseña ha sido restablecida con éxito",
+    "passwordConfirm": "Confirmar contraseña",
+    "debeCoincidirPassword": "Debe coincidir con la contraseña",
 
     "dialog_title_logout": "Cerrar sesión",
     "dialog_content_logout": "¿Está seguro que quiere cerrar la sesión actual?",
@@ -116,5 +118,6 @@
     "validForm_campoRequerido": "Campo requerido",
     "validForm_formatoIncorrecto": "Formato incorrecto",
     "validForm_longitud": "Debe poseer mínimo {cant} caracteres",
+    "validForm_invalid_char": "Caracteres no válidos",
     "validForm_confirmPassword": "Debe coincidir con la contraseña"
 }

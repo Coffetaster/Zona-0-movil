@@ -5,7 +5,7 @@ import 'package:zona0_apk/main.dart';
 import 'inputs.dart';
 
 // Define input validation errors
-enum PasswordErrorInput { empty, length, format, confirm, personalValidation }
+enum PasswordErrorInput { empty, length, format, confirm, invalid_char, personalValidation }
 
 // Extend FormzInput and provide the input type and error type.
 class PasswordInput extends FormzInput<String, PasswordErrorInput> {
@@ -44,6 +44,7 @@ class PasswordInput extends FormzInput<String, PasswordErrorInput> {
     if ( displayError == PasswordErrorInput.format ) return AppLocalizations.of(context)!.validForm_formatoIncorrecto;
     if ( displayError == PasswordErrorInput.length ) return AppLocalizations.of(context)!.validForm_longitud(minLength);
     if ( displayError == PasswordErrorInput.confirm ) return AppLocalizations.of(context)!.validForm_confirmPassword;
+    if ( displayError == PasswordErrorInput.invalid_char ) return AppLocalizations.of(context)!.validForm_invalid_char;
     if (displayError == PasswordErrorInput.personalValidation)
       return personalValidation!(value).message ?? "Error";
     return null;
@@ -59,6 +60,7 @@ class PasswordInput extends FormzInput<String, PasswordErrorInput> {
     }
     if(value.length < minLength) return PasswordErrorInput.length;
     if(!passwordRegExp.hasMatch(value) && beStrict) return PasswordErrorInput.format;
+    if(value.contains("{") || value.contains("}")) return PasswordErrorInput.invalid_char;
     if(passwordConfirm != null && value != passwordConfirm) return PasswordErrorInput.confirm;
     if (personalValidation != null && !personalValidation!(value).isValid)
       return PasswordErrorInput.personalValidation;

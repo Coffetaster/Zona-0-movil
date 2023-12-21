@@ -133,7 +133,7 @@ class ChangePasswordPage extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: LinearProgressIndicator(
                           value: changePasswordFormStatus.percentSecurePassword,
-                          minHeight: 20,
+                          minHeight: 5,
                           borderRadius: BorderRadius.all(
                               Radius.circular(AppTheme.borderRadius)),
                           semanticsLabel:
@@ -194,33 +194,51 @@ class ChangePasswordPage extends ConsumerWidget {
                                       .passwordSecureReq3)
                                 ],
                               ),
-                              Row(
-                                children: <Widget>[
-                                  Radio<int>(
-                                      value: changePasswordFormStatus
-                                              .passwordRequired4
-                                          ? 3
-                                          : -1,
-                                      groupValue: 3,
-                                      onChanged: (_) {},
-                                      toggleable: false),
-                                  Text(AppLocalizations.of(context)!
-                                      .passwordSecureReq4)
-                                ],
-                              ),
                             ],
                           ),
-                        )
+                        ),
+                      const Divider(indent: 16, endIndent: 16, height: 16),
+                      CustomTextFormField(
+                        enabled: changePasswordFormStatus.formStatus !=
+                            FormStatus.validating,
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText:
+                            changePasswordFormStatus.isObscureConfirmPassword,
+                        hint: "* * * * * *",
+                        suffix: CustomIconButton(
+                            onPressed: ref
+                                .read(changePasswordFormProvider.notifier)
+                                .toggleObscureConfirmPassword,
+                            icon: changePasswordFormStatus.isObscureConfirmPassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined),
+                        label: AppLocalizations.of(context)!.passwordConfirm,
+                        initialValue:
+                            changePasswordFormStatus.confirmPassword.value,
+                        onFieldSubmitted: (_) {
+                          if (changePasswordFormStatus.formStatus !=
+                              FormStatus.validating) {
+                            onSubmit();
+                          }
+                        },
+                        onChanged: ref
+                            .read(changePasswordFormProvider.notifier)
+                            .confirmPasswordChanged,
+                        errorMessage: changePasswordFormStatus.isFormDirty
+                            ? changePasswordFormStatus.confirmPassword
+                                .errorMessage(context)
+                            : null,
+                      ),
                     ],
                   )),
               const SizedBox(height: 16),
               changePasswordFormStatus.formStatus != FormStatus.validating
                   ? CustomFilledButton(
-                    label: AppLocalizations.of(context)!.cambiar,
-                    onPressed: () {
-                      onSubmit();
-                    },
-                  )
+                      label: AppLocalizations.of(context)!.cambiar,
+                      onPressed: () {
+                        onSubmit();
+                      },
+                    )
                   : ZoomIn(child: const LoadingLogo()),
               const SizedBox(height: 100)
             ],

@@ -18,7 +18,7 @@ class Utils {
           icon: Icons.watch_later_outlined, text: "En desarrollo");
 
   static String getErrorsFromRegister(dynamic data) {
-    if(data == null) return "";
+    if (data == null) return "";
     Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
     String cad = "";
     json.values.forEach((arr) => List<String>.from(arr).forEach((element) {
@@ -29,14 +29,14 @@ class Utils {
   }
 
   static String getErrorsFromXnon_field_errors(dynamic data) {
-    if(data == null) return "";
+    if (data == null) return "";
     Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
     String cad = "";
-    if(json["non_field_errors"] != null){
+    if (json["non_field_errors"] != null) {
       List<String>.from(json["non_field_errors"]).forEach((element) {
-          if (cad.isNotEmpty) cad += "\n";
-          cad += "- $element";
-        });
+        if (cad.isNotEmpty) cad += "\n";
+        cad += "- $element";
+      });
     }
     return cad;
   }
@@ -50,16 +50,14 @@ class Utils {
     });
   }
 
-  static List<CompanyType> get companyTypes => [
-      CompanyType("Mipyme"),
-      CompanyType("TCP"),
-      CompanyType("Estatal")
-    ];
+  static List<CompanyType> get companyTypes =>
+      [CompanyType("Mipyme"), CompanyType("TCP"), CompanyType("Estatal")];
 
   static Future<String?> selectAndCropImage(BuildContext context) async {
     XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      String? imagePath = await context.push(RouterPath.UTILS_IMAGE_CROP_PAGE, extra: image.path);
+      String? imagePath = await context.push(RouterPath.UTILS_IMAGE_CROP_PAGE,
+          extra: image.path);
       return imagePath;
     }
     return null;

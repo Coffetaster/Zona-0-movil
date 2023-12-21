@@ -368,7 +368,7 @@ class RegisterFormPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: LinearProgressIndicator(
                 value: registerClientStatus.percentSecurePassword,
-                minHeight: 20,
+                minHeight: 5,
                 borderRadius:
                     BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
                 semanticsLabel: AppLocalizations.of(context)!.passwordSecure,
@@ -415,20 +415,36 @@ class RegisterFormPage extends ConsumerWidget {
                         Text(AppLocalizations.of(context)!.passwordSecureReq3)
                       ],
                     ),
-                    Row(
-                      children: <Widget>[
-                        Radio<int>(
-                            value:
-                                registerClientStatus.passwordRequired4 ? 3 : -1,
-                            groupValue: 3,
-                            onChanged: (_) {},
-                            toggleable: false),
-                        Text(AppLocalizations.of(context)!.passwordSecureReq4)
-                      ],
-                    ),
                   ],
                 ),
-              )
+              ),
+            const Divider(indent: 16, endIndent: 16, height: 16),
+            CustomTextFormField(
+              enabled: registerClientStatus.formStatus != FormStatus.validating,
+              keyboardType: TextInputType.visiblePassword,
+              obscureText: registerClientStatus.isObscureConfirmPassword,
+              hint: "* * * * * *",
+              suffix: CustomIconButton(
+                  onPressed: ref
+                      .read(registerFormClientProvider.notifier)
+                      .toggleObscureConfirmPassword,
+                  icon: registerClientStatus.isObscureConfirmPassword
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined),
+              label: AppLocalizations.of(context)!.passwordConfirm,
+              initialValue: registerClientStatus.confirmPassword.value,
+              onFieldSubmitted: (_) {
+                if (registerClientStatus.formStatus != FormStatus.validating) {
+                  onSubmit();
+                }
+              },
+              onChanged: ref
+                  .read(registerFormClientProvider.notifier)
+                  .confirmPasswordChanged,
+              errorMessage: registerClientStatus.isFormDirty
+                  ? registerClientStatus.confirmPassword.errorMessage(context)
+                  : null,
+            ),
           ],
         ));
   }

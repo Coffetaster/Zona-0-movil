@@ -41,30 +41,44 @@ class AccountFormResetPasswordConfirmNotifier
         CustomPersonalValidation.validatePasswordRequired_Case(value);
     bool passwordRequired3 =
         CustomPersonalValidation.validatePasswordRequired_Number(value);
-    bool passwordRequired4 =
-        CustomPersonalValidation.validatePasswordRequired_EspecialChar(value);
     state = state.copyWith(
         newPassword: newPassword,
         passwordRequired1: passwordRequired1,
         passwordRequired2: passwordRequired2,
         passwordRequired3: passwordRequired3,
-        passwordRequired4: passwordRequired4,
+        confirmPassword: PasswordInput.dirty(state.confirmPassword.realValue,
+            passwordConfirm: state.newPassword.realValue),
         isvalid: validateForm(newPassword: newPassword));
+  }
+
+  void confirmPasswordChanged(String value) {
+    final confirmPassword = PasswordInput.dirty(value,
+        passwordConfirm: state.newPassword.realValue);
+    state = state.copyWith(
+        confirmPassword: confirmPassword,
+        isvalid: validateForm(confirmPassword: confirmPassword));
   }
 
   void toggleObscureNewPassword() {
     state = state.copyWith(isObscureNewPassword: !state.isObscureNewPassword);
   }
 
+  void toggleObscureConfirmPassword() {
+    state = state.copyWith(
+        isObscureConfirmPassword: !state.isObscureConfirmPassword);
+  }
+
   bool validateForm({
     GeneralInput? uid,
     GeneralInput? token,
     PasswordInput? newPassword,
+    PasswordInput? confirmPassword,
   }) =>
       Formz.validate([
         uid ?? state.uid,
         token ?? state.token,
         newPassword ?? state.newPassword,
+        confirmPassword ?? state.confirmPassword,
       ]);
 
   Future<String> onSubmit() async {
@@ -76,6 +90,8 @@ class AccountFormResetPasswordConfirmNotifier
           newPassword: PasswordInput.dirty(state.newPassword.value,
               personalValidation:
                   CustomPersonalValidation.passwordPersonalValidation),
+          confirmPassword: PasswordInput.dirty(state.confirmPassword.value,
+              passwordConfirm: state.newPassword.realValue),
           isvalid: validateForm(),
           isFormDirty: true);
 
@@ -120,18 +136,17 @@ class AccountFormResetPasswordConfirmStatus {
   final bool passwordRequired2;
   //* req3: contener números
   final bool passwordRequired3;
-  //* req4: contener caracteres especiales
-  final bool passwordRequired4;
+  final PasswordInput confirmPassword;
 
   final bool isObscureNewPassword;
+  final bool isObscureConfirmPassword;
 
   double get percentSecurePassword {
-    int cant = 0;
-    if (passwordRequired1) cant++;
-    if (passwordRequired2) cant++;
-    if (passwordRequired3) cant++;
-    if (passwordRequired4) cant++;
-    return cant / 4;
+    int cant = newPassword.realValue.length;
+    if (cant > 8) cant = 8;
+    if (passwordRequired2) cant += 4;
+    if (passwordRequired3) cant += 4;
+    return cant / 16;
   }
 
   AccountFormResetPasswordConfirmStatus({
@@ -146,8 +161,9 @@ class AccountFormResetPasswordConfirmStatus {
     this.passwordRequired1 = false,
     this.passwordRequired2 = false,
     this.passwordRequired3 = false,
-    this.passwordRequired4 = false,
+    this.confirmPassword = const PasswordInput.pure(),
     this.isObscureNewPassword = true,
+    this.isObscureConfirmPassword = true,
   });
 
   AccountFormResetPasswordConfirmStatus copyWith({
@@ -160,8 +176,9 @@ class AccountFormResetPasswordConfirmStatus {
     bool? passwordRequired1,
     bool? passwordRequired2,
     bool? passwordRequired3,
-    bool? passwordRequired4,
+    PasswordInput? confirmPassword,
     bool? isObscureNewPassword,
+    bool? isObscureConfirmPassword,
   }) {
     return AccountFormResetPasswordConfirmStatus(
       formStatus: formStatus ?? this.formStatus,
@@ -173,8 +190,10 @@ class AccountFormResetPasswordConfirmStatus {
       passwordRequired1: passwordRequired1 ?? this.passwordRequired1,
       passwordRequired2: passwordRequired2 ?? this.passwordRequired2,
       passwordRequired3: passwordRequired3 ?? this.passwordRequired3,
-      passwordRequired4: passwordRequired4 ?? this.passwordRequired4,
+      confirmPassword: confirmPassword ?? this.confirmPassword,
       isObscureNewPassword: isObscureNewPassword ?? this.isObscureNewPassword,
+      isObscureConfirmPassword:
+          isObscureConfirmPassword ?? this.isObscureConfirmPassword,
     );
   }
 }

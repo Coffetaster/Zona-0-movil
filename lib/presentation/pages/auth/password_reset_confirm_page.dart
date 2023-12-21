@@ -182,7 +182,7 @@ class PasswordResetConfirmPage extends ConsumerWidget {
                             child: LinearProgressIndicator(
                               value: accountFormResetPasswordConfirmStatus
                                   .percentSecurePassword,
-                              minHeight: 20,
+                              minHeight: 5,
                               borderRadius: BorderRadius.all(
                                   Radius.circular(AppTheme.borderRadius)),
                               semanticsLabel:
@@ -247,24 +247,50 @@ class PasswordResetConfirmPage extends ConsumerWidget {
                                           .passwordSecureReq3)
                                     ],
                                   ),
-                                  Row(
-                                    children: <Widget>[
-                                      Radio<int>(
-                                          value:
-                                              accountFormResetPasswordConfirmStatus
-                                                      .passwordRequired4
-                                                  ? 3
-                                                  : -1,
-                                          groupValue: 3,
-                                          onChanged: (_) {},
-                                          toggleable: false),
-                                      Text(AppLocalizations.of(context)!
-                                          .passwordSecureReq4)
-                                    ],
-                                  ),
                                 ],
                               ),
                             ),
+                          const Divider(indent: 16, endIndent: 16, height: 16),
+                          CustomTextFormField(
+                            enabled: accountFormResetPasswordConfirmStatus
+                                    .formStatus !=
+                                FormStatus.validating,
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: accountFormResetPasswordConfirmStatus
+                                .isObscureConfirmPassword,
+                            hint: "* * * * * *",
+                            suffix: CustomIconButton(
+                                onPressed: ref
+                                    .read(
+                                        accountFormResetPasswordConfirmProvider
+                                            .notifier)
+                                    .toggleObscureConfirmPassword,
+                                icon: accountFormResetPasswordConfirmStatus
+                                        .isObscureConfirmPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined),
+                            label:
+                                AppLocalizations.of(context)!.passwordConfirm,
+                            initialValue: accountFormResetPasswordConfirmStatus
+                                .confirmPassword.value,
+                            onFieldSubmitted: (_) {
+                              if (accountFormResetPasswordConfirmStatus
+                                      .formStatus !=
+                                  FormStatus.validating) {
+                                onSubmit();
+                              }
+                            },
+                            onChanged: ref
+                                .read(accountFormResetPasswordConfirmProvider
+                                    .notifier)
+                                .confirmPasswordChanged,
+                            errorMessage: accountFormResetPasswordConfirmStatus
+                                    .isFormDirty
+                                ? accountFormResetPasswordConfirmStatus
+                                    .confirmPassword
+                                    .errorMessage(context)
+                                : null,
+                          ),
                         ],
                       )),
                   const SizedBox(height: 8),

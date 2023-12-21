@@ -5,6 +5,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:custom_image_crop/custom_image_crop.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:zona0_apk/config/constants/hero_tags.dart';
@@ -14,7 +15,7 @@ import 'package:zona0_apk/presentation/widgets/loadings/loadings.dart';
 
 /*
   MODO DE USO:
-    - Instalar las librerías: image_picker, custom_image_crop, path_provider
+    - Instalar las librerías: image_picker, custom_image_crop, path_provider, flutter_image_compress
 
     - Copiar este archivo en tu proyecto y corregir errores que puedan existir
 
@@ -119,6 +120,14 @@ class ImageCropPage extends HookWidget {
                                         final image =
                                             await controller.onCropImage();
                                         if (image != null) {
+                                          //* Comprimir
+                                          final result =
+                                              await FlutterImageCompress
+                                                  .compressWithList(
+                                            image.bytes,
+                                            quality: 50,
+                                          );
+                                          //* Guardar
                                           final tempDir =
                                               await getTemporaryDirectory();
                                           final name =
@@ -126,7 +135,7 @@ class ImageCropPage extends HookWidget {
                                           final path = '${tempDir.path}/$name';
                                           final file =
                                               await new File(path).create();
-                                          file.writeAsBytesSync(image.bytes);
+                                          file.writeAsBytesSync(result);
                                           exit(context, path);
                                         } else {
                                           isCropping.value = false;

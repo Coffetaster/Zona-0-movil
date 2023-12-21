@@ -33,14 +33,15 @@ class RegisterFormClientNotifier
 
   void telephoneChanged(String value) {
     final telephone = PhoneInput.dirty(value,
-        personalValidation: CustomPersonalValidation.telephonePersonalValidation);
+        personalValidation:
+            CustomPersonalValidation.telephonePersonalValidation);
     state = state.copyWith(
         telephone: telephone, isvalid: validateForm(telephone: telephone));
   }
 
   void ciChanged(String value) {
-    final ci =
-        GeneralInput.dirty(value, personalValidation: CustomPersonalValidation.ciPersonalValidation);
+    final ci = GeneralInput.dirty(value,
+        personalValidation: CustomPersonalValidation.ciPersonalValidation);
     state = state.copyWith(ci: ci, isvalid: validateForm(ci: ci));
   }
 
@@ -66,15 +67,22 @@ class RegisterFormClientNotifier
         CustomPersonalValidation.validatePasswordRequired_Case(value);
     bool passwordRequired3 =
         CustomPersonalValidation.validatePasswordRequired_Number(value);
-    bool passwordRequired4 =
-        CustomPersonalValidation.validatePasswordRequired_EspecialChar(value);
     state = state.copyWith(
         password: password,
         passwordRequired1: passwordRequired1,
         passwordRequired2: passwordRequired2,
         passwordRequired3: passwordRequired3,
-        passwordRequired4: passwordRequired4,
+        confirmPassword: PasswordInput.dirty(state.confirmPassword.realValue,
+            passwordConfirm: state.password.realValue),
         isvalid: validateForm(password: password));
+  }
+
+  void confirmPasswordChanged(String value) {
+    final confirmPassword =
+        PasswordInput.dirty(value, passwordConfirm: state.password.realValue);
+    state = state.copyWith(
+        confirmPassword: confirmPassword,
+        isvalid: validateForm(confirmPassword: confirmPassword));
   }
 
   void imageSelect(String? imagePath) {
@@ -85,6 +93,11 @@ class RegisterFormClientNotifier
     state = state.copyWith(isObscurePassword: !state.isObscurePassword);
   }
 
+  void toggleObscureConfirmPassword() {
+    state = state.copyWith(
+        isObscureConfirmPassword: !state.isObscureConfirmPassword);
+  }
+
   bool validateForm({
     NameInput? name,
     NameInput? lastName,
@@ -93,6 +106,7 @@ class RegisterFormClientNotifier
     UsernameInput? username,
     EmailInput? email,
     PasswordInput? password,
+    PasswordInput? confirmPassword,
   }) =>
       Formz.validate([
         name ?? state.name,
@@ -101,7 +115,8 @@ class RegisterFormClientNotifier
         ci ?? state.ci,
         username ?? state.username,
         email ?? state.email,
-        password ?? state.password
+        password ?? state.password,
+        confirmPassword ?? state.confirmPassword
       ]);
 
   void closeValidateForm() => state = state.copyWith(
@@ -109,7 +124,8 @@ class RegisterFormClientNotifier
       name: NameInput.dirty(state.name.value),
       lastName: NameInput.dirty(state.lastName.value),
       telephone: PhoneInput.dirty(state.telephone.value,
-          personalValidation: CustomPersonalValidation.telephonePersonalValidation),
+          personalValidation:
+              CustomPersonalValidation.telephonePersonalValidation),
       ci: GeneralInput.dirty(state.ci.value,
           personalValidation: CustomPersonalValidation.ciPersonalValidation),
       username: UsernameInput.dirty(state.username.value),
@@ -117,6 +133,8 @@ class RegisterFormClientNotifier
       password: PasswordInput.dirty(state.password.value,
           personalValidation:
               CustomPersonalValidation.passwordPersonalValidation),
+      confirmPassword: PasswordInput.dirty(state.confirmPassword.value,
+          passwordConfirm: state.password.realValue),
       isvalid: validateForm(),
       isFormDirty: true);
 
@@ -181,21 +199,20 @@ class RegisterFormClientStatus {
   final bool passwordRequired2;
   //* req3: contener números
   final bool passwordRequired3;
-  //* req4: contener caracteres especiales
-  final bool passwordRequired4;
+  final PasswordInput confirmPassword;
 
   final bool isObscurePassword;
+  final bool isObscureConfirmPassword;
 
   //*image
   final String? imagePath;
 
   double get percentSecurePassword {
-    int cant = 0;
-    if (passwordRequired1) cant++;
-    if (passwordRequired2) cant++;
-    if (passwordRequired3) cant++;
-    if (passwordRequired4) cant++;
-    return cant / 4;
+    int cant = password.realValue.length;
+    if (cant > 8) cant = 8;
+    if (passwordRequired2) cant += 4;
+    if (passwordRequired3) cant += 4;
+    return cant / 16;
   }
 
   RegisterFormClientStatus(
@@ -205,9 +222,10 @@ class RegisterFormClientStatus {
       this.name = const NameInput.pure(),
       this.lastName = const NameInput.pure(),
       this.telephone = const PhoneInput.pure(
-          personalValidation: CustomPersonalValidation.telephonePersonalValidation),
-      this.ci =
-          const GeneralInput.pure(personalValidation: CustomPersonalValidation.ciPersonalValidation),
+          personalValidation:
+              CustomPersonalValidation.telephonePersonalValidation),
+      this.ci = const GeneralInput.pure(
+          personalValidation: CustomPersonalValidation.ciPersonalValidation),
       this.username = const UsernameInput.pure(),
       this.email = const EmailInput.pure(),
       this.password = const PasswordInput.pure(
@@ -217,7 +235,8 @@ class RegisterFormClientStatus {
       this.passwordRequired1 = false,
       this.passwordRequired2 = false,
       this.passwordRequired3 = false,
-      this.passwordRequired4 = false,
+      this.confirmPassword = const PasswordInput.pure(),
+      this.isObscureConfirmPassword = true,
       this.imagePath = null});
 
   RegisterFormClientStatus copyWith({
@@ -234,8 +253,9 @@ class RegisterFormClientStatus {
     bool? passwordRequired1,
     bool? passwordRequired2,
     bool? passwordRequired3,
-    bool? passwordRequired4,
+    PasswordInput? confirmPassword,
     bool? isObscurePassword,
+    bool? isObscureConfirmPassword,
     ValueGetter<String?>? imagePath,
   }) {
     return RegisterFormClientStatus(
@@ -252,8 +272,10 @@ class RegisterFormClientStatus {
       passwordRequired1: passwordRequired1 ?? this.passwordRequired1,
       passwordRequired2: passwordRequired2 ?? this.passwordRequired2,
       passwordRequired3: passwordRequired3 ?? this.passwordRequired3,
-      passwordRequired4: passwordRequired4 ?? this.passwordRequired4,
+      confirmPassword: confirmPassword ?? this.confirmPassword,
       isObscurePassword: isObscurePassword ?? this.isObscurePassword,
+      isObscureConfirmPassword:
+          isObscureConfirmPassword ?? this.isObscureConfirmPassword,
       imagePath: imagePath?.call() ?? this.imagePath,
     );
   }
