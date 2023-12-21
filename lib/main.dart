@@ -15,42 +15,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:zona0_apk/presentation/providers/theme/theme_provider.dart';
 export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-/*
-Instalar en dependencias
-animate_do, dio, flutter_riverpod, go_router, intl, cached_network_image
-
-Para cambiar de lenguaje: /////////////////////////////
-+En el archivo: pubspec.yaml
--Poner en dependencias
-flutter_localizations:
-    sdk: flutter
-
--Poner en flutter
-  generate: true
-
-+Crear archivo: l10n.yaml
--Copiar dentro:
-arb-dir: lib/l10n
-template-arb-file: app_en.arb
-output-localization-file: app_localizations.dart
-
-//////////////////////////////////////////////////
-
-En caso de pedir permisos: permission_handler
-
-En caso de usar map: flutter_osm_plugin
-
-Variables de entorno: flutter_dotenv
-
-Para isar db:
-  dependencias: isar, isar_flutter_libs, path_provider
-  dev dependencias: build_runner, isar_generator
-
-Para paginar listas: fl_paging (probar)
-
-*/
-
 void main() async {
+
+  //para preservar el splash y removerlo cuando yo quiera
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // FlutterNativeSplash.remove();
 
   //para poner la apk potrait
   WidgetsFlutterBinding.ensureInitialized();

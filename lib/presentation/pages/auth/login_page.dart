@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
-import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/main.dart';
@@ -124,7 +123,6 @@ class LoginPage extends ConsumerWidget {
                         ? accountFormLoginStatus.password.errorMessage(context)
                         : null,
                   ),
-                  // _emailPasswordWidget(),
                   const SizedBox(height: 20),
                   accountFormLoginStatus.formStatus != FormStatus.validating
                       ? CustomGradientButton(
@@ -145,8 +143,7 @@ class LoginPage extends ConsumerWidget {
                       child: CustomTextButton(
                           label: AppLocalizations.of(context)!.forgetPassword,
                           onPressed: () {
-                            // context.push(RouterPath.AUTH_VERIFY_CODE_PAGE);
-                            Utils.showSnackbarEnDesarrollo(context);
+                            context.push(RouterPath.AUTH_PASSWORD_RESET_PAGE);
                           }),
                     ),
                   SizedBox(height: size.height * .055),

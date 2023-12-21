@@ -168,7 +168,8 @@ class StepsWidgetGI extends HookWidget {
       if (index == currentIndex) {
         return color.primary;
       } else if (index < currentIndex) {
-        return color.secondaryContainer;
+        return color.tertiaryContainer;
+        // return color.secondaryContainer;
       } else {
         return color.secondary;
       }

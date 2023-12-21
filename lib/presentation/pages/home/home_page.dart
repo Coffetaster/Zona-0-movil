@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/constants/providers_family.dart';
 import 'package:zona0_apk/config/helpers/show_image.dart';
-import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
@@ -67,8 +67,9 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final scrollControllerState = ref.watch(
-        scrollControllerProvider(ProvidersFamily.scroll_controller_home));
+    final scrollControllerState_isOpen = ref.watch(
+        scrollControllerProvider(ProvidersFamily.scroll_controller_home)
+            .select((value) => value.isOpen));
 
     Future.delayed(const Duration(milliseconds: 0), () {
       if (pageController.hasClients) {
@@ -85,7 +86,11 @@ class _HomePageState extends ConsumerState<HomePage>
     return PopScope(
       canPop: widget.pageIndex == 0,
       onPopInvoked: (canPop) {
-        if (!canPop) context.go(RouterPath.HOME_PAGE);
+        if (!canPop) {
+          scrollController.animateTo(0,
+              duration: const Duration(milliseconds: 500), curve: Curves.ease);
+          context.go(RouterPath.HOME_PAGE);
+        }
       },
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
@@ -100,12 +105,29 @@ class _HomePageState extends ConsumerState<HomePage>
                   controller: pageController,
                   children: viewRoutes,
                 ),
-                if (scrollControllerState.isOpen)
-                  Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: CustomBottomNavigationBar(widget.pageIndex))
+                if (scrollControllerState_isOpen)
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final scrollControllerState_lastScrollPosition =
+                          ref.watch(scrollControllerProvider(
+                                  ProvidersFamily.scroll_controller_home)
+                              .select((value) => value.lastScrollPosition));
+                      return Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: scrollControllerState_lastScrollPosition ==
+                                      0 ||
+                                  !scrollController.hasClients
+                              ? 0
+                              : -(60 *
+                                  (scrollControllerState_lastScrollPosition *
+                                      100 /
+                                      scrollController
+                                          .position.maxScrollExtent) /
+                                  100),
+                          child: CustomBottomNavigationBar(widget.pageIndex));
+                    },
+                  )
               ]),
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 if (innerBoxIsScrolled ==
@@ -130,16 +152,16 @@ class _HomePageState extends ConsumerState<HomePage>
                         return SliverAppBar(
                           expandedHeight: widget.pageIndex == 0 ? 160 : 100,
                           pinned: widget.pageIndex == 0,
-                          snap: widget.pageIndex != 0,
-                          floating: widget.pageIndex != 0,
+                          // snap: widget.pageIndex != 0,
+                          // floating: widget.pageIndex != 0,
                           bottom: widget.pageIndex == 0
                               ? PreferredSize(
-                                  preferredSize: Size.fromHeight(10),
+                                  preferredSize: const Size.fromHeight(10),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 16),
                                     child: Hero(
-                                      tag: "text_form_search_productos",
+                                      tag: HeroTags.textFormSearchProductos,
                                       child: Container(
                                           clipBehavior: Clip.hardEdge,
                                           width: double.infinity,
@@ -183,9 +205,7 @@ class _HomePageState extends ConsumerState<HomePage>
                           flexibleSpace: FlexibleSpaceBar(
                             background: Center(
                               child: Container(
-                                height: widget.pageIndex == 0
-                                    ? 160
-                                    : 100,
+                                height: widget.pageIndex == 0 ? 160 : 100,
                                 child: Column(
                                   children: [
                                     SizedBox(
@@ -236,20 +256,25 @@ class _HomePageState extends ConsumerState<HomePage>
                                                         if (accountState
                                                             .imagePath
                                                             .isNotEmpty) {
-                                                          ShowImage.show(
+                                                          ShowImage.fromNetwork(
                                                               context: context,
-                                                              foto: accountState
-                                                                  .imagePath,
-                                                              tag:
-                                                                  "ImageProfile1-${accountState.id}");
+                                                              imagePath:
+                                                                  accountState
+                                                                      .imagePath,
+                                                              heroTag: HeroTags
+                                                                  .imageProfile1(
+                                                                      accountState
+                                                                          .id));
                                                         }
                                                       },
                                                       child: SizedBox(
                                                         width: 30,
                                                         height: 30,
                                                         child: Hero(
-                                                          tag:
-                                                              "ImageProfile1-${accountState.id}",
+                                                          tag: HeroTags
+                                                              .imageProfile1(
+                                                                  accountState
+                                                                      .id),
                                                           child: ClipRRect(
                                                               borderRadius:
                                                                   BorderRadius
@@ -260,7 +285,7 @@ class _HomePageState extends ConsumerState<HomePage>
                                                                       .imagePath,
                                                                   placeholderPath:
                                                                       ImagesPath
-                                                                          .user_placeholder
+                                                                          .pic_profile
                                                                           .path,
                                                                   width: 30,
                                                                   height: 30,
@@ -272,7 +297,7 @@ class _HomePageState extends ConsumerState<HomePage>
                                                     const SizedBox(width: 8),
                                                   ],
                                                 )
-                                              : CustomTextButton(
+                                              : CustomFilledButton(
                                                   label: AppLocalizations.of(
                                                           context)!
                                                       .autenticar,
@@ -287,9 +312,8 @@ class _HomePageState extends ConsumerState<HomePage>
                                                     .notifications_outlined,
                                                 badgeInfo: "15",
                                                 onPressed: () {
-                                                  Utils
-                                                      .showSnackbarEnDesarrollo(
-                                                          context);
+                                                  context.push(RouterPath
+                                                      .NOTIFICATIONS_PAGE);
                                                 }),
                                           const SizedBox(width: 8),
                                           // CustomIconButton(
@@ -313,30 +337,47 @@ class _HomePageState extends ConsumerState<HomePage>
                 ];
               }),
         ),
+        floatingActionButton: scrollControllerState_isOpen
+            ? null
+            : FloatingActionButton.small(
+                onPressed: () {
+                  scrollController.animateTo(0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.ease);
+                },
+                child: const Icon(Icons.keyboard_arrow_up_outlined)),
       ),
     );
   }
 
   Widget CustomBottomNavigationBar(int currentIndex) {
-    final color = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return FadeInUp(
       child: CurvedNavigationBar(
         index: currentIndex,
         height: 60.0,
         animationCurve: Curves.easeInOut,
         animationDuration: const Duration(milliseconds: 600),
-        color: color.secondaryContainer,
+        color: colorScheme.secondaryContainer,
         // color: color.primaryContainer,
         backgroundColor: Colors.transparent,
         // backgroundColor: color.background,
-        items: const <Widget>[
-          Icon(Icons.home_outlined, size: 30),
-          Icon(Icons.list_alt_outlined, size: 30),
-          Icon(Icons.shopping_cart_outlined, size: 30),
-          Icon(Icons.wallet_outlined, size: 30),
-          Icon(Icons.settings_outlined, size: 30),
+        items: <Widget>[
+          const Icon(Icons.home_outlined, size: 30),
+          const Icon(Icons.list_alt_outlined, size: 30),
+          Badge(
+              backgroundColor: colorScheme.tertiary,
+              label: Text("7", style: TextStyle(color: colorScheme.onTertiary)),
+              alignment: const Alignment(-.5, -.5),
+              // alignment: const Alignment(.25, -.35),
+              child: const Icon(Icons.shopping_cart_outlined, size: 30)),
+          // Icon(Icons.shopping_cart_outlined, size: 30),
+          const Icon(Icons.wallet_outlined, size: 30),
+          const Icon(Icons.settings_outlined, size: 30),
         ],
         onTap: (index) {
+          scrollController.animateTo(0,
+              duration: const Duration(milliseconds: 500), curve: Curves.ease);
           switch (index) {
             case 0:
               context.go(RouterPath.HOME_PAGE);

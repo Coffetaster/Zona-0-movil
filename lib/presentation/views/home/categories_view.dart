@@ -24,16 +24,12 @@ class _CategoriesViewState extends State<CategoriesView> with AutomaticKeepAlive
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomTitle(AppLocalizations.of(context)!.categorias),
-              const Divider(
-                thickness: 1,
-                height: 30,
-              ),
+              const Divider(height: 30),
               SizedBox(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 1.2,
                 child: CategoriesMasonry(categories: categories)),
-              // ...categories.map((e) => CategoryCard(category: e)),
-              // const SizedBox(height: 80)
+              const SizedBox(height: 80)
             ],
           ),
         ),

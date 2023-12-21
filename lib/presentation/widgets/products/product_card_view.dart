@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
-import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
@@ -10,13 +9,13 @@ import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ProductCardView extends StatelessWidget {
   const ProductCardView({
-    Key? key,
+    super.key,
     required this.product,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final Product product;
-  final Function(String)? onTap;
+  final Function(Product)? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class ProductCardView extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return CustomCard(
       padding: const EdgeInsets.all(8.0),
-      onTap: () => onTap?.call(product.id.toString()),
+      onTap: () => onTap?.call(product),
       child: SizedBox(
         width: size.width * 0.45,
         child: Column(
@@ -49,26 +48,7 @@ class ProductCardView extends StatelessWidget {
                     Positioned(
                       right: 0,
                       bottom: 0,
-                      child: ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(AppTheme.borderRadius),
-                        child: Container(
-                          color: color.primary,
-                          // color: Colors.red.shade400,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 8),
-                            child: Text(
-                                "-${product.discount}%",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(color: Colors.white)
-                                // backgroundColor: AppTheme.darkPink)
-                                ),
-                          ),
-                        ),
-                      ),
+                      child: CustomBadge(label: "-${product.discount}%"),
                     )
                 ],
               ),

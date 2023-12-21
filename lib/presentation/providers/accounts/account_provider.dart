@@ -53,9 +53,11 @@ class AccountNotifier extends StateNotifier<AccountState> {
           user: () => userJson.isNotEmpty ? User.fromJson(userJson) : null,
         );
         return;
-      } on CustomDioError catch (_) {
-      } catch (e) {
-      }
+      } on CustomDioError catch (e) {
+        if (e.code == 401) {
+          logout();
+        }
+      } catch (e) {}
     }
   }
 
@@ -99,6 +101,51 @@ class AccountNotifier extends StateNotifier<AccountState> {
         return 498;
       }
       await accountsRemoteRepository.emailVerifyToken(code);
+      return 200;
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  Future<int> changePassword(String oldPassword, String newPassword) async {
+    try {
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
+      await accountsRemoteRepository.changePassword(oldPassword, newPassword);
+      return 200;
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  Future<int> resetPassword(String email) async {
+    try {
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
+      await accountsRemoteRepository.resetPassword(email);
+      return 200;
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  Future<int> resetPasswordConfirm(
+      {required String uid,
+      required String token,
+      required String new_password}) async {
+    try {
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
+      await accountsRemoteRepository.resetPasswordConfirm(uid: uid, token: token, new_password: new_password);
       return 200;
     } on CustomDioError catch (_) {
       rethrow;

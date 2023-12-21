@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
-import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
 import 'package:zona0_apk/presentation/widgets/cards/cards.dart';
+import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ProductItemView extends StatelessWidget {
   const ProductItemView({Key? key, required this.product, this.onTap, this.canEdit = false})
@@ -45,26 +45,7 @@ class ProductItemView extends StatelessWidget {
                         Positioned(
                           right: 0,
                           bottom: 0,
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.borderRadius),
-                            child: Container(
-                              color: color.primary,
-                              // color: Colors.red.shade400,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 8),
-                                child: Text(
-                                    "-${product.discount}%",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(color: Colors.white)
-                                    // backgroundColor: AppTheme.darkPink)
-                                    ),
-                              ),
-                            ),
-                          ),
+                          child: CustomBadge(label: "-${product.discount}%"),
                         )
                     ],
                   ),

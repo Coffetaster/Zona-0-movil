@@ -3,95 +3,90 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
+import 'package:zona0_apk/config/router/router_path.dart';
 
-import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
-class ProductDetailsPage extends StatelessWidget {
+class ProductDetailsPage extends StatefulWidget {
   ProductDetailsPage({
     Key? key,
     required this.productId,
-  }) : super(key: key){
-    product = AppData.allProducts.firstWhere((element) => element.id.toString() == productId);
+  }) : super(key: key) {
+    product = AppData.allProducts
+        .firstWhere((element) => element.id.toString() == productId);
   }
 
   final String productId;
   late Product product;
 
   @override
+  State<ProductDetailsPage> createState() => _ProductDetailsPageState();
+}
+
+class _ProductDetailsPageState extends State<ProductDetailsPage> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final color = Theme.of(context).colorScheme;
 
     return Scaffold(
-      body: NestedScrollView(
-          physics: const BouncingScrollPhysics(),
-          body: _ProductDetailsView(context),
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                leading: CustomIconButton(
-                    icon: Icons.arrow_back_ios_outlined,
-                    onPressed: () => context.pop()),
-                // title: const Text('Nombre barbero'),
-                actions: [
-                  if (product.discount > 0)
-                    ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.borderRadius),
-                      child: Container(
-                        color: color.primary,
-                        // color: Colors.red.shade400,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 8),
-                          child: Text(
-                              "-${product.discount}%",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(color: Colors.white)
-                              // backgroundColor: AppTheme.darkPink)
-                              ),
-                        ),
-                      ),
+        body: NestedScrollView(
+            controller: scrollController,
+            physics: const BouncingScrollPhysics(),
+            body: _ProductDetailsView(context),
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  leading: CustomIconButton(
+                      icon: Icons.arrow_back_ios_outlined,
+                      onPressed: () => context.pop()),
+                  // title: const Text('Nombre barbero'),
+                  actions: [
+                    if (widget.product.discount > 0)
+                      CustomBadge(label: "-${widget.product.discount}%"),
+                    const SizedBox(
+                      width: 5,
+                    )
+                  ],
+                  // centerTitle: true,
+                  // pinned: true,
+                  onStretchTrigger: () async {},
+                  stretchTriggerOffset: 50.0,
+                  expandedHeight: size.height * 0.4,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Center(
+                      child: ImageAndName(context),
                     ),
-                  const SizedBox(
-                    width: 5,
-                  )
-                ],
-                // centerTitle: true,
-                // pinned: true,
-                onStretchTrigger: () async {},
-                stretchTriggerOffset: 50.0,
-                expandedHeight: size.height * 0.4,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Center(
-                    child: ImageAndName(context),
                   ),
                 ),
-              ),
-            ];
-          }),
-      floatingActionButton: product.cantInCart <= 0
-          ? BounceInUp(
-              child: FloatingActionButton(
-                heroTag: null,
-                  onPressed: () {
-                    SnackBarGI.showWithLottie(context,
+              ];
+            }),
+        floatingActionButton: widget.product.cantInCart <= 0
+            ? BounceInUp(
+                child: FloatingActionButton(
+                    heroTag: null,
+                    onPressed: () {
+                      SnackBarGI.showWithLottie(context,
                           lottiePath: LottiesPath.add_cart,
                           text: AppLocalizations.of(context)!.addCart);
-                  },
-                  child: Icon(Icons.add_shopping_cart_outlined)),
-            )
-          : null
-    );
+                    },
+                    child: const Icon(Icons.add_shopping_cart_outlined)),
+              )
+            : null);
   }
 
   Widget ImageAndName(BuildContext context) {
@@ -108,22 +103,21 @@ class ProductDetailsPage extends StatelessWidget {
               height: size.height * 0.05,
             ),
             GestureDetector(
-              onTap: (){
-                ShowImage.show(
+              onTap: () {
+                ShowImage.fromAsset(
                     context: context,
-                    foto: product.image,
-                    tag: "ProductId-$productId",
-                    isAssets: true);
+                    imagePath: widget.product.image,
+                    heroTag: HeroTags.productId(widget.productId));
               },
               child: Hero(
-                tag: "ProductId-$productId",
+                tag: HeroTags.productId(widget.productId),
                 child: SizedBox(
                     height: size.height * 0.25,
                     width: MediaQuery.of(context).size.width,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Image(
-                        image: AssetImage(product.image),
+                        image: AssetImage(widget.product.image),
                         alignment: Alignment.bottomCenter,
                         fit: BoxFit.contain,
                       ),
@@ -131,7 +125,7 @@ class ProductDetailsPage extends StatelessWidget {
               ),
             ),
             SizedBox(
-                child: Text(product.name,
+                child: Text(widget.product.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
@@ -139,16 +133,16 @@ class ProductDetailsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('\$${product.realPrice.toStringAsFixed(2)}',
+                Text('\$${widget.product.realPrice.toStringAsFixed(2)}',
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     softWrap: false,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold, color: color.primary)),
-                if (product.discount > 0)
+                if (widget.product.discount > 0)
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text('\$${product.price.toStringAsFixed(2)}',
+                    child: Text('\$${widget.product.price.toStringAsFixed(2)}',
                         maxLines: 1,
                         overflow: TextOverflow.clip,
                         softWrap: false,
@@ -170,51 +164,77 @@ class ProductDetailsPage extends StatelessWidget {
 
   Widget _ProductDetailsView(BuildContext context) {
     final category = AppData.categoryList
-        .firstWhere((element) => element.id == product.category);
+        .firstWhere((element) => element.id == widget.product.category);
+    final similarProducts = AppData.allProducts
+        .where((p) => (p.category == widget.product.category &&
+            p.id != widget.product.id))
+        .toList();
     return SingleChildScrollView(
       child: FadeInUp(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              CustomCard(
-                  padding: EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CustomCard(
+                  padding: const EdgeInsets.all(8),
                   child: Column(
                     children: <Widget>[
                       ListTile(
                         title: Text("${AppLocalizations.of(context)!.marca}:"),
-                        subtitle: Text(product.brand),
+                        subtitle: Text(widget.product.brand),
                       ),
                     ],
                   )),
-              CustomCard(
-                  padding: EdgeInsets.all(8),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CustomCard(
+                  padding: const EdgeInsets.all(8),
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        title: Text("${AppLocalizations.of(context)!.categoria}:"),
+                        title:
+                            Text("${AppLocalizations.of(context)!.categoria}:"),
                         subtitle: Text(category.name),
-                        trailing: Image.asset(category.image, width: 120, height: 120, fit: BoxFit.cover),
+                        trailing: Image.asset(category.image,
+                            width: 120, height: 120, fit: BoxFit.contain),
                       ),
                     ],
                   )),
-              CustomCard(
-                  padding: EdgeInsets.all(8),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CustomCard(
+                  padding: const EdgeInsets.all(8),
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        title: Text("${AppLocalizations.of(context)!.detalles}:"),
-                        subtitle: Text(product.description),
+                        title:
+                            Text("${AppLocalizations.of(context)!.detalles}:"),
+                        subtitle: Text(widget.product.description),
                       ),
                     ],
                   )),
-            ],
-          ),
+            ),
+            if (similarProducts.isNotEmpty) const SizedBox(height: 16),
+            if (similarProducts.isNotEmpty)
+              ProductsHorizontalListView(
+                  title: AppLocalizations.of(context)!.productosSimilares,
+                  products: similarProducts,
+                  onTapProduct: (product) {
+                    context.replace(
+                        RouterPath.PRODUCT_DETAIL_PAGE(product.id.toString()));
+                    scrollController.animateTo(0,
+                        duration: const Duration(milliseconds: 1000),
+                        curve: Curves.ease);
+                  }),
+            const SizedBox(height: 80),
+          ],
         ),
       ),
     );

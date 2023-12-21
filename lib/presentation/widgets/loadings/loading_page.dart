@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/constants/lotties_path.dart';
 import 'package:zona0_apk/main.dart';
 

@@ -1,22 +1,49 @@
-
 import 'dart:io';
 import 'dart:math';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zona0_apk/presentation/widgets/widgets.dart';
+
+enum ExtendedImageType { Network, Asset, File }
 
 class ViewImagePage extends StatelessWidget {
-  const ViewImagePage({super.key, required this.url, required this.file, required this.tag, this.isAssets = false});
+  const ViewImagePage(
+      {super.key,
+      required this.imagePath,
+      required this.heroTag,
+      this.extendedImageType = ExtendedImageType.Network});
 
-  final String url;
-  final File? file;
-  final String tag;
-  final bool isAssets;
+  final String imagePath;
+  final String heroTag;
+  final ExtendedImageType extendedImageType;
 
   @override
   Widget build(BuildContext context) {
+    ExtendedImage extendedImage;
+    switch (extendedImageType) {
+      case ExtendedImageType.Network:
+        extendedImage = ExtendedImage.network(
+          imagePath,
+          mode: ExtendedImageMode.gesture,
+          enableSlideOutPage: true,
+        );
+        break;
+      case ExtendedImageType.Asset:
+        extendedImage = ExtendedImage.asset(
+          imagePath,
+          mode: ExtendedImageMode.gesture,
+          enableSlideOutPage: true,
+        );
+        break;
+      case ExtendedImageType.File:
+        extendedImage = ExtendedImage.file(
+          File(imagePath),
+          mode: ExtendedImageMode.gesture,
+          enableSlideOutPage: true,
+        );
+        break;
+    }
 
     return Stack(
       children: [
@@ -24,39 +51,37 @@ class ViewImagePage extends StatelessWidget {
           width: double.infinity,
           height: double.infinity,
           child: Hero(
-            tag: tag,
+            tag: heroTag,
             child: ExtendedImageSlidePage(
-              slideAxis: SlideAxis.vertical,
-              slideType: SlideType.onlyImage,
-              slidePageBackgroundHandler: (offset, size){
-                return defaultSlidePageBackgroundHandler(offset: offset, pageSize: size, color: Colors.black, pageGestureAxis: SlideAxis.vertical);
-              },
-              child: isAssets
-              ? ExtendedImage.asset(
-                  url,
-                  mode: ExtendedImageMode.gesture,
-                  enableSlideOutPage: true,
-              )
-              : ExtendedImage.network(
-                  url,
-                  mode: ExtendedImageMode.gesture,
-                  enableSlideOutPage: true,
-              )
-            ),
+                slideAxis: SlideAxis.vertical,
+                slideType: SlideType.onlyImage,
+                slidePageBackgroundHandler: (offset, size) {
+                  return defaultSlidePageBackgroundHandler(
+                      offset: offset,
+                      pageSize: size,
+                      color: Colors.black,
+                      pageGestureAxis: SlideAxis.vertical);
+                },
+                child: extendedImage),
           ),
         ),
         Positioned(
-          right: 10,
-          top: 10,
-          child: IconButton(
-            onPressed: (){
-              context.pop();
-            },
-            icon: const Icon(Icons.close_outlined, color: Colors.white)))
+            right: 10,
+            top: 10,
+            child: IconButton(
+                onPressed: () {
+                  context.pop();
+                },
+                icon: const Icon(Icons.close_outlined, color: Colors.white)))
       ],
     );
   }
-  Color defaultSlidePageBackgroundHandler({required Offset offset, required Size pageSize, required Color color, required SlideAxis pageGestureAxis}) {
+
+  Color defaultSlidePageBackgroundHandler(
+      {required Offset offset,
+      required Size pageSize,
+      required Color color,
+      required SlideAxis pageGestureAxis}) {
     double opacity = 0.0;
     if (pageGestureAxis == SlideAxis.both) {
       opacity = offset.distance /
@@ -70,14 +95,13 @@ class ViewImagePage extends StatelessWidget {
   }
 
   double? defaultSlideScaleHandler(
-  {
-    required Offset offset,
-    required Size pageSize,
-    required SlideAxis pageGestureAxis
-  }){
+      {required Offset offset,
+      required Size pageSize,
+      required SlideAxis pageGestureAxis}) {
     double scale = 0.0;
     if (pageGestureAxis == SlideAxis.both) {
-      scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
+      scale =
+          offset.distance / Offset(pageSize.width, pageSize.height).distance;
     } else if (pageGestureAxis == SlideAxis.horizontal) {
       scale = offset.dx.abs() / (pageSize.width / 2.0);
     } else if (pageGestureAxis == SlideAxis.vertical) {

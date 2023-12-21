@@ -12,13 +12,15 @@ class ProductsHorizontalListView extends StatefulWidget {
   final String? title;
   final String? subtitle;
   final VoidCallback? loadNextPage;
+  final Function(Product)? onTapProduct;
 
   const ProductsHorizontalListView(
       {super.key,
       required this.products,
       this.title,
       this.subtitle,
-      this.loadNextPage});
+      this.loadNextPage,
+      this.onTapProduct});
 
   @override
   State<ProductsHorizontalListView> createState() =>
@@ -69,26 +71,28 @@ class _ProductsHorizontalListViewState
                             margin: const EdgeInsets.only(left: 8),
                             child: ProductCardView(
                                 product: widget.products[index],
-                                onTap: (id) {
-                                  context
-                                      .push(RouterPath.PRODUCT_DETAIL_PAGE(id));
-                                }),
+                                onTap: widget.onTapProduct ?? (product) {
+                                        context.push(
+                                            RouterPath.PRODUCT_DETAIL_PAGE(
+                                                product.id.toString()));
+                                      }),
                           )
                         : index == widget.products.length - 1
                             ? Container(
                                 margin: const EdgeInsets.only(right: 8),
                                 child: ProductCardView(
                                     product: widget.products[index],
-                                    onTap: (id) {
+                                    onTap: widget.onTapProduct ?? (product) {
                                       context.push(
-                                          RouterPath.PRODUCT_DETAIL_PAGE(id));
+                                          RouterPath.PRODUCT_DETAIL_PAGE(
+                                              product.id.toString()));
                                     }),
                               )
                             : ProductCardView(
                                 product: widget.products[index],
-                                onTap: (id) {
+                                onTap: widget.onTapProduct ?? (product) {
                                   context
-                                      .push(RouterPath.PRODUCT_DETAIL_PAGE(id));
+                                      .push(RouterPath.PRODUCT_DETAIL_PAGE(product.id.toString()));
                                 })),
               ),
             ),

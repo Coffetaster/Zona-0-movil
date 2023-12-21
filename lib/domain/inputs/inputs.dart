@@ -7,6 +7,8 @@ export 'password.dart';
 export 'phone.dart';
 export 'username.dart';
 
+export 'custom_personal_validation.dart';
+
 /**
  * Returns true if value is correct else return false
  */

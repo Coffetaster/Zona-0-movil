@@ -7,6 +7,7 @@ const List<Color> colorThemes = [
   Color(0xffE65829),
   Color(0xFFff8947),
   Color(0xFFfea454),
+  Color(0xFF121212),
 ];
 
 class AppTheme {
@@ -15,17 +16,9 @@ class AppTheme {
 
   AppTheme({this.selectedColor = 0, this.isDark = false});
 
-  ThemeData theme() {
-    return _theme(isDark);
-  }
-
-  ThemeData themeLight() {
-    return _theme(false);
-  }
-
-  ThemeData themeDark() {
-    return _theme(true);
-  }
+  ThemeData theme() => _theme(isDark);
+  ThemeData themeLight() => _theme(false);
+  ThemeData themeDark() => _theme(true);
 
   ThemeData _theme(bool isDarkMode) {
     // GoogleFonts.mulish()
@@ -34,9 +27,14 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         seedColor: colorPrimary,
-        primary: colorPrimary,
-        // primary: isDarkMode ? null : colorPrimary,
+        // primary: colorPrimary,
+        primary: isDarkMode ? null : colorPrimary,
         brightness: isDarkMode ? Brightness.dark : Brightness.light,
+        // background: isDarkMode ? const Color(0xFF000000) : const Color(0xFFf9f9f9),
+        background: isDarkMode ? const Color(0xFF000000) : null,
+        surface: isDarkMode ? const Color(0xFF121212) : null,
+        primaryContainer: isDarkMode ? const Color(0xFF121212) : null,
+        secondaryContainer: isDarkMode ? const Color(0xFF121212) : null,
       ),
       appBarTheme: const AppBarTheme(
         centerTitle: false,

@@ -12,6 +12,7 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     Widget realChild = child;
     if(padding != null) {
       realChild = Padding(
@@ -21,6 +22,8 @@ class CustomCard extends StatelessWidget {
     }
     return Card(
         color: color,
+        // surfaceTintColor: Colors.white,
+        shadowColor: colorScheme.primary.withOpacity(0.5),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))),
         elevation: elevation,

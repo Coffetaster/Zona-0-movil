@@ -46,13 +46,13 @@ class AccountFormVerifyCodeNotifier
 
       state = state.copyWith(formStatus: FormStatus.invalid);
       return code.toString();
-    } on CustomDioError catch (_) {
+    } on CustomDioError catch (e) {
       state = state.copyWith(formStatus: FormStatus.invalid);
       // if (e.data == null) return "";
       // Map<String, dynamic> json = (e.data is String) ? jsonDecode(e.data) : e.data;
       // return json["detail"] ?? "";
       // return Utils.getErrorsFromXnon_field_errors(e.data);
-      return "Código incorrecto";
+      return e.data == null ? "" : "Código incorrecto";
     } catch (e) {
       state = state.copyWith(formStatus: FormStatus.invalid);
       return "";

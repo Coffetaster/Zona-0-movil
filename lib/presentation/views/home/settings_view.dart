@@ -2,10 +2,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
-import 'package:zona0_apk/config/theme/app_theme.dart';
+import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/providers/theme/theme_provider.dart';
@@ -67,6 +68,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                 const SizedBox(
                   height: 10,
                 ),
+                infoBloc3(),
                 infoBloc(),
                 infoBloc2(),
 
@@ -94,20 +96,19 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                     child: GestureDetector(
                       onTap: () {
                         if (accountState.imagePath.isNotEmpty) {
-                          ShowImage.show(
+                          ShowImage.fromNetwork(
                               context: context,
-                              foto: accountState.imagePath,
-                              tag: "ImageProfile2-${accountState.id}");
+                              imagePath: accountState.imagePath,
+                              heroTag: HeroTags.imageProfile2(accountState.id));
                         }
                       },
                       child: Hero(
-                        tag: "ImageProfile2-${accountState.id}",
+                        tag: HeroTags.imageProfile2(accountState.id),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: WidgetsGI.CacheImageNetworkGI(
                                 accountState.imagePath,
-                                placeholderPath:
-                                    ImagesPath.user_placeholder.path,
+                                placeholderPath: ImagesPath.pic_profile.path,
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover)),
@@ -142,7 +143,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
               title: AppLocalizations.of(context)!.editarDatos,
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
               onTap: () {
-                Utils.showSnackbarEnDesarrollo(context);
+                context.push(RouterPath.ACCOUNT_EDIT_DATA_PAGE);
               },
             ),
           ),
@@ -191,7 +192,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             title: AppLocalizations.of(context)!.acercaDe,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
             onTap: () {
-              Utils.showSnackbarEnDesarrollo(context);
+              context.push(RouterPath.SETTINGS_ABOUT_US_PAGE);
             },
           ),
         ],
@@ -211,6 +212,20 @@ class _SettingsViewState extends ConsumerState<SettingsView>
         ],
       ));
 
+  Widget infoBloc3() => CustomCard(
+          child: Column(
+        children: <Widget>[
+          SettingOption(
+            icon: Icons.padding_outlined,
+            title: AppLocalizations.of(context)!.verBienvenida,
+            trailing: const Icon(Icons.arrow_forward_ios_outlined),
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
+          ),
+        ],
+      ));
+
   Widget acountBloc() => CustomCard(
           child: Column(
         children: <Widget>[
@@ -219,7 +234,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             title: AppLocalizations.of(context)!.cambiarContrasena,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
             onTap: () {
-              Utils.showSnackbarEnDesarrollo(context);
+              context.push(RouterPath.ACCOUNT_CHANGE_PASSWORD_PAGE);
             },
           ),
           const Divider(thickness: 1, height: 1),

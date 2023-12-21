@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
+import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
@@ -100,10 +101,10 @@ class RegisterFormPage extends ConsumerWidget {
       child: FadeInUp(
         child: PopScope(
           canPop: confirmExit != 0 && !verifyForm(),
-              // registerClientStatus.formStatus == FormStatus.invalid,
+          // registerClientStatus.formStatus == FormStatus.invalid,
           onPopInvoked: (canPop) {
             if (!verifyForm() && confirmExit == 0)
-            // if (registerClientStatus.formStatus == FormStatus.invalid)
+              // if (registerClientStatus.formStatus == FormStatus.invalid)
               Utils.showDialogConfirmSalir(context, ref, idConfirmExitProvider);
           },
           child: Container(
@@ -265,13 +266,29 @@ class RegisterFormPage extends ConsumerWidget {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: registerClientStatus.imagePath == null
-                            ? Image.asset(ImagesPath.user_placeholder.path,
-                                width: 120, height: 120, fit: BoxFit.cover)
-                            : Image.file(File(registerClientStatus.imagePath!),
-                                width: 120, height: 120, fit: BoxFit.cover),
+                      child: GestureDetector(
+                        onTap: registerClientStatus.imagePath == null
+                            ? null
+                            : () {
+                                ShowImage.fromFile(
+                                    context: context,
+                                    imagePath: registerClientStatus.imagePath!,
+                                    heroTag: HeroTags.registerUserFormTag);
+                              },
+                        child: Hero(
+                          tag: HeroTags.registerUserFormTag,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: registerClientStatus.imagePath == null
+                                ? Image.asset(ImagesPath.pic_profile.path,
+                                    width: 120, height: 120, fit: BoxFit.cover)
+                                : Image.file(
+                                    File(registerClientStatus.imagePath!),
+                                    width: 120,
+                                    height: 120,
+                                    fit: BoxFit.cover),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -280,7 +297,7 @@ class RegisterFormPage extends ConsumerWidget {
                     bottom: 0,
                     child: FloatingActionButton.small(
                       onPressed: () {
-                        selectImagen(ref);
+                        selectImagen(context, ref);
                       },
                       child: Icon(Icons.add_photo_alternate_outlined),
                       elevation: 0,
@@ -480,10 +497,10 @@ class RegisterFormPage extends ConsumerWidget {
         ));
   }
 
-  Future<void> selectImagen(WidgetRef ref) async {
-    XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      ref.read(registerFormClientProvider.notifier).imageSelect(image.path);
+  Future<void> selectImagen(BuildContext context, WidgetRef ref) async {
+    final imagePath = await Utils.selectAndCropImage(context);
+    if (imagePath != null) {
+      ref.read(registerFormClientProvider.notifier).imageSelect(imagePath);
     }
   }
 }

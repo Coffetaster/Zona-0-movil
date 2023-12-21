@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/entities/entities.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
@@ -53,4 +55,13 @@ class Utils {
       CompanyType("TCP"),
       CompanyType("Estatal")
     ];
+
+  static Future<String?> selectAndCropImage(BuildContext context) async {
+    XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      String? imagePath = await context.push(RouterPath.UTILS_IMAGE_CROP_PAGE, extra: image.path);
+      return imagePath;
+    }
+    return null;
+  }
 }

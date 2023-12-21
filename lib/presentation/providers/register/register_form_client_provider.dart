@@ -33,14 +33,14 @@ class RegisterFormClientNotifier
 
   void telephoneChanged(String value) {
     final telephone = PhoneInput.dirty(value,
-        personalValidation: telephonePersonalValidation);
+        personalValidation: CustomPersonalValidation.telephonePersonalValidation);
     state = state.copyWith(
         telephone: telephone, isvalid: validateForm(telephone: telephone));
   }
 
   void ciChanged(String value) {
     final ci =
-        GeneralInput.dirty(value, personalValidation: ciPersonalValidation);
+        GeneralInput.dirty(value, personalValidation: CustomPersonalValidation.ciPersonalValidation);
     state = state.copyWith(ci: ci, isvalid: validateForm(ci: ci));
   }
 
@@ -57,17 +57,17 @@ class RegisterFormClientNotifier
 
   void passwordChanged(String value) {
     final password = PasswordInput.dirty(value,
-        personalValidation: passwordPersonalValidation);
+        personalValidation:
+            CustomPersonalValidation.passwordPersonalValidation);
     value = value.trim();
-    bool passwordRequired1 = value.length >= 8;
+    bool passwordRequired1 =
+        CustomPersonalValidation.validatePasswordRequired_Length(value);
     bool passwordRequired2 =
-        value.toLowerCase() != value && value.toUpperCase() != value;
-    bool passwordRequired3 = value.contains(RegExp(r'[0-9]'));
-    bool passwordRequired4 = value
-        .toLowerCase()
-        .replaceAll(RegExp(r'[0-9]'), "")
-        .replaceAll(RegExp(r'[a-z]'), "")
-        .isNotEmpty;
+        CustomPersonalValidation.validatePasswordRequired_Case(value);
+    bool passwordRequired3 =
+        CustomPersonalValidation.validatePasswordRequired_Number(value);
+    bool passwordRequired4 =
+        CustomPersonalValidation.validatePasswordRequired_EspecialChar(value);
     state = state.copyWith(
         password: password,
         passwordRequired1: passwordRequired1,
@@ -109,13 +109,14 @@ class RegisterFormClientNotifier
       name: NameInput.dirty(state.name.value),
       lastName: NameInput.dirty(state.lastName.value),
       telephone: PhoneInput.dirty(state.telephone.value,
-          personalValidation: telephonePersonalValidation),
+          personalValidation: CustomPersonalValidation.telephonePersonalValidation),
       ci: GeneralInput.dirty(state.ci.value,
-          personalValidation: ciPersonalValidation),
+          personalValidation: CustomPersonalValidation.ciPersonalValidation),
       username: UsernameInput.dirty(state.username.value),
       email: EmailInput.dirty(state.email.value),
       password: PasswordInput.dirty(state.password.value,
-          personalValidation: passwordPersonalValidation),
+          personalValidation:
+              CustomPersonalValidation.passwordPersonalValidation),
       isvalid: validateForm(),
       isFormDirty: true);
 
@@ -162,39 +163,6 @@ class RegisterFormClientNotifier
   RegisterFormClientStatus get currentState => state;
 }
 
-PersonalValidationResult telephonePersonalValidation(String value) {
-  if (value.length == 8 &&
-      int.tryParse(value) != null &&
-      int.tryParse(value)! >= 0) return PersonalValidationResult.isValid();
-  return PersonalValidationResult.noValid("Formato incorrecto");
-}
-
-PersonalValidationResult ciPersonalValidation(String value) {
-  if (value.length == 11 &&
-      int.tryParse(value) != null &&
-      int.tryParse(value)! >= 0) return PersonalValidationResult.isValid();
-  return PersonalValidationResult.noValid("Formato incorrecto");
-}
-
-PersonalValidationResult passwordPersonalValidation(String value) {
-  value = value.trim();
-  bool passwordRequired1 = value.length >= 8;
-  bool passwordRequired2 =
-      value.toLowerCase() != value && value.toUpperCase() != value;
-  bool passwordRequired3 = value.contains(RegExp(r'[0-9]'));
-  bool passwordRequired4 = value
-      .toLowerCase()
-      .replaceAll(RegExp(r'[0-9]'), "")
-      .replaceAll(RegExp(r'[a-z]'), "")
-      .isNotEmpty;
-  if (!passwordRequired1 ||
-      !passwordRequired2 ||
-      !passwordRequired3 ||
-      !passwordRequired4)
-    return PersonalValidationResult.noValid("Contraseña insegura");
-  return PersonalValidationResult.isValid();
-}
-
 class RegisterFormClientStatus {
   final FormStatus formStatus;
   final bool isvalid;
@@ -237,13 +205,14 @@ class RegisterFormClientStatus {
       this.name = const NameInput.pure(),
       this.lastName = const NameInput.pure(),
       this.telephone = const PhoneInput.pure(
-          personalValidation: telephonePersonalValidation),
+          personalValidation: CustomPersonalValidation.telephonePersonalValidation),
       this.ci =
-          const GeneralInput.pure(personalValidation: ciPersonalValidation),
+          const GeneralInput.pure(personalValidation: CustomPersonalValidation.ciPersonalValidation),
       this.username = const UsernameInput.pure(),
       this.email = const EmailInput.pure(),
       this.password = const PasswordInput.pure(
-          personalValidation: passwordPersonalValidation),
+          personalValidation:
+              CustomPersonalValidation.passwordPersonalValidation),
       this.isObscurePassword = true,
       this.passwordRequired1 = false,
       this.passwordRequired2 = false,

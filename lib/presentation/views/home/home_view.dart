@@ -45,7 +45,7 @@ class _HomeViewState extends State<HomeView>
           ProductsHorizontalListView(
               title: AppLocalizations.of(context)!.populares,
               products: AppData.allProducts..shuffle()),
-          // const SizedBox(height: 80),
+          const SizedBox(height: 80),
         ],
       ),
     );

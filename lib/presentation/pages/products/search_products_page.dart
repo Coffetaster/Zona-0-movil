@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/widgets/products/product_item_view.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
-class SearchPage extends StatelessWidget {
-  const SearchPage({super.key});
+class SearchProductsPage extends StatelessWidget {
+  const SearchProductsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class SearchPage extends StatelessWidget {
           child: Column(
           children: [
             Hero(
-              tag: "text_form_search_productos",
+              tag: HeroTags.textFormSearchProductos,
               child: CustomTextFormField(
                 hint: AppLocalizations.of(context)!.buscarProductos,
                 prefixIcon: Icons.search_outlined,
