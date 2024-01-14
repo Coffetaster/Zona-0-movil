@@ -15,20 +15,17 @@ class RegisterApi extends RegisterRemoteRepository {
   @override
   Future<Client?> registerClient(Client client, String imagePath) async {
     try {
-      ClientModel clientModel = ClientMapper.entity_to_model(client);
       final image = await MultipartFile.fromFile(imagePath,
           filename: imagePath
-          // filename: imagePath.toString().split("/").last,
-          // contentType: MediaType('image', 'jpg') //MediaType instalar http_parser
           );
       final json = await _myDio.requestMultipart(
           path: '$localUrl/client/',
           requestType: RequestType.POST,
-          data: FormData.fromMap(clientModel.toMap()
+          data: FormData.fromMap(client.toModel().toMap()
             ..removeWhere((key, value) => key == 'id')
             ..addAll({"image": [image]})));
       if (json == null || (json as Map<String, dynamic>).isEmpty) return null;
-      return ClientMapper.model_to_entity(ClientModel.fromMap(json));
+      return ClientModel.fromMap(json).toEntity();
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -39,20 +36,17 @@ class RegisterApi extends RegisterRemoteRepository {
   @override
   Future<Company?> registerCompany(Company company, String imagePath) async {
     try {
-      CompanyModel companyModel = CompanyMapper.entity_to_model(company);
       final image = await MultipartFile.fromFile(imagePath,
           filename: imagePath,
-          // filename: imagePath.toString().split("/").last,
-          // contentType: MediaType('image', 'jpg') //MediaType instalar http_parser
           );
       final json = await _myDio.requestMultipart(
           path: '$localUrl/company/',
           requestType: RequestType.POST,
-          data: FormData.fromMap(companyModel.toMap()
+          data: FormData.fromMap(company.toModel().toMap()
             ..removeWhere((key, value) => key == 'id')
             ..addAll({"image": [image]})));
       if (json == null || (json as Map<String, dynamic>).isEmpty) return null;
-      return CompanyMapper.model_to_entity(CompanyModel.fromMap(json));
+      return CompanyModel.fromMap(json).toEntity();
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {

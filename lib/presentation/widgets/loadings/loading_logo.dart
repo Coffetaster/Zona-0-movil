@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
@@ -18,8 +19,13 @@ class LoadingLogo extends StatelessWidget {
         children: [
           Lottie.asset(LottiesPath.loading_1.path,
               height: 200, width: 200, fit: BoxFit.fill),
-          Image.asset(ImagesPath.logo.path,
-              height: 50, width: 50, fit: BoxFit.fill)
+          Pulse(
+            infinite: true,
+            child: Image.asset(ImagesPath.logo.path,
+                height: 35, width: 35, fit: BoxFit.fill),
+          ),
+          // Image.asset(ImagesPath.logo.path,
+          //       height: 50, width: 50, fit: BoxFit.fill),
         ],
       ),
     );

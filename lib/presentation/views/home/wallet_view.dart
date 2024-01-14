@@ -1,7 +1,12 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:zona0_apk/config/helpers/utils.dart';
+import 'package:zona0_apk/config/extensions/custom_context.dart';
+import 'package:zona0_apk/config/router/router_path.dart';
+import 'package:zona0_apk/config/theme/app_theme.dart';
+import 'package:zona0_apk/domain/entities/entities.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
@@ -33,6 +38,7 @@ class _WalletViewState extends ConsumerState<WalletView>
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CustomTitle(AppLocalizations.of(context)!.miBilletera),
@@ -51,18 +57,109 @@ class _WalletViewState extends ConsumerState<WalletView>
                 const SizedBox(
                   height: 40,
                 ),
-                CustomTitle(AppLocalizations.of(context)!.transaciones),
-                _transactionList(),
-                Center(
-                    child: CustomFilledButton(
-                        label: AppLocalizations.of(context)!.verTodas,
-                        onPressed: () {
-                          Utils.showSnackbarEnDesarrollo(context);
-                        })),
+                Consumer(
+                  builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTitle(AppLocalizations.of(context)!.recibos),
+                        CustomIconButton(icon: Icons.refresh_outlined, onPressed: () {
+                          ref.read(transferProvider.notifier).getListPaidAndUnpaidReceive();
+                        })
+                      ],
+                    );
+                  },
+                ),
+                _listReceivePaidAndUnpaidWidget(context),
+                const SizedBox(
+                  height: 10,
+                ),
+                CustomTitle(AppLocalizations.of(context)!.envios),
+                SizedBox(
+                    height: 200,
+                    child: Center(
+                        child: Text(AppLocalizations.of(context)!.noSolEnvio))),
+                // _transactionList(),
+                // Center(
+                //     child: CustomFilledButton(
+                //         label: AppLocalizations.of(context)!.verTodas,
+                //         onPressed: () {
+                //           Utils.showSnackbarEnDesarrollo(context);
+                //         })),
                 const SizedBox(height: 80),
               ],
             )),
       ),
+    );
+  }
+
+  Widget _listReceivePaidAndUnpaidWidget(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final transferState = ref.watch(transferProvider);
+        if (transferState.isLoading) {
+          return const SizedBox(
+              width: double.infinity,
+              height: 300,
+              child: Center(child: LoadingLogo()));
+        }
+        int maxLength = transferState.listPaidReceive.length >
+                transferState.listUnpaidReceive.length
+            ? transferState.listPaidReceive.length
+            : transferState.listUnpaidReceive.length;
+        if (maxLength == 0) maxLength = 1;
+        return SizedBox(
+          width: double.infinity,
+          height: (maxLength * 70) + 140,
+          child: DefaultTabController(
+              length: 2,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SegmentedTabControl(
+                      radius: const Radius.circular(AppTheme.borderRadius),
+                      backgroundColor: context.secondaryContainer,
+                      indicatorColor: context.primary,
+                      tabTextColor: context.secondary,
+                      selectedTabTextColor: context.onPrimary,
+                      squeezeIntensity: 2,
+                      height: 45,
+                      tabPadding: const EdgeInsets.symmetric(horizontal: 8),
+                      textStyle: context.titleSmall,
+                      selectedTextStyle: context.titleMedium,
+                      tabs: [
+                        SegmentTab(
+                          label: "${AppLocalizations.of(context)!.efectuados}(${transferState.listPaidReceive.length})",
+                        ),
+                        SegmentTab(
+                          label: "${AppLocalizations.of(context)!.pendientes}(${transferState.listUnpaidReceive.length})",
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 70),
+                    child: TabBarView(
+                        physics: const BouncingScrollPhysics(),
+                        children: [
+                          transferState.listPaidReceive.isEmpty
+                              ? Center(
+                                  child: Text(AppLocalizations.of(context)!
+                                      .noSolRecibosEfectuados))
+                              : _transactionList(transferState.listPaidReceive),
+                          transferState.listUnpaidReceive.isEmpty
+                              ? Center(
+                                  child: Text(AppLocalizations.of(context)!
+                                      .noSolRecibosPendientes))
+                              : _transactionList(
+                                  transferState.listUnpaidReceive),
+                        ]),
+                  ),
+                ],
+              )),
+        );
+      },
     );
   }
 
@@ -77,61 +174,53 @@ class _WalletViewState extends ConsumerState<WalletView>
               crossAxisCount: 3,
               children: [
                 IconSubtextButton(
-                    icon: Icons.attach_money_outlined,
-                    label: AppLocalizations.of(context)!.comprarZOP,
+                    icon: Icons.file_download_outlined,
+                    label: AppLocalizations.of(context)!.recibirOSP,
                     onTap: () {
-                      Utils.showSnackbarEnDesarrollo(context);
+                      context.push(RouterPath.WALLET_RECEIVE_OSP_PAGE);
                     }),
                 IconSubtextButton(
-                    icon: Icons.payment_outlined,
-                    label: AppLocalizations.of(context)!.cambiarZOP,
+                    icon: Icons.file_upload_outlined,
+                    label: AppLocalizations.of(context)!.enviarOSP,
                     onTap: () {
-                      Utils.showSnackbarEnDesarrollo(context);
+                      context.push(RouterPath.WALLET_SEND_OSP_PAGE);
                     }),
                 IconSubtextButton(
-                    icon: Icons.swap_horiz_outlined,
-                    label: AppLocalizations.of(context)!.transferir,
+                    icon: Icons.balance_outlined,
+                    label: AppLocalizations.of(context)!.bancarizar,
                     onTap: () {
-                      Utils.showSnackbarEnDesarrollo(context);
+                      context.push(RouterPath.WALLET_BANKING_PAGE);
                     }),
                 IconSubtextButton(
-                    icon: Icons.qr_code_scanner_outlined,
-                    label: AppLocalizations.of(context)!.pagarQr,
+                    icon: Icons.local_activity_outlined,
+                    label: AppLocalizations.of(context)!.canjear_codigo,
                     onTap: () {
-                      Utils.showSnackbarEnDesarrollo(context);
-                    }),
-                IconSubtextButton(
-                    icon: Icons.qr_code_outlined,
-                    label: AppLocalizations.of(context)!.generarQr,
-                    onTap: () {
-                      Utils.showSnackbarEnDesarrollo(context);
+                      context.push(RouterPath.WALLET_REDEEM_CODE_PAGE);
                     }),
                 IconSubtextButton(
                     icon: Icons.play_arrow_outlined,
-                    label: AppLocalizations.of(context)!.ganarZOP,
+                    label: AppLocalizations.of(context)!.jugar,
                     onTap: () {
-                      Utils.showSnackbarEnDesarrollo(context);
+                      context.push(RouterPath.WALLET_PLAY_GAME_PAGE);
+                    }),
+                IconSubtextButton(
+                    icon: Icons.volunteer_activism_outlined,
+                    label: AppLocalizations.of(context)!.donar,
+                    onTap: () {
+                      context.push(RouterPath.WALLET_DONATE_PAGE);
                     }),
               ])),
     );
   }
 
-  Widget _transactionList() {
-    return const Column(
-      children: <Widget>[
-        TransactionItem(
-            text: "Compra de 6 productos", time: "24 Nov 2023", monto: -6578),
-        TransactionItem(
-            text: "Tranferencia a alexkiller",
-            time: "22 Nov 2023",
-            monto: -1000),
-        TransactionItem(
-            text: "Regalo de lili80", time: "21 Nov 2023", monto: 4500),
-        TransactionItem(
-            text: "Ganaste en PPT", time: "20 Nov 2023", monto: 79.5),
-        TransactionItem(
-            text: "Perdiste en PPT", time: "20 Nov 2023", monto: -54.5),
-      ],
+  Widget _transactionList(List<Transaction> transactions) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children:
+            transactions.map((e) => TransactionItem(transaction: e)).toList(),
+      ),
     );
   }
 

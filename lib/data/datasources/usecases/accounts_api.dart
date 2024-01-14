@@ -31,7 +31,7 @@ class AccountsApi extends AccountsRemoteRepository {
         loginCallback(token, null);
       } else {
         loginCallback(
-            token, UserMapper.model_to_entity(UserModel.fromMap(user)));
+            token, UserModel.fromMap(user).toEntity());
       }
     } on CustomDioError catch (_) {
       rethrow;

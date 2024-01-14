@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         final theme = ref.watch(themeProvider);
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: 'Zona 0',
+          title: 'Orca Store',
           theme: AppTheme(isDark: theme.isDark).theme(),
           darkTheme: AppTheme().themeDark(),
           themeMode: ThemeMode.system,

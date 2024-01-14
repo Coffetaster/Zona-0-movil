@@ -28,12 +28,12 @@ class CustomIconButton extends StatelessWidget {
             backgroundColor: colorScheme.tertiary,
             child: getIconButton(),
             label: Text(badgeInfo!, style: TextStyle(color: colorScheme.onTertiary)),
-            alignment: badgeAlignment ?? Alignment(.25, -.35));
+            alignment: badgeAlignment ?? const Alignment(.25, -.35));
   }
 
   Widget getIconButton() {
     ButtonStyle buttonStyle = IconButton.styleFrom(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius:
                 BorderRadius.all(Radius.circular(AppTheme.borderRadius))));
     switch (iconButtonType) {

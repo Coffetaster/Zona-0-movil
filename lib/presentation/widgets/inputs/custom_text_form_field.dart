@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 
 class CustomTextFormField extends StatelessWidget {
+  final TextEditingController? controller;
   final String? initialValue;
   final String? label;
   final String? hint;
@@ -23,6 +24,7 @@ class CustomTextFormField extends StatelessWidget {
 
   const CustomTextFormField({
     super.key,
+    this.controller,
     this.initialValue,
     this.label,
     this.hint,
@@ -57,6 +59,7 @@ class CustomTextFormField extends StatelessWidget {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.borderRadius)),
       elevation: 0,
       child: TextFormField(
+        controller: controller,
         initialValue: initialValue,
         enabled: enabled,
         readOnly: readOnly,

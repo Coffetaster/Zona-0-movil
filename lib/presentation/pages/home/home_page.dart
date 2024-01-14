@@ -2,11 +2,12 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
-import 'package:zona0_apk/config/constants/providers_family.dart';
+import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
@@ -44,13 +45,6 @@ class _HomePageState extends ConsumerState<HomePage>
   void initState() {
     super.initState();
     pageController = PageController(keepPage: true);
-
-    scrollController.addListener(() {
-      ref
-          .read(scrollControllerProvider(ProvidersFamily.scroll_controller_home)
-              .notifier)
-          .uptadeScroll(scrollController.position.pixels);
-    });
   }
 
   @override
@@ -66,10 +60,6 @@ class _HomePageState extends ConsumerState<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    final scrollControllerState_isOpen = ref.watch(
-        scrollControllerProvider(ProvidersFamily.scroll_controller_home)
-            .select((value) => value.isOpen));
 
     Future.delayed(const Duration(milliseconds: 0), () {
       if (pageController.hasClients) {
@@ -94,263 +84,218 @@ class _HomePageState extends ConsumerState<HomePage>
       },
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
-        body: SafeArea(
-          child: NestedScrollView(
-              controller: scrollController,
-              physics: const BouncingScrollPhysics(),
-              body: Stack(children: [
-                PageView(
-                  //para evitar que scroll horizontalmente
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  children: viewRoutes,
-                ),
-                if (scrollControllerState_isOpen)
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final scrollControllerState_lastScrollPosition =
-                          ref.watch(scrollControllerProvider(
-                                  ProvidersFamily.scroll_controller_home)
-                              .select((value) => value.lastScrollPosition));
-                      return Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: scrollControllerState_lastScrollPosition ==
-                                      0 ||
-                                  !scrollController.hasClients
-                              ? 0
-                              : -(60 *
-                                  (scrollControllerState_lastScrollPosition *
-                                      100 /
-                                      scrollController
-                                          .position.maxScrollExtent) /
-                                  100),
-                          child: CustomBottomNavigationBar(widget.pageIndex));
-                    },
-                  )
-              ]),
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                if (innerBoxIsScrolled ==
-                        ref
-                            .read(scrollControllerProvider(
-                                ProvidersFamily.scroll_controller_home))
-                            .isOpen &&
-                    widget.pageIndex < 4) {
-                  Future.delayed(Duration.zero, () {
-                    ref
-                        .read(scrollControllerProvider(
-                                ProvidersFamily.scroll_controller_home)
-                            .notifier)
-                        .updateIsOpen(!innerBoxIsScrolled);
-                  });
-                }
-                return [
-                  if (widget.pageIndex < 4)
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final accountState = ref.watch(accountProvider);
-                        return SliverAppBar(
-                          expandedHeight: widget.pageIndex == 0 ? 160 : 100,
-                          pinned: widget.pageIndex == 0,
-                          // snap: widget.pageIndex != 0,
-                          // floating: widget.pageIndex != 0,
-                          bottom: widget.pageIndex == 0
-                              ? PreferredSize(
-                                  preferredSize: const Size.fromHeight(10),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 16),
-                                    child: Hero(
-                                      tag: HeroTags.textFormSearchProductos,
-                                      child: Container(
-                                          clipBehavior: Clip.hardEdge,
-                                          width: double.infinity,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: Colors.transparent,
-                                            border: Border.all(
-                                              color: colorPrimary,
-                                              width: 1,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                                AppTheme.borderRadius),
-                                          ),
-                                          child: Material(
-                                            color: Colors.transparent,
-                                            child: InkWell(
-                                              onTap: () => context
-                                                  .push(RouterPath.SEARCH_PAGE),
-                                              child: Row(
-                                                children: [
-                                                  const SizedBox(width: 8),
-                                                  Icon(Icons.search_outlined,
-                                                      color: colorPrimary),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .buscarProductos,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )),
-                                    ),
-                                  ),
-                                )
-                              : null,
-                          flexibleSpace: FlexibleSpaceBar(
-                            background: Center(
-                              child: Container(
-                                height: widget.pageIndex == 0 ? 160 : 100,
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 100,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Image.asset(ImagesPath.logo.path,
-                                                  height: 50,
-                                                  width: 50,
-                                                  fit: BoxFit.fill),
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .nameApp
-                                                    .toUpperCase(),
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge!
-                                                    .copyWith(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                          const Spacer(),
-                                          accountState.isLogin
-                                              ? Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Text(
-                                                        '${accountState.username}',
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        softWrap: false,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .titleMedium),
-                                                    const SizedBox(width: 8),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        if (accountState
-                                                            .imagePath
-                                                            .isNotEmpty) {
-                                                          ShowImage.fromNetwork(
-                                                              context: context,
-                                                              imagePath:
-                                                                  accountState
-                                                                      .imagePath,
-                                                              heroTag: HeroTags
-                                                                  .imageProfile1(
-                                                                      accountState
-                                                                          .id));
-                                                        }
-                                                      },
-                                                      child: SizedBox(
-                                                        width: 30,
-                                                        height: 30,
-                                                        child: Hero(
-                                                          tag: HeroTags
-                                                              .imageProfile1(
-                                                                  accountState
-                                                                      .id),
-                                                          child: ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          50),
-                                                              child: WidgetsGI.CacheImageNetworkGI(
-                                                                  accountState
-                                                                      .imagePath,
-                                                                  placeholderPath:
-                                                                      ImagesPath
-                                                                          .pic_profile
-                                                                          .path,
-                                                                  width: 30,
-                                                                  height: 30,
-                                                                  fit: BoxFit
-                                                                      .cover)),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 8),
-                                                  ],
-                                                )
-                                              : CustomFilledButton(
-                                                  label: AppLocalizations.of(
-                                                          context)!
-                                                      .autenticar,
-                                                  icon: Icons.login_rounded,
-                                                  onPressed: () => context.go(
-                                                      RouterPath
-                                                          .AUTH_LOGIN_PAGE)),
-                                          // const ThemeChangeWidget(),
-                                          if (accountState.isLogin)
-                                            CustomIconButton(
-                                                icon: Icons
-                                                    .notifications_outlined,
-                                                badgeInfo: "15",
-                                                onPressed: () {
-                                                  context.push(RouterPath
-                                                      .NOTIFICATIONS_PAGE);
-                                                }),
-                                          const SizedBox(width: 8),
-                                          // CustomIconButton(
-                                          //     icon: Icons.search_outlined,
-                                          //     onPressed: () {
-                                          //       context.push(RouterPath.SEARCH_PAGE);
-                                          //     }),
-                                        ],
-                                      ),
-                                    ),
-                                    if (widget.pageIndex == 0)
-                                      const SizedBox(height: 60.0)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                ];
-              }),
-        ),
-        floatingActionButton: scrollControllerState_isOpen
-            ? null
-            : FloatingActionButton.small(
-                onPressed: () {
-                  scrollController.animateTo(0,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.ease);
-                },
-                child: const Icon(Icons.keyboard_arrow_up_outlined)),
+        body: _homeBody(colorPrimary),
       ),
     );
   }
 
-  Widget CustomBottomNavigationBar(int currentIndex) {
+  Widget _homeBody(Color colorPrimary) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        // statusBarColor: Colors.red, //i like transaparent :-)
+        systemNavigationBarColor: context.secondaryContainer, // navigation bar color
+        // statusBarIconBrightness: Brightness.dark, // status bar icons' color
+        // systemNavigationBarIconBrightness: Brightness.dark, //navigation bar icons' color
+      ),
+      child: SafeArea(
+        child: NestedScrollView(
+            controller: scrollController,
+            physics: const BouncingScrollPhysics(),
+            body: Stack(children: [
+              PageView(
+                //para evitar que scroll horizontalmente
+                physics: const NeverScrollableScrollPhysics(),
+                controller: pageController,
+                children: viewRoutes,
+              ),
+              _bottomNav()
+            ]),
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                if (widget.pageIndex < 4) _appBar(colorPrimary),
+              ];
+            }),
+      ),
+    );
+  }
+
+  Consumer _appBar(Color colorPrimary) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final accountState = ref.watch(accountProvider);
+        return SliverAppBar(
+          expandedHeight: widget.pageIndex == 0 ? 160 : 100,
+          pinned: widget.pageIndex == 0,
+          // snap: widget.pageIndex != 0,
+          // floating: widget.pageIndex != 0,
+          bottom: widget.pageIndex == 0
+              ? PreferredSize(
+                  preferredSize: const Size.fromHeight(10),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Hero(
+                      tag: HeroTags.textFormSearchProductos,
+                      child: Container(
+                          clipBehavior: Clip.hardEdge,
+                          width: double.infinity,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border.all(
+                              color: colorPrimary,
+                              width: 1,
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(AppTheme.borderRadius),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => context.push(RouterPath.SEARCH_PAGE),
+                              child: Row(
+                                children: [
+                                  const SizedBox(width: 8),
+                                  Icon(Icons.search_outlined,
+                                      color: colorPrimary),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .buscarProductos,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )),
+                    ),
+                  ),
+                )
+              : null,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Center(
+              child: Container(
+                height: widget.pageIndex == 0 ? 160 : 100,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                                color: colorPrimary.withOpacity(.1),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(AppTheme.borderRadius))),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(ImagesPath.logo.path,
+                                    height: 50, width: 50, fit: BoxFit.fill),
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .nameApp
+                                      .toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Spacer(),
+                          accountState.isLogin
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Text('${accountState.username}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: false,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium),
+                                    const SizedBox(width: 8),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (accountState.imagePath.isNotEmpty) {
+                                          ShowImage.fromNetwork(
+                                              context: context,
+                                              imagePath: accountState.imagePath,
+                                              heroTag: HeroTags.imageProfile1(
+                                                  accountState.id));
+                                        }
+                                      },
+                                      child: SizedBox(
+                                        width: 30,
+                                        height: 30,
+                                        child: Hero(
+                                          tag: HeroTags.imageProfile1(
+                                              accountState.id),
+                                          child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              child:
+                                                  WidgetsGI.CacheImageNetworkGI(
+                                                      accountState.imagePath,
+                                                      placeholderPath:
+                                                          ImagesPath
+                                                              .pic_profile.path,
+                                                      width: 30,
+                                                      height: 30,
+                                                      fit: BoxFit.cover)),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                  ],
+                                )
+                              : CustomTextButton(
+                                  label:
+                                      AppLocalizations.of(context)!.autenticar,
+                                  icon: Icons.login_rounded,
+                                  onPressed: () =>
+                                      context.go(RouterPath.AUTH_LOGIN_PAGE)),
+                          if (accountState.isLogin)
+                            CustomIconButton(
+                                icon: Icons.notifications_outlined,
+                                badgeInfo: "15",
+                                onPressed: () {
+                                  context.push(RouterPath.NOTIFICATIONS_PAGE);
+                                }),
+                          const SizedBox(width: 8),
+                        ],
+                      ),
+                    ),
+                    if (widget.pageIndex == 0) const SizedBox(height: 60.0)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _bottomNav() {
+    return Positioned(
+        left: 0,
+        right: 0,
+        bottom: 0,
+        child: _CustomBottomNavigationBar(widget.pageIndex));
+  }
+
+  Widget _CustomBottomNavigationBar(int currentIndex) {
     final colorScheme = Theme.of(context).colorScheme;
     return FadeInUp(
       child: CurvedNavigationBar(

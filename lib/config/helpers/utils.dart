@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/entities/entities.dart';
 import 'package:zona0_apk/main.dart';
@@ -16,6 +18,11 @@ class Utils {
   static showSnackbarEnDesarrollo(BuildContext context) =>
       SnackBarGI.showWithIcon(context,
           icon: Icons.watch_later_outlined, text: "En desarrollo");
+
+  static showSnackbarCompruebeConexion(BuildContext context) =>
+      SnackBarGI.showWithIcon(context,
+          icon: Icons.error_outline,
+          text: AppLocalizations.of(context)!.compruebeConexion);
 
   static String getErrorsFromRegister(dynamic data) {
     if (data == null) return "";
@@ -61,5 +68,32 @@ class Utils {
       return imagePath;
     }
     return null;
+  }
+
+  static Widget underConstructionImage({
+    double width = 200,
+    double height = 200,
+  }) =>
+      SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(ImagesPath.under_construction.path,
+                width: width, height: height),
+            const Text("En desarrollo")
+          ],
+        ),
+      );
+
+  static Future<void> copyToClipboard(String text) async {
+    await Clipboard.setData(ClipboardData(text: text));
+  }
+
+  static Future<String> pasteFromClipboard() async {
+    ClipboardData? clipboardData =
+        await Clipboard.getData(Clipboard.kTextPlain);
+    return clipboardData?.text ?? "";
+    // return clipboardData != null ? clipboardData.text ?? "" : "";
   }
 }

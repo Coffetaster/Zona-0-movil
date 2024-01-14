@@ -40,8 +40,16 @@ class RouterPath {
 
   //* Utils pages
   static const String UTILS_IMAGE_CROP_PAGE = '/utils/image_crop';
+  static const String UTILS_QR_SCANNER_PAGE = '/utils/qr_scanner';
 
   //* Wallet pages
-  // static const String WALLET_TRANSFER_PAGE = '/wallet/transfer';
+  static const String WALLET_RECEIVE_OSP_PAGE = '/wallet/receive_osp';
+  static const String WALLET_SEND_OSP_PAGE = '/wallet/send_osp';
+  static const String WALLET_BANKING_PAGE = '/wallet/banking';
+  static const String WALLET_REDEEM_CODE_PAGE = '/wallet/redeem_code';
+  static const String WALLET_PLAY_GAME_PAGE = '/wallet/play_game';
+  static const String WALLET_DONATE_PAGE = '/wallet/donate';
+  static const String WALLET_RECEIVE_ITEM_DATA_PAGE_PATH = '/wallet/receive_item_data/:id';
+  static String WALLET_RECEIVE_ITEM_DATA_PAGE(String id) => '/wallet/receive_item_data/$id';
 
 }

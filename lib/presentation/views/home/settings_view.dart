@@ -230,7 +230,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
           child: Column(
         children: <Widget>[
           SettingOption(
-            icon: Icons.sync_outlined,
+            icon: Icons.lock_outline,
             title: AppLocalizations.of(context)!.cambiarContrasena,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
             onTap: () {

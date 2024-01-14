@@ -9,6 +9,8 @@ class ImagesPath {
   static final sign_up = ImagePath(path: 'assets/imagen/sign_up.png');
   static final login = ImagePath(path: 'assets/imagen/login.png');
   static final pic_profile = ImagePath(path: 'assets/imagen/pic_profile.png');
+  static final happy_birthday = ImagePath(path: 'assets/imagen/happy_birthday.png');
+  static final under_construction = ImagePath(path: 'assets/imagen/under_construction.png');
 }
 
 class ImagePath {

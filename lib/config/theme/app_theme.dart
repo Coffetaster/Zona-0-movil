@@ -87,5 +87,5 @@ class AppTheme {
     horizontal: 10,
   );
 
-  static double borderRadius = 20;
+  static const double borderRadius = 20;
 }

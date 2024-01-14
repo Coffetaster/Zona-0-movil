@@ -31,6 +31,58 @@ final appRouter = GoRouter(
           key: state.pageKey, child: const SearchProductsPage()),
     ),
 
+    //* Wallet Pages
+    GoRoute(
+      path: RouterPath.WALLET_RECEIVE_OSP_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey, child: const ReceiveOSPPage());
+      },
+    ),
+    GoRoute(
+      path: RouterPath.WALLET_SEND_OSP_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey, child: const SendOSPPage());
+      },
+    ),
+    GoRoute(
+      path: RouterPath.WALLET_BANKING_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey, child: const BankingPage());
+      },
+    ),
+    GoRoute(
+      path: RouterPath.WALLET_REDEEM_CODE_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey, child: const RedeemCodePage());
+      },
+    ),
+    GoRoute(
+      path: RouterPath.WALLET_PLAY_GAME_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey, child: const PlayGamePage());
+      },
+    ),
+    GoRoute(
+      path: RouterPath.WALLET_DONATE_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey, child: const DonatePage());
+      },
+    ),
+    GoRoute(
+      path: RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE_PATH,
+      pageBuilder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey, child: ReceiveItemDataPage(id: id));
+      },
+    ),
+
     //* Utils Pages
     GoRoute(
       path: RouterPath.UTILS_IMAGE_CROP_PAGE,
@@ -38,6 +90,13 @@ final appRouter = GoRouter(
         final originalPath = state.extra as String?;
         return RouterTransition.fadeTransitionPage(
             key: state.pageKey, child: ImageCropPage(originalPath: originalPath));
+      },
+    ),
+    GoRoute(
+      path: RouterPath.UTILS_QR_SCANNER_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.fadeTransitionPage(
+            key: state.pageKey, child: QrScannerPage());
       },
     ),
 
@@ -64,7 +123,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouterPath.ACCOUNT_EDIT_DATA_PAGE,
       pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
-          key: state.pageKey, child: const AccountEditData()),
+          key: state.pageKey, child: const AccountEditDataPage()),
     ),
 
     //* Auth Pages

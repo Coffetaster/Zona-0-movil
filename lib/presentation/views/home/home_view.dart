@@ -23,7 +23,7 @@ class _HomeViewState extends State<HomeView>
             height: 16,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: CustomTitle(AppLocalizations.of(context)!.categorias),
           ),
           _categoryWidget(context),

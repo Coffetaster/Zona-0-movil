@@ -4,6 +4,7 @@ import 'package:flutter_countdown_timer/index.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
@@ -105,9 +106,7 @@ class VerifyCodePage extends ConsumerWidget {
                               children: <Widget>[
                                 const SizedBox(height: 8),
                                 Text(AppLocalizations.of(context)!.entreCodigo,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium),
+                                    style: context.titleMedium),
                                 const SizedBox(height: 8),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
