@@ -17,7 +17,7 @@ class IconSubtextButton extends StatelessWidget {
         FloatingActionButton(
           heroTag: null,
           elevation: 1,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))),
           onPressed: onTap,
           child: Icon(icon),

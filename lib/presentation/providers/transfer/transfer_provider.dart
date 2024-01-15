@@ -36,13 +36,22 @@ class TransferNotifier extends StateNotifier<TransferState> {
     state = state.copyWith(isLoading: false);
   }
 
-  Future<int> createReceive(double amount) async {
+  Future<int> createReceive(double amount, {
+    Function(Transaction transaction)? callback
+  }) async {
     try {
       if (!connectivityStatusNotifier.isConnected) {
         return 498;
       }
-      await transferRemoteRepository.createReceive(amount);
-      getListPaidAndUnpaidReceive();
+      Transaction transaction = await transferRemoteRepository.createReceive(amount);
+      if(callback != null) {
+        await getListUnpaidReceive();
+        callback(transaction);
+        getListPaidReceive();
+      }
+      else {
+        getListPaidAndUnpaidReceive();
+      }
       return 200;
     } on CustomDioError catch (_) {
       rethrow;

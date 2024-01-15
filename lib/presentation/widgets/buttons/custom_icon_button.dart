@@ -26,9 +26,9 @@ class CustomIconButton extends StatelessWidget {
         ? getIconButton()
         : Badge(
             backgroundColor: colorScheme.tertiary,
-            child: getIconButton(),
             label: Text(badgeInfo!, style: TextStyle(color: colorScheme.onTertiary)),
-            alignment: badgeAlignment ?? const Alignment(.25, -.35));
+            alignment: badgeAlignment ?? const Alignment(.25, -.35),
+            child: getIconButton());
   }
 
   Widget getIconButton() {

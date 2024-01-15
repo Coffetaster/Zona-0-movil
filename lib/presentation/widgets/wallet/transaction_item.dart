@@ -25,22 +25,28 @@ class TransactionItem extends StatelessWidget {
       //   child: Icon(monto < 0 ? Icons.trending_down_rounded : Icons.trending_up_rounded),
       // ),
       contentPadding: const EdgeInsets.symmetric(),
-      title: Text(transaction.code, style: Theme.of(context).textTheme.titleMedium, maxLines: 2),
-      subtitle: Text("${transaction.date}, ${transaction.time.split(".")[0]}"),
+      title: Text(transaction.code,
+          style: Theme.of(context).textTheme.titleMedium, maxLines: 2),
+      subtitle: Text("${transaction.date}, ${transaction.time.split(".")[0]}",
+          maxLines: 1),
       trailing: Container(
           height: 30,
           width: 120,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: color.secondaryContainer,
-            borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
+            borderRadius:
+                BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
           ),
-          child: Text('${transaction.amount.toStringAsFixed(2)} ${Constants.namePoints}',
+          child: Text(
+              '${transaction.amount.toStringAsFixed(2)} ${Constants.namePoints}',
+              maxLines: 1,
               style: GoogleFonts.mulish(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: color.secondary))),
-      onTap: () => context.push(RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(transaction.id.toString())),
+      onTap: () => context.push(
+          RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(transaction.id.toString())),
     );
   }
 }

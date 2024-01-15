@@ -17,13 +17,13 @@ class TransferApi extends TransferRemoteRepository {
   }
 
   @override
-  Future<void> createReceive(double amount) async {
+  Future<Transaction> createReceive(double amount) async {
     try {
       final json = await _myDio.request(
           path: '$localUrl/create-receive/',
           requestType: RequestType.POST,
           data: {"amount": amount});
-      print(json);
+      return TransactionModel.fromMap(json).toEntity();
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {

@@ -22,7 +22,7 @@ class CustomFilledButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))));
 
     if (filledButtonType == FilledButtonType.normal) {

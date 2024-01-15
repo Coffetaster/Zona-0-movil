@@ -2,6 +2,7 @@ import 'package:formz/formz.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:zona0_apk/data/dio/my_dio.dart';
+import 'package:zona0_apk/domain/entities/transaction.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
 
@@ -29,7 +30,7 @@ class ReceiveOSPFormNotifier
         amount ?? state.amount,
       ]);
 
-  Future<String> onSubmit() async {
+  Future<String> onSubmit(Function(Transaction transaction) callback) async {
     try {
       state = state.copyWith(
           formStatus: FormStatus.validating,
@@ -42,7 +43,7 @@ class ReceiveOSPFormNotifier
         return "412";
       }
 
-      final code = await _transferNotifier.createReceive(state.amount.realValue);
+      final code = await _transferNotifier.createReceive(state.amount.realValue, callback: callback);
 
       state = state.copyWith(formStatus: FormStatus.invalid);
       return code.toString();

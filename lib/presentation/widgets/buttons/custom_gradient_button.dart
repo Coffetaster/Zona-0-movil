@@ -22,7 +22,7 @@ class CustomGradientButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 15),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
+            borderRadius: const BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,

@@ -43,11 +43,11 @@ class AccountsApi extends AccountsRemoteRepository {
   @override
   Future<dynamic> tokenRefresh({String? refresh}) async {
     try {
-      final json = await _myDio.request(
+      await _myDio.request(
           path: '$localUrl/token/refresh/',
           requestType: RequestType.POST,
+          requiredResponse: false,
           data: {'refresh': refresh});
-      print(json.toString());
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -87,11 +87,11 @@ class AccountsApi extends AccountsRemoteRepository {
   @override
   Future changePassword(String oldPassword, String newPassword) async {
     try {
-      final json = await _myDio.request(
+      await _myDio.request(
           path: '$localUrl/password/change/',
           requestType: RequestType.POST,
+          requiredResponse: false,
           data: {'new_password1': oldPassword, 'new_password2': newPassword});
-      print(json.toString());
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -119,16 +119,16 @@ class AccountsApi extends AccountsRemoteRepository {
       required String token,
       required String new_password}) async {
     try {
-      final json = await _myDio.request(
+      await _myDio.request(
           path: '$localUrl/password/reset/confirm/',
           requestType: RequestType.POST,
+          requiredResponse: false,
           data: {
             'new_password1': new_password,
             'new_password2': new_password,
             'uid': uid,
             'token': token,
           });
-      print(json);
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
+import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/transfer/transfer.dart';
@@ -17,7 +18,18 @@ class ReceiveOSPPage extends ConsumerWidget {
     final receiveOSPFormState = ref.watch(receiveOSPFormProvider);
 
     void onSubmit() async {
-      final code = await ref.read(receiveOSPFormProvider.notifier).onSubmit();
+      final code = await ref.read(receiveOSPFormProvider.notifier).onSubmit(
+        (transaction) {
+          try {
+            if(!context.mounted) return;
+            SnackBarGI.showWithIcon(context,
+                icon: Icons.check_outlined,
+                text: AppLocalizations.of(context)!.reciboCreado);
+            context.replace(RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(
+                transaction.id.toString()));
+          } catch (e) {}
+        },
+      );
 
       if (code != "200") {
         switch (code) {
@@ -38,11 +50,6 @@ class ReceiveOSPPage extends ConsumerWidget {
                     ? AppLocalizations.of(context)!.haOcurridoError
                     : code);
         }
-      } else {
-        context.pop();
-        SnackBarGI.showWithIcon(context,
-            icon: Icons.check_outlined,
-            text: AppLocalizations.of(context)!.reciboCreado);
       }
     }
 

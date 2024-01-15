@@ -28,10 +28,13 @@ class CustomCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))),
         elevation: elevation,
         clipBehavior: Clip.hardEdge,
-        child: InkWell(
-          // splashColor: Colors.blue.withAlpha(30),
-          onTap: onTap,
-          child: realChild,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            // splashColor: Colors.blue.withAlpha(30),
+            onTap: onTap,
+            child: realChild,
+          ),
         ));
   }
 }

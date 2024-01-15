@@ -23,6 +23,11 @@ class WalletView extends ConsumerStatefulWidget {
 
 class _WalletViewState extends ConsumerState<WalletView>
     with AutomaticKeepAliveClientMixin {
+  final AnimatedListGIController<Transaction> _controllerUnpaidList =
+      AnimatedListGIController();
+  final AnimatedListGIController<Transaction> _controllerPaidList =
+      AnimatedListGIController();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -63,9 +68,13 @@ class _WalletViewState extends ConsumerState<WalletView>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomTitle(AppLocalizations.of(context)!.recibos),
-                        CustomIconButton(icon: Icons.refresh_outlined, onPressed: () {
-                          ref.read(transferProvider.notifier).getListPaidAndUnpaidReceive();
-                        })
+                        CustomIconButton(
+                            icon: Icons.refresh_outlined,
+                            onPressed: () {
+                              ref
+                                  .read(transferProvider.notifier)
+                                  .getListPaidAndUnpaidReceive();
+                            })
                       ],
                     );
                   },
@@ -110,7 +119,7 @@ class _WalletViewState extends ConsumerState<WalletView>
         if (maxLength == 0) maxLength = 1;
         return SizedBox(
           width: double.infinity,
-          height: (maxLength * 70) + 140,
+          height: (maxLength * 84) + 100,
           child: DefaultTabController(
               length: 2,
               child: Stack(
@@ -130,10 +139,12 @@ class _WalletViewState extends ConsumerState<WalletView>
                       selectedTextStyle: context.titleMedium,
                       tabs: [
                         SegmentTab(
-                          label: "${AppLocalizations.of(context)!.efectuados}(${transferState.listPaidReceive.length})",
+                          label:
+                              "${AppLocalizations.of(context)!.efectuados}(${transferState.listPaidReceive.length})",
                         ),
                         SegmentTab(
-                          label: "${AppLocalizations.of(context)!.pendientes}(${transferState.listUnpaidReceive.length})",
+                          label:
+                              "${AppLocalizations.of(context)!.pendientes}(${transferState.listUnpaidReceive.length})",
                         )
                       ],
                     ),
@@ -147,13 +158,17 @@ class _WalletViewState extends ConsumerState<WalletView>
                               ? Center(
                                   child: Text(AppLocalizations.of(context)!
                                       .noSolRecibosEfectuados))
-                              : _transactionList(transferState.listPaidReceive),
+                              : _animatedListWidget(_controllerPaidList,
+                                  transferState.listPaidReceive),
+                          // : _transactionList(transferState.listPaidReceive),
                           transferState.listUnpaidReceive.isEmpty
                               ? Center(
                                   child: Text(AppLocalizations.of(context)!
                                       .noSolRecibosPendientes))
-                              : _transactionList(
-                                  transferState.listUnpaidReceive),
+                              : _animatedListWidget(_controllerUnpaidList,
+                                  transferState.listUnpaidReceive)
+                          // : _transactionList(
+                          //     transferState.listUnpaidReceive),
                         ]),
                   ),
                 ],
@@ -211,6 +226,18 @@ class _WalletViewState extends ConsumerState<WalletView>
                     }),
               ])),
     );
+  }
+
+  Widget _animatedListWidget(AnimatedListGIController<Transaction> controller,
+      List<Transaction> transactions) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        child: AnimatedListGIWidget<Transaction>(
+            items: transactions,
+            physics: const NeverScrollableScrollPhysics(),
+            controller: controller,
+            builder: (context, index) =>
+                TransactionItem(transaction: controller.getItem(index))));
   }
 
   Widget _transactionList(List<Transaction> transactions) {

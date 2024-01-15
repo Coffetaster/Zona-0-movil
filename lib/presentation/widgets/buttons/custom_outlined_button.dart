@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 
-class CustomElevatedButton extends StatelessWidget {
-  const CustomElevatedButton(
+class CustomOutlinedButton extends StatelessWidget {
+  const CustomOutlinedButton(
       {super.key, this.icon, required this.label, this.onPressed});
 
   final IconData? icon;
@@ -15,13 +15,13 @@ class CustomElevatedButton extends StatelessWidget {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius))));
     return icon != null
-        ? ElevatedButton.icon(
+        ? OutlinedButton.icon(
             style: buttonStyle,
             label: Text(label.toUpperCase()),
             icon: Icon(icon),
             onPressed: onPressed,
           )
-        : ElevatedButton(
+        : OutlinedButton(
             style: buttonStyle,
             onPressed: onPressed,
             child: Text(label.toUpperCase()),
