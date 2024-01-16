@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 const List<Color> colorThemes = [
   Color(0xffe46b10),
@@ -88,4 +89,15 @@ class AppTheme {
   );
 
   static const double borderRadius = 20;
+
+  //* Panel controller of shopping cart
+  static final PanelController panelController = PanelController();
+  static bool get isPanelOpen =>
+      (panelController.isAttached && panelController.isPanelOpen);
+
+  //* ScrollController principal reference
+  static ScrollController? principalScrollController;
+  static bool get isPrincipalScrollControllerActive =>
+      (principalScrollController != null &&
+          principalScrollController!.hasClients);
 }

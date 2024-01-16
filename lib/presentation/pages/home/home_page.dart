@@ -45,6 +45,7 @@ class _HomePageState extends ConsumerState<HomePage>
   void initState() {
     super.initState();
     pageController = PageController(keepPage: true);
+    AppTheme.principalScrollController = scrollController;
   }
 
   @override
@@ -79,11 +80,16 @@ class _HomePageState extends ConsumerState<HomePage>
         if (!canPop) {
           scrollController.animateTo(0,
               duration: const Duration(milliseconds: 500), curve: Curves.ease);
-          context.go(RouterPath.HOME_PAGE);
+          if (AppTheme.isPanelOpen) {
+            AppTheme.panelController.close();
+          } else {
+            context.go(RouterPath.HOME_PAGE);
+          }
         }
       },
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
+        // appBar: widget.pageIndex == 0 ? AppBar(toolbarHeight: 0) : null,
         body: _homeBody(colorPrimary),
       ),
     );
@@ -93,7 +99,8 @@ class _HomePageState extends ConsumerState<HomePage>
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         // statusBarColor: Colors.red, //i like transaparent :-)
-        systemNavigationBarColor: context.secondaryContainer, // navigation bar color
+        systemNavigationBarColor:
+            context.secondaryContainer, // navigation bar color
         // statusBarIconBrightness: Brightness.dark, // status bar icons' color
         // systemNavigationBarIconBrightness: Brightness.dark, //navigation bar icons' color
       ),
@@ -126,8 +133,8 @@ class _HomePageState extends ConsumerState<HomePage>
         return SliverAppBar(
           expandedHeight: widget.pageIndex == 0 ? 160 : 100,
           pinned: widget.pageIndex == 0,
-          // snap: widget.pageIndex != 0,
-          // floating: widget.pageIndex != 0,
+          // snap: widget.pageIndex == 2,
+          // floating: widget.pageIndex == 2,
           bottom: widget.pageIndex == 0
               ? PreferredSize(
                   preferredSize: const Size.fromHeight(10),
@@ -189,7 +196,7 @@ class _HomePageState extends ConsumerState<HomePage>
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                                 color: colorPrimary.withOpacity(.1),
-                                borderRadius: BorderRadius.all(
+                                borderRadius: const BorderRadius.all(
                                     Radius.circular(AppTheme.borderRadius))),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -321,6 +328,9 @@ class _HomePageState extends ConsumerState<HomePage>
           const Icon(Icons.settings_outlined, size: 30),
         ],
         onTap: (index) {
+          if (AppTheme.isPanelOpen) {
+            AppTheme.panelController.close();
+          }
           scrollController.animateTo(0,
               duration: const Duration(milliseconds: 500), curve: Curves.ease);
           switch (index) {

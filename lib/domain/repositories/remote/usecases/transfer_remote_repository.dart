@@ -2,11 +2,17 @@ import 'package:zona0_apk/domain/entities/entities.dart';
 
 abstract class TransferRemoteRepository {
 
-  Future<Transaction> createReceive(double amount);
+  Future<TransactionReceived> createReceive(double amount);
+
+  Future<TransactionSent> createSend(String code);
+
+  Future<TransactionReceived> getReceive(String code);
 
   Future<void> deleteUnpaidReceive(int id);
 
-  Future<List<Transaction>> getListPaidReceive();
+  Future<List<TransactionSent>> getListSendTransfer();
 
-  Future<List<Transaction>> getListUnpaidReceive();
+  Future<List<TransactionReceived>> getListPaidReceive();
+
+  Future<List<TransactionReceived>> getListUnpaidReceive();
 }

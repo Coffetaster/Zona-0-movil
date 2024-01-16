@@ -10,20 +10,56 @@ class TransferApi extends TransferRemoteRepository {
 
   final String localUrl = "transfer";
 
-  List<Transaction> _jsonToListTransaction(List<dynamic> json) {
-    return List<Transaction>.from(json.map((x) {
-      return TransactionModel.fromMap(x).toEntity();
+  List<TransactionReceived> _jsonToListTransactionReceived(List<dynamic> json) {
+    return List<TransactionReceived>.from(json.map((x) {
+      return TransactionReceivedModel.fromMap(x).toEntity();
+    }));
+  }
+
+  List<TransactionSent> _jsonToListTransactionSent(List<dynamic> json) {
+    return List<TransactionSent>.from(json.map((x) {
+      return TransactionSentModel.fromMap(x).toEntity();
     }));
   }
 
   @override
-  Future<Transaction> createReceive(double amount) async {
+  Future<TransactionReceived> createReceive(double amount) async {
     try {
       final json = await _myDio.request(
           path: '$localUrl/create-receive/',
           requestType: RequestType.POST,
           data: {"amount": amount});
-      return TransactionModel.fromMap(json).toEntity();
+      return TransactionReceivedModel.fromMap(json).toEntity();
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  @override
+  Future<TransactionSent> createSend(String code) async {
+    try {
+      final json = await _myDio.request(
+          path: '$localUrl/create-sendTransfer/',
+          requestType: RequestType.POST,
+          data: {"code": code});
+      return TransactionSentModel.fromMap(json).toEntity();
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  @override
+  Future<TransactionReceived> getReceive(String code) async {
+    try {
+      final json = await _myDio.request(
+          path: '$localUrl/detail-receive/',
+          requestType: RequestType.POST,
+          data: {"code": code});
+      return TransactionReceivedModel.fromMap(json).toEntity();
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -46,12 +82,12 @@ class TransferApi extends TransferRemoteRepository {
   }
 
   @override
-  Future<List<Transaction>> getListPaidReceive() async {
+  Future<List<TransactionSent>> getListSendTransfer() async {
     try {
       final json = await _myDio.request(
-          path: '$localUrl/list-paid-receive/', requestType: RequestType.GET);
+          path: '$localUrl/list-sendTransfer/', requestType: RequestType.GET);
       if (json == null || json.isEmpty) return [];
-      return _jsonToListTransaction(json);
+      return _jsonToListTransactionSent(json);
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -60,12 +96,26 @@ class TransferApi extends TransferRemoteRepository {
   }
 
   @override
-  Future<List<Transaction>> getListUnpaidReceive() async {
+  Future<List<TransactionReceived>> getListPaidReceive() async {
+    try {
+      final json = await _myDio.request(
+          path: '$localUrl/list-paid-receive/', requestType: RequestType.GET);
+      if (json == null || json.isEmpty) return [];
+      return _jsonToListTransactionReceived(json);
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  @override
+  Future<List<TransactionReceived>> getListUnpaidReceive() async {
     try {
       final json = await _myDio.request(
           path: '$localUrl/list-unpaid-receive/', requestType: RequestType.GET);
       if (json == null || json.isEmpty) return [];
-      return _jsonToListTransaction(json);
+      return _jsonToListTransactionReceived(json);
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -73,15 +123,3 @@ class TransferApi extends TransferRemoteRepository {
     }
   }
 }
-/*
-{
-  id: 18,
-  user: octagi,
-  code: 25f23c61-625e-47d9-be66-5d36f6eeb317,
-  state: Unpaid,
-  amount: 500.0,
-  image: https://drive.google.com/uc?id=1jWINfuKkcFWhrW-C2AdppPvCFnZaLHEb,
-  date: 2024-01-14,
-  time: 16:11:48.598608
-}
-*/

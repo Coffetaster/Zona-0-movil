@@ -1,5 +1,5 @@
-import 'package:zona0_apk/data/models/company_model.dart';
-import 'package:zona0_apk/domain/entities/company.dart';
+import 'package:zona0_apk/data/models/models.dart';
+import 'package:zona0_apk/domain/entities/entities.dart';
 
 extension CompanyMapper on Company {
   CompanyModel toModel() => CompanyModel(

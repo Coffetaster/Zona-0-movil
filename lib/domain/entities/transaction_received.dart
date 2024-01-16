@@ -1,4 +1,4 @@
-class Transaction {
+class TransactionReceived {
   int id;
   String user;
   double amount;
@@ -12,7 +12,7 @@ class Transaction {
   String date;
   String time;
 
-  Transaction({
+  TransactionReceived({
     required this.id,
     required this.user,
     required this.amount,
@@ -32,7 +32,7 @@ class Transaction {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Transaction &&
+    return other is TransactionReceived &&
       other.id == id;
   }
 

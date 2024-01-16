@@ -13,9 +13,10 @@ import 'package:zona0_apk/presentation/providers/transfer/transfer.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ReceiveItemDataPage extends ConsumerWidget {
-  const ReceiveItemDataPage({super.key, required this.id});
+  const ReceiveItemDataPage({super.key, required this.id, required this.canEdit});
 
   final String id;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -129,7 +130,7 @@ class ReceiveItemDataPage extends ConsumerWidget {
                         ],
                       )),
                   const SizedBox(height: 8),
-                  if (transaction.state.toLowerCase() != "paid")
+                  if (transaction.state.toLowerCase() != "paid" && canEdit)
                     CustomCard(
                       child: SettingOption(
                         icon: Icons.cancel_outlined,

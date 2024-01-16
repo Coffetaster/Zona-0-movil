@@ -48,6 +48,15 @@ class Utils {
     return cad;
   }
 
+  static String getErrorsFromXmessage(dynamic data) {
+    if (data == null) return "";
+    Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
+    if (json["message"] != null) {
+      return json["message"];
+    }
+    return "";
+  }
+
   static void showDialogConfirmSalir(
       BuildContext context, WidgetRef ref, String idConfirmExitProvider) {
     DialogGI.showAlertDialog(context,

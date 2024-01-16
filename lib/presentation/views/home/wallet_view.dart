@@ -23,10 +23,24 @@ class WalletView extends ConsumerStatefulWidget {
 
 class _WalletViewState extends ConsumerState<WalletView>
     with AutomaticKeepAliveClientMixin {
-  final AnimatedListGIController<Transaction> _controllerUnpaidList =
-      AnimatedListGIController();
-  final AnimatedListGIController<Transaction> _controllerPaidList =
-      AnimatedListGIController();
+  final AnimatedListGIController<TransactionReceived> _controllerUnpaidList =
+      AnimatedListGIController(
+          removePlaceholder: const SizedBox(
+    width: double.infinity,
+    height: 80,
+  ));
+  final AnimatedListGIController<TransactionReceived> _controllerPaidList =
+      AnimatedListGIController(
+          removePlaceholder: const SizedBox(
+    width: double.infinity,
+    height: 80,
+  ));
+  final AnimatedListGIController<TransactionSent>
+      _controllerTransactionsSentList = AnimatedListGIController(
+          removePlaceholder: const SizedBox(
+    width: double.infinity,
+    height: 80,
+  ));
 
   @override
   Widget build(BuildContext context) {
@@ -79,22 +93,30 @@ class _WalletViewState extends ConsumerState<WalletView>
                     );
                   },
                 ),
-                _listReceivePaidAndUnpaidWidget(context),
+                CustomCard(
+                  child: _listReceivePaidAndUnpaidWidget(context),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
-                CustomTitle(AppLocalizations.of(context)!.envios),
-                SizedBox(
-                    height: 200,
-                    child: Center(
-                        child: Text(AppLocalizations.of(context)!.noSolEnvio))),
-                // _transactionList(),
-                // Center(
-                //     child: CustomFilledButton(
-                //         label: AppLocalizations.of(context)!.verTodas,
-                //         onPressed: () {
-                //           Utils.showSnackbarEnDesarrollo(context);
-                //         })),
+                Consumer(
+                  builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTitle(AppLocalizations.of(context)!.envios),
+                        CustomIconButton(
+                            icon: Icons.refresh_outlined,
+                            onPressed: () {
+                              ref
+                                  .read(transferProvider.notifier)
+                                  .getListSendTransfer();
+                            })
+                      ],
+                    );
+                  },
+                ),
+                CustomCard(child: _listTransactionsSentWidget(context)),
                 const SizedBox(height: 80),
               ],
             )),
@@ -158,14 +180,16 @@ class _WalletViewState extends ConsumerState<WalletView>
                               ? Center(
                                   child: Text(AppLocalizations.of(context)!
                                       .noSolRecibosEfectuados))
-                              : _animatedListWidget(_controllerPaidList,
+                              : _animatedListWidgetOfTransactionsReceived(
+                                  _controllerPaidList,
                                   transferState.listPaidReceive),
                           // : _transactionList(transferState.listPaidReceive),
                           transferState.listUnpaidReceive.isEmpty
                               ? Center(
                                   child: Text(AppLocalizations.of(context)!
                                       .noSolRecibosPendientes))
-                              : _animatedListWidget(_controllerUnpaidList,
+                              : _animatedListWidgetOfTransactionsReceived(
+                                  _controllerUnpaidList,
                                   transferState.listUnpaidReceive)
                           // : _transactionList(
                           //     transferState.listUnpaidReceive),
@@ -173,6 +197,31 @@ class _WalletViewState extends ConsumerState<WalletView>
                   ),
                 ],
               )),
+        );
+      },
+    );
+  }
+
+  Widget _listTransactionsSentWidget(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final transferState = ref.watch(transferProvider);
+        if (transferState.isLoading) {
+          return const SizedBox(
+              width: double.infinity,
+              height: 300,
+              child: Center(child: LoadingLogo()));
+        }
+        int maxLength = transferState.listTransactionsSent.length;
+        if (maxLength == 0) maxLength = 2;
+        return SizedBox(
+          width: double.infinity,
+          height: (maxLength * 84),
+          child: transferState.listPaidReceive.isEmpty
+              ? Center(child: Text(AppLocalizations.of(context)!.noSolEnvio))
+              : _animatedListWidgetOfTransactionsSent(
+                  _controllerTransactionsSentList,
+                  transferState.listTransactionsSent),
         );
       },
     );
@@ -228,27 +277,30 @@ class _WalletViewState extends ConsumerState<WalletView>
     );
   }
 
-  Widget _animatedListWidget(AnimatedListGIController<Transaction> controller,
-      List<Transaction> transactions) {
+  Widget _animatedListWidgetOfTransactionsReceived(
+      AnimatedListGIController<TransactionReceived> controller,
+      List<TransactionReceived> transactions) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        child: AnimatedListGIWidget<Transaction>(
+        child: AnimatedListGIWidget<TransactionReceived>(
             items: transactions,
             physics: const NeverScrollableScrollPhysics(),
             controller: controller,
             builder: (context, index) =>
-                TransactionItem(transaction: controller.getItem(index))));
+                TransactionReceivedItem(transaction: transactions[index])));
   }
 
-  Widget _transactionList(List<Transaction> transactions) {
+  Widget _animatedListWidgetOfTransactionsSent(
+      AnimatedListGIController<TransactionSent> controller,
+      List<TransactionSent> transactions) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children:
-            transactions.map((e) => TransactionItem(transaction: e)).toList(),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        child: AnimatedListGIWidget<TransactionSent>(
+            items: transactions,
+            physics: const NeverScrollableScrollPhysics(),
+            controller: controller,
+            builder: (context, index) =>
+                TransactionSentItem(transaction: transactions[index])));
   }
 
   @override

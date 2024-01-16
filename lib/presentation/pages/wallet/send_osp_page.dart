@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
-import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/main.dart';
@@ -34,7 +33,9 @@ class _SendOSPPageState extends ConsumerState<SendOSPPage> {
     void onSubmit() async {
       final code = await ref.read(sendOSPFormProvider.notifier).onSubmit();
 
-      if (code != "200") {
+      if (code == "100") {
+        return;
+      } else if (code != "200") {
         switch (code) {
           case "412":
             SnackBarGI.showWithIcon(context,
@@ -54,11 +55,10 @@ class _SendOSPPageState extends ConsumerState<SendOSPPage> {
                     : code);
         }
       } else {
-        Utils.showSnackbarEnDesarrollo(context);
-        // context.pop();
-        // SnackBarGI.showWithIcon(context,
-        //     icon: Icons.check_outlined,
-        //     text: AppLocalizations.of(context)!.reciboCreado);
+        context.pop();
+        SnackBarGI.showWithIcon(context,
+            icon: Icons.check_outlined,
+            text: AppLocalizations.of(context)!.reciboCreado);
       }
     }
 
@@ -88,6 +88,8 @@ class _SendOSPPageState extends ConsumerState<SendOSPPage> {
                   ),
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    enabled: sendOSPFormState.transactionToPay == null &&
+                        sendOSPFormState.formStatus != FormStatus.validating,
                     controller: _controller,
                     keyboardType: TextInputType.multiline,
                     minLines: 1,
@@ -98,8 +100,12 @@ class _SendOSPPageState extends ConsumerState<SendOSPPage> {
                         String? result = await context
                             .push(RouterPath.UTILS_QR_SCANNER_PAGE);
                         if (result != null) {
+                          ref.read(sendOSPFormProvider.notifier).codeChanged(result);
                           _controller.value =
                               _controller.value.copyWith(text: result);
+                          Future.delayed(Duration.zero, () {
+                            onSubmit();
+                          });
                         }
                       },
                     ),
@@ -119,13 +125,28 @@ class _SendOSPPageState extends ConsumerState<SendOSPPage> {
                   const SizedBox(height: 8),
                 ]),
               ),
-              const SizedBox(height: 16),
-              CustomFilledButton(
-                label: AppLocalizations.of(context)!.verificar,
-                onPressed: () {
-                  onSubmit();
-                },
-              ),
+              if (sendOSPFormState.transactionToPay != null)
+                const SizedBox(height: 8),
+              if (sendOSPFormState.transactionToPay != null)
+                ZoomIn(
+                  child: CustomCard(
+                      padding: const EdgeInsets.all(8),
+                      child: TransactionReceivedItem(
+                          transaction: sendOSPFormState.transactionToPay!,
+                          canEdit: false)),
+                ),
+              const SizedBox(height: 8),
+              if (sendOSPFormState.formStatus != FormStatus.validating)
+                CustomFilledButton(
+                  label: sendOSPFormState.transactionToPay == null
+                      ? AppLocalizations.of(context)!.verificar
+                      : AppLocalizations.of(context)!.pagar,
+                  onPressed: () {
+                    onSubmit();
+                  },
+                )
+              else
+                const LoadingLogo(),
             ]),
           ),
         ),

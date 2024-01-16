@@ -2,7 +2,7 @@ import 'package:formz/formz.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:zona0_apk/data/dio/my_dio.dart';
-import 'package:zona0_apk/domain/entities/transaction.dart';
+import 'package:zona0_apk/domain/entities/transaction_received.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
 
@@ -30,7 +30,7 @@ class ReceiveOSPFormNotifier
         amount ?? state.amount,
       ]);
 
-  Future<String> onSubmit(Function(Transaction transaction) callback) async {
+  Future<String> onSubmit(Function(TransactionReceived transaction) callback) async {
     try {
       state = state.copyWith(
           formStatus: FormStatus.validating,

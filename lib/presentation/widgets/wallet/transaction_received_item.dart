@@ -6,10 +6,11 @@ import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/entities.dart';
 
-class TransactionItem extends StatelessWidget {
-  const TransactionItem({super.key, required this.transaction});
+class TransactionReceivedItem extends StatelessWidget {
+  const TransactionReceivedItem({super.key, required this.transaction, this.canEdit = true});
 
-  final Transaction transaction;
+  final TransactionReceived transaction;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class TransactionItem extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: color.secondary))),
       onTap: () => context.push(
-          RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(transaction.id.toString())),
+          RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(transaction.id.toString(), canEdit)),
     );
   }
 }

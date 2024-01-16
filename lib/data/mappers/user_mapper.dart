@@ -1,5 +1,5 @@
-import 'package:zona0_apk/data/models/user_model.dart';
-import 'package:zona0_apk/domain/entities/user.dart';
+import 'package:zona0_apk/data/models/models.dart';
+import 'package:zona0_apk/domain/entities/entities.dart';
 
 extension UserMapper on User {
   UserModel toModel() => UserModel(

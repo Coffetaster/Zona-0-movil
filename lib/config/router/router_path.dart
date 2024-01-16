@@ -49,7 +49,7 @@ class RouterPath {
   static const String WALLET_REDEEM_CODE_PAGE = '/wallet/redeem_code';
   static const String WALLET_PLAY_GAME_PAGE = '/wallet/play_game';
   static const String WALLET_DONATE_PAGE = '/wallet/donate';
-  static const String WALLET_RECEIVE_ITEM_DATA_PAGE_PATH = '/wallet/receive_item_data/:id';
-  static String WALLET_RECEIVE_ITEM_DATA_PAGE(String id) => '/wallet/receive_item_data/$id';
+  static const String WALLET_RECEIVE_ITEM_DATA_PAGE_PATH = '/wallet/receive_item_data/:id/:canEdit';
+  static String WALLET_RECEIVE_ITEM_DATA_PAGE(String id, [bool canEdit = true]) => '/wallet/receive_item_data/$id/${canEdit ? "1" : "0"}';
 
 }

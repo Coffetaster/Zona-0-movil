@@ -1,5 +1,5 @@
-import 'package:zona0_apk/data/models/client_model.dart';
-import 'package:zona0_apk/domain/entities/client.dart';
+import 'package:zona0_apk/data/models/models.dart';
+import 'package:zona0_apk/domain/entities/entities.dart';
 
 extension ClientMapper on Client {
   ClientModel toModel() => ClientModel(

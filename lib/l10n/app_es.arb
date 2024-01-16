@@ -142,6 +142,8 @@
     "cancelarReciboPago": "Cancelar recibo de pago",
     "reciboCancelado": "Recibo de pago cancelado con éxito",
     "visitar": "Visitar",
+    "deslizaArribaCarrito": "Desliza hacia arriba para abrir el carrito",
+    "pagar": "Pagar",
 
     "dialog_title_logout": "Cerrar sesión",
     "dialog_content_logout": "¿Está seguro que quiere cerrar la sesión actual?",

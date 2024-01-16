@@ -33,26 +33,56 @@ class TransferNotifier extends StateNotifier<TransferState> {
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true);
     await getListPaidAndUnpaidReceive();
+    await getListSendTransfer();
     state = state.copyWith(isLoading: false);
   }
 
-  Future<int> createReceive(double amount, {
-    Function(Transaction transaction)? callback
-  }) async {
+  Future<int> createReceive(double amount,
+      {Function(TransactionReceived transaction)? callback}) async {
     try {
       if (!connectivityStatusNotifier.isConnected) {
         return 498;
       }
-      Transaction transaction = await transferRemoteRepository.createReceive(amount);
-      if(callback != null) {
+      TransactionReceived transaction =
+          await transferRemoteRepository.createReceive(amount);
+      if (callback != null) {
         await getListUnpaidReceive();
         callback(transaction);
         getListPaidReceive();
-      }
-      else {
+      } else {
         getListPaidAndUnpaidReceive();
       }
       return 200;
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  Future<int> createSend(String code) async {
+    try {
+      if (!connectivityStatusNotifier.isConnected) {
+        return 498;
+      }
+      await transferRemoteRepository.createSend(code);
+      getListSendTransfer();
+      return 200;
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  Future<TransactionReceived> getReceive(String code) async {
+    try {
+      if (!connectivityStatusNotifier.isConnected) {
+        throw CustomDioError(code: 498);
+      }
+      TransactionReceived transaction =
+          await transferRemoteRepository.getReceive(code);
+      return transaction;
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -66,13 +96,34 @@ class TransferNotifier extends StateNotifier<TransferState> {
         return 498;
       }
       await transferRemoteRepository.deleteUnpaidReceive(id);
-      getListPaidAndUnpaidReceive();
+      Future.delayed(
+        const Duration(milliseconds: 600),
+        () {
+          state = state.copyWith(
+              listUnpaidReceive: state.listUnpaidReceive
+                ..removeWhere((t) => t.id == id));
+          getListPaidAndUnpaidReceive();
+        },
+      );
       return 200;
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
       throw CustomDioError(code: 400);
     }
+  }
+
+  Future<void> getListSendTransfer() async {
+    try {
+      if (!connectivityStatusNotifier.isConnected) return;
+      List<TransactionSent> listTransactionsSent =
+          await transferRemoteRepository.getListSendTransfer();
+      state = state.copyWith(listTransactionsSent: listTransactionsSent);
+    } on CustomDioError catch (e) {
+      if (e.code == 404) {
+        state = state.copyWith(listTransactionsSent: []);
+      }
+    } catch (e) {}
   }
 
   Future<void> getListPaidAndUnpaidReceive() async {
@@ -83,7 +134,7 @@ class TransferNotifier extends StateNotifier<TransferState> {
   Future<void> getListPaidReceive() async {
     try {
       if (!connectivityStatusNotifier.isConnected) return;
-      List<Transaction> listPaidReceive =
+      List<TransactionReceived> listPaidReceive =
           await transferRemoteRepository.getListPaidReceive();
       state = state.copyWith(listPaidReceive: listPaidReceive);
     } on CustomDioError catch (e) {
@@ -96,7 +147,7 @@ class TransferNotifier extends StateNotifier<TransferState> {
   Future<void> getListUnpaidReceive() async {
     try {
       if (!connectivityStatusNotifier.isConnected) return;
-      List<Transaction> listUnpaidReceive =
+      List<TransactionReceived> listUnpaidReceive =
           await transferRemoteRepository.getListUnpaidReceive();
       state = state.copyWith(listUnpaidReceive: listUnpaidReceive);
     } on CustomDioError catch (e) {
@@ -106,16 +157,16 @@ class TransferNotifier extends StateNotifier<TransferState> {
     } catch (e) {}
   }
 
-  Transaction? getTransaction(String id) {
+  TransactionReceived? getTransaction(String id) {
     if (state.listPaidReceive.isEmpty && state.listUnpaidReceive.isEmpty)
       return null;
-    for(Transaction t in state.listPaidReceive){
-      if(t.id.toString() == id) {
+    for (TransactionReceived t in state.listPaidReceive) {
+      if (t.id.toString() == id) {
         return t;
       }
     }
-    for(Transaction t in state.listUnpaidReceive){
-      if(t.id.toString() == id) {
+    for (TransactionReceived t in state.listUnpaidReceive) {
+      if (t.id.toString() == id) {
         return t;
       }
     }
@@ -125,24 +176,28 @@ class TransferNotifier extends StateNotifier<TransferState> {
 
 class TransferState {
   final bool isLoading;
-  final List<Transaction> listPaidReceive;
-  final List<Transaction> listUnpaidReceive;
+  final List<TransactionReceived> listPaidReceive;
+  final List<TransactionReceived> listUnpaidReceive;
+  final List<TransactionSent> listTransactionsSent;
 
   TransferState({
     this.isLoading = false,
     this.listPaidReceive = const [],
     this.listUnpaidReceive = const [],
+    this.listTransactionsSent = const [],
   });
 
   TransferState copyWith({
     bool? isLoading,
-    List<Transaction>? listPaidReceive,
-    List<Transaction>? listUnpaidReceive,
+    List<TransactionReceived>? listPaidReceive,
+    List<TransactionReceived>? listUnpaidReceive,
+    List<TransactionSent>? listTransactionsSent,
   }) {
     return TransferState(
       isLoading: isLoading ?? this.isLoading,
       listPaidReceive: listPaidReceive ?? this.listPaidReceive,
       listUnpaidReceive: listUnpaidReceive ?? this.listUnpaidReceive,
+      listTransactionsSent: listTransactionsSent ?? this.listTransactionsSent,
     );
   }
 }

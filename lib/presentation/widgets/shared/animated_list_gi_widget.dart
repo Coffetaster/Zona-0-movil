@@ -117,7 +117,7 @@ class AnimatedListGIController<T> {
   AnimatedListGIController({
     this.addDuration = const Duration(milliseconds: 300),
     this.removeDuration = const Duration(milliseconds: 300),
-    this.removePlaceholder,
+    this.removePlaceholder = const SizedBox(width: 40, height: 40),
     this.addAnimatedListGITransition = AnimatedListGITransition.SizeTransition,
     this.removeAnimatedListGITransition =
         AnimatedListGITransition.SizeTransition,
@@ -127,7 +127,7 @@ class AnimatedListGIController<T> {
   final AnimatedListGITransition addAnimatedListGITransition;
   final Duration removeDuration;
   final AnimatedListGITransition removeAnimatedListGITransition;
-  final Widget? removePlaceholder;
+  final Widget removePlaceholder;
 
   void addAll(List<T> newItems) {
     if (newItems.isEmpty) return;
@@ -215,7 +215,7 @@ class AnimatedListGIController<T> {
       _key.currentState!.removeItem(index, (context, animation) {
         return getTransition(
             animatedListGITransition: removeAnimatedListGITransition,
-            child: removePlaceholder ?? Container(width: 40, height: 40),
+            child: removePlaceholder,
             animation: animation);
       }, duration: removeDuration);
     }
@@ -226,7 +226,7 @@ class AnimatedListGIController<T> {
     _key.currentState!.removeAllItems(
         (context, animation) => getTransition(
             animatedListGITransition: removeAnimatedListGITransition,
-            child: removePlaceholder ?? Container(width: 40, height: 40),
+            child: removePlaceholder,
             animation: animation),
         duration: removeDuration);
     _items.clear();
@@ -235,9 +235,11 @@ class AnimatedListGIController<T> {
   T getItem(int index) => _items[index % _items.length];
 }
 
+// ignore: must_be_immutable
 class AnimatedListGIWidget<T> extends StatelessWidget {
   AnimatedListGIWidget(
       {super.key,
+      this.scrollController,
       this.physics,
       this.items = const [],
       required this.controller,
@@ -245,14 +247,16 @@ class AnimatedListGIWidget<T> extends StatelessWidget {
     controller.mergeInOrder(items);
   }
 
+  final ScrollController? scrollController;
   final ScrollPhysics? physics;
   final List<T> items;
-  final AnimatedListGIController<T> controller;
+  late AnimatedListGIController<T> controller;
   final AnimatedListGIBuilder builder;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedList(
+        controller: scrollController,
         physics: physics,
         key: controller.key,
         initialItemCount: controller.items.length,

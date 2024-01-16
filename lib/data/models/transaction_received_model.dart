@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class TransactionModel {
+class TransactionReceivedModel {
   int id;
   String user;
   double amount;
@@ -13,7 +13,7 @@ class TransactionModel {
   String image;
   String date;
   String time;
-  TransactionModel({
+  TransactionReceivedModel({
     required this.id,
     required this.user,
     required this.amount,
@@ -37,8 +37,8 @@ class TransactionModel {
     };
   }
 
-  factory TransactionModel.fromMap(Map<String, dynamic> map) {
-    return TransactionModel(
+  factory TransactionReceivedModel.fromMap(Map<String, dynamic> map) {
+    return TransactionReceivedModel(
       id: map['id']?.toInt() ?? 0,
       user: map['user'] ?? '',
       amount: map['amount']?.toDouble() ?? 0.0,
@@ -52,5 +52,5 @@ class TransactionModel {
 
   String toJson() => json.encode(toMap());
 
-  factory TransactionModel.fromJson(String source) => TransactionModel.fromMap(json.decode(source));
+  factory TransactionReceivedModel.fromJson(String source) => TransactionReceivedModel.fromMap(json.decode(source));
 }

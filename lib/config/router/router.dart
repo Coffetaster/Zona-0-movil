@@ -78,8 +78,9 @@ final appRouter = GoRouter(
       path: RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE_PATH,
       pageBuilder: (context, state) {
         final id = state.pathParameters['id'] ?? '';
+        final canEdit = state.pathParameters['canEdit'] ?? '1';
         return RouterTransition.slideTransitionPage(
-            key: state.pageKey, child: ReceiveItemDataPage(id: id));
+            key: state.pageKey, child: ReceiveItemDataPage(id: id, canEdit: canEdit == '1'));
       },
     ),
 
