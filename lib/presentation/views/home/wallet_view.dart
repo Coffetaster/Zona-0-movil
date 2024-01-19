@@ -46,9 +46,9 @@ class _WalletViewState extends ConsumerState<WalletView>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final accountState = ref.watch(accountProvider);
+    final isLogin = ref.watch(accountProvider.select((value) => value.isLogin));
     //*si no login
-    if (!accountState.isLogin) {
+    if (!isLogin) {
       return const NoLoginPage();
     }
 
@@ -116,7 +116,10 @@ class _WalletViewState extends ConsumerState<WalletView>
                     );
                   },
                 ),
-                CustomCard(child: _listTransactionsSentWidget(context)),
+                CustomCard(
+                    child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 600),
+                        child: _listTransactionsSentWidget(context))),
                 const SizedBox(height: 80),
               ],
             )),
@@ -139,7 +142,8 @@ class _WalletViewState extends ConsumerState<WalletView>
             ? transferState.listPaidReceive.length
             : transferState.listUnpaidReceive.length;
         if (maxLength == 0) maxLength = 1;
-        return SizedBox(
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 600),
           width: double.infinity,
           height: (maxLength * 84) + 100,
           child: DefaultTabController(
@@ -214,15 +218,15 @@ class _WalletViewState extends ConsumerState<WalletView>
         }
         int maxLength = transferState.listTransactionsSent.length;
         if (maxLength == 0) maxLength = 2;
-        return SizedBox(
-          width: double.infinity,
-          height: (maxLength * 84),
-          child: transferState.listPaidReceive.isEmpty
-              ? Center(child: Text(AppLocalizations.of(context)!.noSolEnvio))
-              : _animatedListWidgetOfTransactionsSent(
-                  _controllerTransactionsSentList,
-                  transferState.listTransactionsSent),
-        );
+        return transferState.listTransactionsSent.isEmpty
+            ? SizedBox(
+                width: double.infinity,
+                height: 150,
+                child: Center(
+                    child: Text(AppLocalizations.of(context)!.noSolEnvio)))
+            : _animatedListWidgetOfTransactionsSent(
+                _controllerTransactionsSentList,
+                transferState.listTransactionsSent);
       },
     );
   }
@@ -230,50 +234,48 @@ class _WalletViewState extends ConsumerState<WalletView>
   Widget _operationsWidget(BuildContext context) {
     return CustomCard(
       padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-          width: double.infinity,
-          height: 220,
-          child: GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
-              children: [
-                IconSubtextButton(
-                    icon: Icons.file_download_outlined,
-                    label: AppLocalizations.of(context)!.recibirOSP,
-                    onTap: () {
-                      context.push(RouterPath.WALLET_RECEIVE_OSP_PAGE);
-                    }),
-                IconSubtextButton(
-                    icon: Icons.file_upload_outlined,
-                    label: AppLocalizations.of(context)!.enviarOSP,
-                    onTap: () {
-                      context.push(RouterPath.WALLET_SEND_OSP_PAGE);
-                    }),
-                IconSubtextButton(
-                    icon: Icons.balance_outlined,
-                    label: AppLocalizations.of(context)!.bancarizar,
-                    onTap: () {
-                      context.push(RouterPath.WALLET_BANKING_PAGE);
-                    }),
-                IconSubtextButton(
-                    icon: Icons.local_activity_outlined,
-                    label: AppLocalizations.of(context)!.canjear_codigo,
-                    onTap: () {
-                      context.push(RouterPath.WALLET_REDEEM_CODE_PAGE);
-                    }),
-                IconSubtextButton(
-                    icon: Icons.play_arrow_outlined,
-                    label: AppLocalizations.of(context)!.jugar,
-                    onTap: () {
-                      context.push(RouterPath.WALLET_PLAY_GAME_PAGE);
-                    }),
-                IconSubtextButton(
-                    icon: Icons.volunteer_activism_outlined,
-                    label: AppLocalizations.of(context)!.donar,
-                    onTap: () {
-                      context.push(RouterPath.WALLET_DONATE_PAGE);
-                    }),
-              ])),
+      child: GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 3,
+          children: [
+            IconSubtextButton(
+                icon: Icons.file_download_outlined,
+                label: AppLocalizations.of(context)!.recibirOSP,
+                onTap: () {
+                  context.push(RouterPath.WALLET_RECEIVE_OSP_PAGE);
+                }),
+            IconSubtextButton(
+                icon: Icons.file_upload_outlined,
+                label: AppLocalizations.of(context)!.enviarOSP,
+                onTap: () {
+                  context.push(RouterPath.WALLET_SEND_OSP_PAGE);
+                }),
+            IconSubtextButton(
+                icon: Icons.balance_outlined,
+                label: AppLocalizations.of(context)!.bancarizar,
+                onTap: () {
+                  context.push(RouterPath.WALLET_BANKING_PAGE);
+                }),
+            IconSubtextButton(
+                icon: Icons.local_activity_outlined,
+                label: AppLocalizations.of(context)!.canjear_codigo,
+                onTap: () {
+                  context.push(RouterPath.WALLET_REDEEM_CODE_PAGE);
+                }),
+            IconSubtextButton(
+                icon: Icons.play_arrow_outlined,
+                label: AppLocalizations.of(context)!.jugar,
+                onTap: () {
+                  context.push(RouterPath.WALLET_PLAY_GAME_PAGE);
+                }),
+            IconSubtextButton(
+                icon: Icons.volunteer_activism_outlined,
+                label: AppLocalizations.of(context)!.donar,
+                onTap: () {
+                  context.push(RouterPath.WALLET_DONATE_PAGE);
+                }),
+          ]),
     );
   }
 

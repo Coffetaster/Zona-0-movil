@@ -115,7 +115,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 controller: pageController,
                 children: viewRoutes,
               ),
-              _bottomNav()
+              _bottomNav(),
             ]),
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
@@ -126,171 +126,188 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Consumer _appBar(Color colorPrimary) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final accountState = ref.watch(accountProvider);
-        return SliverAppBar(
-          expandedHeight: widget.pageIndex == 0 ? 160 : 100,
-          pinned: widget.pageIndex == 0,
-          // snap: widget.pageIndex == 2,
-          // floating: widget.pageIndex == 2,
-          bottom: widget.pageIndex == 0
-              ? PreferredSize(
-                  preferredSize: const Size.fromHeight(10),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: Hero(
-                      tag: HeroTags.textFormSearchProductos,
-                      child: Container(
-                          clipBehavior: Clip.hardEdge,
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(
-                              color: colorPrimary,
-                              width: 1,
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.borderRadius),
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => context.push(RouterPath.SEARCH_PAGE),
-                              child: Row(
-                                children: [
-                                  const SizedBox(width: 8),
-                                  Icon(Icons.search_outlined,
-                                      color: colorPrimary),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .buscarProductos,
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )),
-                    ),
-                  ),
-                )
-              : null,
-          flexibleSpace: FlexibleSpaceBar(
-            background: Center(
-              child: Container(
-                height: widget.pageIndex == 0 ? 160 : 100,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 100,
-                      child: Row(
-                        children: <Widget>[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                                color: colorPrimary.withOpacity(.1),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(AppTheme.borderRadius))),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(ImagesPath.logo.path,
-                                    height: 50, width: 50, fit: BoxFit.fill),
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .nameApp
-                                      .toUpperCase(),
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge!
-                                      .copyWith(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
-                          accountState.isLogin
-                              ? Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text('${accountState.username}',
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: false,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium),
-                                    const SizedBox(width: 8),
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (accountState.imagePath.isNotEmpty) {
-                                          ShowImage.fromNetwork(
-                                              context: context,
-                                              imagePath: accountState.imagePath,
-                                              heroTag: HeroTags.imageProfile1(
-                                                  accountState.id));
-                                        }
-                                      },
-                                      child: SizedBox(
-                                        width: 30,
-                                        height: 30,
-                                        child: Hero(
-                                          tag: HeroTags.imageProfile1(
-                                              accountState.id),
-                                          child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(50),
-                                              child:
-                                                  WidgetsGI.CacheImageNetworkGI(
-                                                      accountState.imagePath,
-                                                      placeholderPath:
-                                                          ImagesPath
-                                                              .pic_profile.path,
-                                                      width: 30,
-                                                      height: 30,
-                                                      fit: BoxFit.cover)),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                  ],
-                                )
-                              : CustomTextButton(
-                                  label:
-                                      AppLocalizations.of(context)!.autenticar,
-                                  icon: Icons.login_rounded,
-                                  onPressed: () =>
-                                      context.go(RouterPath.AUTH_LOGIN_PAGE)),
-                          if (accountState.isLogin)
-                            CustomIconButton(
-                                icon: Icons.notifications_outlined,
-                                badgeInfo: "15",
-                                onPressed: () {
-                                  context.push(RouterPath.NOTIFICATIONS_PAGE);
-                                }),
-                          const SizedBox(width: 8),
-                        ],
+  Widget _appBar(Color colorPrimary) {
+    return SliverAppBar(
+      expandedHeight: widget.pageIndex == 0 ? 160 : 100,
+      pinned: widget.pageIndex == 0,
+      // snap: widget.pageIndex == 2,
+      // floating: widget.pageIndex == 2,
+      bottom: widget.pageIndex == 0
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(10),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Hero(
+                  tag: HeroTags.textFormSearchProductos,
+                  child: Container(
+                      clipBehavior: Clip.hardEdge,
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(
+                          color: colorPrimary,
+                          width: 1,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.borderRadius),
                       ),
-                    ),
-                    if (widget.pageIndex == 0) const SizedBox(height: 60.0)
-                  ],
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => context.push(RouterPath.SEARCH_PAGE),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 8),
+                              Icon(Icons.search_outlined, color: colorPrimary),
+                              const SizedBox(width: 8),
+                              Text(
+                                AppLocalizations.of(context)!.buscarProductos,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
                 ),
               ),
+            )
+          : null,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Center(
+          child: Container(
+            height: widget.pageIndex == 0 ? 160 : 100,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 100,
+                  child: Row(
+                    children: <Widget>[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                            color: colorPrimary.withOpacity(.1),
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(AppTheme.borderRadius))),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(ImagesPath.logo.path,
+                                height: 50, width: 50, fit: BoxFit.fill),
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .nameApp
+                                  .toUpperCase(),
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final accountState = ref.watch(accountProvider);
+                          if (accountState.isVerifyToken) {
+                            return TextLoading3DotsWidget(
+                                label:
+                                    AppLocalizations.of(context)!.autenticando);
+                          }
+                          if (!accountState.isLogin) {
+                            return CustomTextButton(
+                                label: AppLocalizations.of(context)!.autenticar,
+                                icon: Icons.login_rounded,
+                                onPressed: () =>
+                                    context.go(RouterPath.AUTH_LOGIN_PAGE));
+                          }
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final isConnected = ref.watch(
+                                      connectivityStatusProvider.select(
+                                          (value) => value.isConnected));
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: isConnected
+                                              ? Colors.green
+                                              : Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(100)),
+                                      width: 8,
+                                      height: 8,
+                                    ),
+                                  );
+                                },
+                              ),
+                              Text('${accountState.username}',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: false,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium),
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: () {
+                                  if (accountState.imagePath.isNotEmpty) {
+                                    ShowImage.fromNetwork(
+                                        context: context,
+                                        imagePath: accountState.imagePath,
+                                        heroTag: HeroTags.imageProfile1(
+                                            accountState.id));
+                                  }
+                                },
+                                child: SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: Hero(
+                                    tag:
+                                        HeroTags.imageProfile1(accountState.id),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: WidgetsGI.CacheImageNetworkGI(
+                                            accountState.imagePath,
+                                            placeholderPath:
+                                                ImagesPath.pic_profile.path,
+                                            width: 30,
+                                            height: 30,
+                                            fit: BoxFit.cover)),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              CustomIconButton(
+                                  icon: Icons.notifications_outlined,
+                                  badgeInfo: "15",
+                                  onPressed: () {
+                                    context.push(RouterPath.NOTIFICATIONS_PAGE);
+                                  }),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                ),
+                if (widget.pageIndex == 0) const SizedBox(height: 60.0)
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

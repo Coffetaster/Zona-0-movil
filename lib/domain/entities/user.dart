@@ -4,29 +4,58 @@ class User {
   int id;
   String username;
   String name;
-  String last_name;
+  String lastName;
   String image;
+  double ospPoint;
+  String movil;
+  String ci;
+  String userType;
   User({
     required this.id,
     required this.username,
     required this.name,
-    required this.last_name,
+    required this.lastName,
     required this.image,
+    required this.ospPoint,
+    required this.movil,
+    required this.ci,
+    required this.userType,
   });
+
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is User &&
+      other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode;
+  }
 
   User copyWith({
     int? id,
     String? username,
     String? name,
-    String? last_name,
+    String? lastName,
     String? image,
+    double? ospPoint,
+    String? movil,
+    String? ci,
+    String? userType,
   }) {
     return User(
       id: id ?? this.id,
       username: username ?? this.username,
       name: name ?? this.name,
-      last_name: last_name ?? this.last_name,
+      lastName: lastName ?? this.lastName,
       image: image ?? this.image,
+      ospPoint: ospPoint ?? this.ospPoint,
+      movil: movil ?? this.movil,
+      ci: ci ?? this.ci,
+      userType: userType ?? this.userType,
     );
   }
 
@@ -35,8 +64,12 @@ class User {
       'id': id,
       'username': username,
       'name': name,
-      'last_name': last_name,
+      'lastName': lastName,
       'image': image,
+      'ospPoint': ospPoint,
+      'movil': movil,
+      'ci': ci,
+      'userType': userType,
     };
   }
 
@@ -45,8 +78,12 @@ class User {
       id: map['id']?.toInt() ?? 0,
       username: map['username'] ?? '',
       name: map['name'] ?? '',
-      last_name: map['last_name'] ?? '',
+      lastName: map['lastName'] ?? '',
       image: map['image'] ?? '',
+      ospPoint: map['ospPoint']?.toDouble() ?? 0.0,
+      movil: map['movil'] ?? '',
+      ci: map['ci'] ?? '',
+      userType: map['userType'] ?? '',
     );
   }
 
@@ -56,19 +93,6 @@ class User {
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, name: $name, last_name: $last_name, image: $image)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is User &&
-      other.id == id;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode;
+    return 'User(id: $id, username: $username, name: $name, lastName: $lastName, image: $image, ospPoint: $ospPoint, movil: $movil, ci: $ci, userType: $userType)';
   }
 }

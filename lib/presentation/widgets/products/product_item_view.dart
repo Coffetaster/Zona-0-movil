@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/constants/lotties_path.dart';
-import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
 import 'package:zona0_apk/domain/entities/product.dart';
 import 'package:zona0_apk/main.dart';
-import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
-import 'package:zona0_apk/presentation/widgets/cards/cards.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ProductItemView extends StatelessWidget {
-  const ProductItemView({Key? key, required this.product, this.onTap, this.canEdit = false})
-      : super(key: key);
+  const ProductItemView({super.key, required this.product, this.onTap, this.canEdit = false});
 
   final Product product;
   final Function(String)? onTap;

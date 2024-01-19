@@ -7,7 +7,8 @@ import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/entities.dart';
 
 class TransactionReceivedItem extends StatelessWidget {
-  const TransactionReceivedItem({super.key, required this.transaction, this.canEdit = true});
+  const TransactionReceivedItem(
+      {super.key, required this.transaction, this.canEdit = true});
 
   final TransactionReceived transaction;
   final bool canEdit;
@@ -16,15 +17,6 @@ class TransactionReceivedItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     return ListTile(
-      // leading: Container(
-      //   height: 50,
-      //   width: 50,
-      //   decoration: BoxDecoration(
-      //     color: color.secondaryContainer,
-      //     borderRadius: BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
-      //   ),
-      //   child: Icon(monto < 0 ? Icons.trending_down_rounded : Icons.trending_up_rounded),
-      // ),
       contentPadding: const EdgeInsets.symmetric(),
       title: Text(transaction.code,
           style: Theme.of(context).textTheme.titleMedium, maxLines: 2),
@@ -47,7 +39,9 @@ class TransactionReceivedItem extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: color.secondary))),
       onTap: () => context.push(
-          RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(transaction.id.toString(), canEdit)),
+          RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(
+              transaction.id.toString(), canEdit),
+          extra: transaction),
     );
   }
 }

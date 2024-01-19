@@ -33,12 +33,12 @@ class RegisterFormPage extends ConsumerWidget {
 
     final confirmExit = ref.watch(confirmExitProvider(idConfirmExitProvider));
     if (confirmExit == 1) {
-      Future.delayed(Duration(milliseconds: 0), () {
+      Future.delayed(const Duration(milliseconds: 0), () {
         context.pop();
         context.pop();
       });
     } else if (confirmExit == 2) {
-      Future.delayed(Duration(milliseconds: 0), () {
+      Future.delayed(const Duration(milliseconds: 0), () {
         context.go(RouterPath.AUTH_VERIFY_CODE_PAGE);
         SnackBarGI.showWithIcon(context,
             icon: Icons.check,
@@ -299,11 +299,11 @@ class RegisterFormPage extends ConsumerWidget {
                       onPressed: () {
                         selectImagen(context, ref);
                       },
-                      child: Icon(Icons.add_photo_alternate_outlined),
                       elevation: 0,
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
                               Radius.circular(AppTheme.borderRadius))),
+                      child: const Icon(Icons.add_photo_alternate_outlined),
                     ),
                   )
                 ],
@@ -370,7 +370,7 @@ class RegisterFormPage extends ConsumerWidget {
                 value: registerClientStatus.percentSecurePassword,
                 minHeight: 5,
                 borderRadius:
-                    BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
+                    const BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
                 semanticsLabel: AppLocalizations.of(context)!.passwordSecure,
               ),
             ),

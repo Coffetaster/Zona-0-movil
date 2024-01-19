@@ -65,7 +65,7 @@ class AccountFormLoginNotifier extends StateNotifier<AccountFormLoginState> {
       return code.toString();
     } on CustomDioError catch (e) {
       state = state.copyWith(formStatus: FormStatus.invalid);
-      return Utils.getErrorsFromXnon_field_errors(e.data);
+      return Utils.getErrorsFromDioException(e.data);
     } catch (e) {
       state = state.copyWith(formStatus: FormStatus.invalid);
       return "";

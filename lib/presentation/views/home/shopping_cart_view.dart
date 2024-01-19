@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
@@ -10,9 +9,6 @@ import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/domain/entities/data.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
-import 'package:zona0_apk/presentation/widgets/buttons/buttons.dart';
-import 'package:zona0_apk/presentation/widgets/products/product_item_view.dart';
-import 'package:zona0_apk/presentation/widgets/products/products_card_payment.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ShoppingCartView extends ConsumerStatefulWidget {
@@ -30,9 +26,9 @@ class _ShoppingCartViewState extends ConsumerState<ShoppingCartView>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final accountState = ref.watch(accountProvider);
+    final isLogin = ref.watch(accountProvider.select((value) => value.isLogin));
     //*si no login
-    if (!accountState.isLogin) {
+    if (!isLogin) {
       return const NoLoginPage();
     }
 

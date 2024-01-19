@@ -4,5 +4,6 @@ export 'auth/auth.dart';
 export 'account/account.dart';
 export 'settings/settings.dart';
 export 'notifications/notifications.dart';
+export 'users/users.dart';
 export 'utils/utils.dart';
 export 'wallet/wallet.dart';

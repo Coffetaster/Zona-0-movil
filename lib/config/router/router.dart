@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:zona0_apk/domain/entities/transaction_received.dart';
 import 'package:zona0_apk/presentation/pages/pages.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zona0_apk/presentation/pages/test/doble_page.dart';
 
 import 'router_path.dart';
 import 'router_transition.dart';
@@ -79,8 +81,17 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final id = state.pathParameters['id'] ?? '';
         final canEdit = state.pathParameters['canEdit'] ?? '1';
+        final transactionReceived = state.extra;
         return RouterTransition.slideTransitionPage(
-            key: state.pageKey, child: ReceiveItemDataPage(id: id, canEdit: canEdit == '1'));
+            key: state.pageKey,
+            child: ReceiveItemDataPage(
+              id: id,
+              canEdit: canEdit == '1',
+              transactionReceived: (transactionReceived != null &&
+                      transactionReceived is TransactionReceived)
+                  ? transactionReceived
+                  : null,
+            ));
       },
     ),
 
@@ -90,7 +101,8 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final originalPath = state.extra as String?;
         return RouterTransition.fadeTransitionPage(
-            key: state.pageKey, child: ImageCropPage(originalPath: originalPath));
+            key: state.pageKey,
+            child: ImageCropPage(originalPath: originalPath));
       },
     ),
     GoRoute(
@@ -108,6 +120,13 @@ final appRouter = GoRouter(
           key: state.pageKey, child: const NotificationsPage()),
     ),
 
+    //* Test Pages
+    GoRoute(
+      path: RouterPath.TEST_DOBLE_PAGE,
+      pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
+          key: state.pageKey, child: DoblePage()),
+    ),
+
     //* Settings Pages
     GoRoute(
       path: RouterPath.SETTINGS_ABOUT_US_PAGE,
@@ -121,10 +140,12 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
           key: state.pageKey, child: const ChangePasswordPage()),
     ),
+
+    //* Users Pages
     GoRoute(
-      path: RouterPath.ACCOUNT_EDIT_DATA_PAGE,
+      path: RouterPath.USERS_EDIT_DATA_PAGE,
       pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
-          key: state.pageKey, child: const AccountEditDataPage()),
+          key: state.pageKey, child: const UserEditDataPage()),
     ),
 
     //* Auth Pages
@@ -161,13 +182,15 @@ final appRouter = GoRouter(
             path: RouterPath.AUTH_REGISTER_CLIENT_PAGE_PATH,
             pageBuilder: (context, state) =>
                 RouterTransition.slideTransitionPage(
-                    key: state.pageKey, child: const RegisterFormPage(isClient: true)),
+                    key: state.pageKey,
+                    child: const RegisterFormPage(isClient: true)),
           ),
           GoRoute(
             path: RouterPath.AUTH_REGISTER_COMPANY_PAGE_PATH,
             pageBuilder: (context, state) =>
                 RouterTransition.slideTransitionPage(
-                    key: state.pageKey, child: const RegisterFormPage(isClient: false)),
+                    key: state.pageKey,
+                    child: const RegisterFormPage(isClient: false)),
           ),
         ]),
 

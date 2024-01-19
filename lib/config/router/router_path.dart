@@ -30,7 +30,9 @@ class RouterPath {
 
   //* Account pages
   static const String ACCOUNT_CHANGE_PASSWORD_PAGE = '/account/change_password';
-  static const String ACCOUNT_EDIT_DATA_PAGE = '/account/edit_data';
+
+  //* Users pages
+  static const String USERS_EDIT_DATA_PAGE = '/users/edit_data';
 
   //* Settings pages
   static const String SETTINGS_ABOUT_US_PAGE = '/settings/about_us';
@@ -52,4 +54,6 @@ class RouterPath {
   static const String WALLET_RECEIVE_ITEM_DATA_PAGE_PATH = '/wallet/receive_item_data/:id/:canEdit';
   static String WALLET_RECEIVE_ITEM_DATA_PAGE(String id, [bool canEdit = true]) => '/wallet/receive_item_data/$id/${canEdit ? "1" : "0"}';
 
+  //* Test pages
+  static const String TEST_DOBLE_PAGE = '/doble_page';
 }

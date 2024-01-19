@@ -6,12 +6,20 @@ class UserModel {
   String name;
   String last_name;
   String image;
+  double zona_point;
+  String movil;
+  String ci;
+  String user_type;
   UserModel({
     required this.pk,
     required this.username,
     required this.name,
     required this.last_name,
     required this.image,
+    required this.zona_point,
+    required this.movil,
+    required this.ci,
+    required this.user_type,
   });
 
   Map<String, dynamic> toMap() {
@@ -21,6 +29,10 @@ class UserModel {
       'name': name,
       'last_name': last_name,
       'image': image,
+      'zona_point': zona_point,
+      'movil': movil,
+      'ci': ci,
+      'user_type': user_type,
     };
   }
 
@@ -31,6 +43,10 @@ class UserModel {
       name: map['name'] ?? '',
       last_name: map['last_name'] ?? '',
       image: map['image'] ?? '',
+      zona_point: double.tryParse(map['zona_point'] ?? "0") ?? 0,
+      movil: map['movil'] ?? '',
+      ci: map['ci'] ?? '',
+      user_type: map['user_type'] ?? '',
     );
   }
 

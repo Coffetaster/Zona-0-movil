@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:zona0_apk/data/dio/my_dio.dart';
 import 'package:zona0_apk/data/mappers/mappers.dart';
 import 'package:zona0_apk/data/models/models.dart';
@@ -14,7 +15,8 @@ class AccountsApi extends AccountsRemoteRepository {
   Future<void> login(
       {required String usernameXemail,
       required String password,
-      required Function(String? token, User? user) loginCallback}) async {
+      required Function(String? accessToken, String? refreshToken, User? user)
+          loginCallback}) async {
     try {
       final json = await _myDio.request(
           path: '$localUrl/login/',
@@ -24,15 +26,13 @@ class AccountsApi extends AccountsRemoteRepository {
             if (usernameXemail.contains("@")) 'email': usernameXemail,
             'password': password
           });
-      String? token = json["access"];
+          print(json);
+      String? accessToken = json["access"];
+      String? refreshToken = json["refresh"];
       Map<String, dynamic>? user = json["user"];
-      if (token != null) _myDio.updateToken(token);
-      if (user == null) {
-        loginCallback(token, null);
-      } else {
-        loginCallback(
-            token, UserModel.fromMap(user).toEntity());
-      }
+      if (accessToken != null) _myDio.updateToken(accessToken);
+      loginCallback(accessToken, refreshToken,
+          user == null ? null : UserModel.fromMap(user).toEntity());
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -41,13 +41,17 @@ class AccountsApi extends AccountsRemoteRepository {
   }
 
   @override
-  Future<dynamic> tokenRefresh({String? refresh}) async {
+  Future<dynamic> tokenRefresh(String? refreshToken,
+      Function(String? accessToken, String? refreshToken) callback) async {
     try {
-      await _myDio.request(
+      final json = await _myDio.request(
           path: '$localUrl/token/refresh/',
           requestType: RequestType.POST,
-          requiredResponse: false,
-          data: {'refresh': refresh});
+          data: {'refresh': refreshToken});
+      String? accessToken = json["access"];
+      String? refreshTokenNew = json["refresh"];
+      if (accessToken != null) _myDio.updateToken(accessToken);
+      callback(accessToken, refreshTokenNew);
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -70,13 +74,13 @@ class AccountsApi extends AccountsRemoteRepository {
   }
 
   @override
-  Future<dynamic> tokenVerify(String token) async {
+  Future<dynamic> tokenVerify(String accessToken) async {
     try {
       await _myDio.request(
           path: '$localUrl/token/verify/',
           requestType: RequestType.POST,
-          data: {'token': token});
-      _myDio.updateToken(token);
+          data: {'token': accessToken});
+      _myDio.updateToken(accessToken);
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -129,6 +133,41 @@ class AccountsApi extends AccountsRemoteRepository {
             'uid': uid,
             'token': token,
           });
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  @override
+  Future<double> getOSPPoints() async {
+    try {
+      final json = await _myDio.request(
+          path: '$localUrl/osp_points/', requestType: RequestType.GET);
+      return json['orcaStore_point']?.toDouble() ?? 0.0;
+    } on CustomDioError catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CustomDioError(code: 400);
+    }
+  }
+
+  @override
+  Future<String> updateImageUser(String imagePath) async {
+    try {
+      final image = await MultipartFile.fromFile(
+        imagePath,
+        filename: imagePath,
+      );
+      final json = await _myDio.requestMultipart(
+          path: '$localUrl/update/image-user/',
+          requestType: RequestType.PUT,
+          data: FormData.fromMap({
+            "image": [image]
+          }));
+      if (json == null || (json as Map<String, dynamic>).isEmpty) return "";
+      return json["image"] ?? "";
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {

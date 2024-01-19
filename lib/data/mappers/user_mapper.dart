@@ -6,8 +6,12 @@ extension UserMapper on User {
       pk: id,
       username: username,
       name: name,
-      last_name: last_name,
-      image: image);
+      last_name: lastName,
+      image: image,
+      zona_point: ospPoint,
+      movil: movil,
+      ci: ci,
+      user_type: userType);
 }
 
 extension UserModelMapper on UserModel {
@@ -15,6 +19,10 @@ extension UserModelMapper on UserModel {
       id: pk,
       username: username,
       name: name,
-      last_name: last_name,
-      image: image);
+      lastName: last_name,
+      image: image,
+      ospPoint: zona_point,
+      movil: movil,
+      ci: ci,
+      userType: user_type);
 }

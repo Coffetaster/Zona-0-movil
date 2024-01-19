@@ -27,6 +27,7 @@ class CustomInterceptors extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (kDebugMode) {
       print('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+      // print('RESPONSE DATA => ${response.data ?? "null"}');
     }
     super.onResponse(response, handler);
   }

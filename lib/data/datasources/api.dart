@@ -12,6 +12,7 @@ class ApiConsumer extends RemoteRepository {
   late AccountsApi _accountsApi;
   late RegisterApi _registerApi;
   late TransferApi _transferApi;
+  late UsersApi _usersApi;
 
   ApiConsumer() {
     _myDio = MyDio();
@@ -20,6 +21,7 @@ class ApiConsumer extends RemoteRepository {
     _accountsApi = AccountsApi(_myDio);
     _registerApi = RegisterApi(_myDio);
     _transferApi = TransferApi(_myDio);
+    _usersApi = UsersApi(_myDio);
 
   }
 
@@ -31,5 +33,8 @@ class ApiConsumer extends RemoteRepository {
 
   @override
   TransferRemoteRepository get transfer => _transferApi;
+
+  @override
+  UsersRemoteRepository get users => _usersApi;
 
 }

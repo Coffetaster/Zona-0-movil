@@ -7,23 +7,27 @@ import 'package:zona0_apk/presentation/providers/data_providers/api_provider.dar
 import 'package:zona0_apk/presentation/providers/providers.dart';
 
 final transferProvider =
-    StateNotifierProvider<TransferNotifier, TransferState>((ref) {
+    StateNotifierProvider.autoDispose<TransferNotifier, TransferState>((ref) {
   final apiConsumer = ref.read(apiProvider);
   final connectivityStatusNotifier =
       ref.watch(connectivityStatusProvider.notifier);
 
   return TransferNotifier(
       transferRemoteRepository: apiConsumer.transfer,
-      connectivityStatusNotifier: connectivityStatusNotifier);
+      connectivityStatusNotifier: connectivityStatusNotifier,
+      getOSPPoints: ref.read(accountProvider.notifier).getOSPPoints);
 });
 
 class TransferNotifier extends StateNotifier<TransferState> {
   final TransferRemoteRepository transferRemoteRepository;
   final ConnectivityStatusNotifier connectivityStatusNotifier;
+  final Function() getOSPPoints;
 
   TransferNotifier(
       {required this.transferRemoteRepository,
-      required this.connectivityStatusNotifier})
+      required this.connectivityStatusNotifier,
+      required this.getOSPPoints,
+      })
       : super(TransferState()) {
     refresh();
   }
@@ -34,6 +38,7 @@ class TransferNotifier extends StateNotifier<TransferState> {
     state = state.copyWith(isLoading: true);
     await getListPaidAndUnpaidReceive();
     await getListSendTransfer();
+    getOSPPoints();
     state = state.copyWith(isLoading: false);
   }
 
@@ -52,10 +57,13 @@ class TransferNotifier extends StateNotifier<TransferState> {
       } else {
         getListPaidAndUnpaidReceive();
       }
+      getOSPPoints();
       return 200;
     } on CustomDioError catch (_) {
+      connectivityStatusNotifier.checkedConnection();
       rethrow;
     } catch (e) {
+      connectivityStatusNotifier.checkedConnection();
       throw CustomDioError(code: 400);
     }
   }
@@ -67,10 +75,13 @@ class TransferNotifier extends StateNotifier<TransferState> {
       }
       await transferRemoteRepository.createSend(code);
       getListSendTransfer();
+      getOSPPoints();
       return 200;
     } on CustomDioError catch (_) {
+      connectivityStatusNotifier.checkedConnection();
       rethrow;
     } catch (e) {
+      connectivityStatusNotifier.checkedConnection();
       throw CustomDioError(code: 400);
     }
   }
@@ -84,8 +95,10 @@ class TransferNotifier extends StateNotifier<TransferState> {
           await transferRemoteRepository.getReceive(code);
       return transaction;
     } on CustomDioError catch (_) {
+      connectivityStatusNotifier.checkedConnection();
       rethrow;
     } catch (e) {
+      connectivityStatusNotifier.checkedConnection();
       throw CustomDioError(code: 400);
     }
   }
@@ -105,10 +118,13 @@ class TransferNotifier extends StateNotifier<TransferState> {
           getListPaidAndUnpaidReceive();
         },
       );
+      getOSPPoints();
       return 200;
     } on CustomDioError catch (_) {
+      connectivityStatusNotifier.checkedConnection();
       rethrow;
     } catch (e) {
+      connectivityStatusNotifier.checkedConnection();
       throw CustomDioError(code: 400);
     }
   }
@@ -122,8 +138,12 @@ class TransferNotifier extends StateNotifier<TransferState> {
     } on CustomDioError catch (e) {
       if (e.code == 404) {
         state = state.copyWith(listTransactionsSent: []);
+      } else {
+        connectivityStatusNotifier.checkedConnection();
       }
-    } catch (e) {}
+    } catch (_) {
+      connectivityStatusNotifier.checkedConnection();
+    }
   }
 
   Future<void> getListPaidAndUnpaidReceive() async {
@@ -140,8 +160,12 @@ class TransferNotifier extends StateNotifier<TransferState> {
     } on CustomDioError catch (e) {
       if (e.code == 404) {
         state = state.copyWith(listPaidReceive: []);
+      } else {
+        connectivityStatusNotifier.checkedConnection();
       }
-    } catch (e) {}
+    } catch (_) {
+      connectivityStatusNotifier.checkedConnection();
+    }
   }
 
   Future<void> getListUnpaidReceive() async {
@@ -153,8 +177,12 @@ class TransferNotifier extends StateNotifier<TransferState> {
     } on CustomDioError catch (e) {
       if (e.code == 404) {
         state = state.copyWith(listUnpaidReceive: []);
+      } else {
+        connectivityStatusNotifier.checkedConnection();
       }
-    } catch (e) {}
+    } catch (_) {
+      connectivityStatusNotifier.checkedConnection();
+    }
   }
 
   TransactionReceived? getTransaction(String id) {

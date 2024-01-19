@@ -9,3 +9,4 @@ export 'custom_badge.dart';
 export 'bottom_sheet_gi.dart';
 export 'popup_menu_gi.dart';
 export 'animated_list_gi_widget.dart';
+export 'text_loading_3_dots_widget.dart';

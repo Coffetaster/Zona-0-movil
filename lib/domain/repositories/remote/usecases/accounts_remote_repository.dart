@@ -4,13 +4,13 @@ abstract class AccountsRemoteRepository {
   Future<dynamic> login(
       {required String usernameXemail,
       required String password,
-      required Function(String? token, User? user) loginCallback});
+      required Function(String? accessToken, String? refreshToken, User? user) loginCallback});
 
   Future<dynamic> emailVerifyToken(String token);
 
-  Future<dynamic> tokenRefresh({String? refresh});
+  Future<dynamic> tokenRefresh(String? refreshToken, Function(String? accessToken, String? refreshToken) callback);
 
-  Future<dynamic> tokenVerify(String token);
+  Future<dynamic> tokenVerify(String accessToken);
 
   Future<dynamic> changePassword(String oldPassword, String newPassword);
 
@@ -20,4 +20,8 @@ abstract class AccountsRemoteRepository {
       {required String uid,
       required String token,
       required String new_password});
+
+  Future<double> getOSPPoints();
+
+  Future<String> updateImageUser(String imagePath);
 }

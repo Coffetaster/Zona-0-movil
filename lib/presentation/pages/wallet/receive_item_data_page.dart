@@ -8,19 +8,21 @@ import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
+import 'package:zona0_apk/domain/entities/entities.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/transfer/transfer.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ReceiveItemDataPage extends ConsumerWidget {
-  const ReceiveItemDataPage({super.key, required this.id, required this.canEdit});
+  const ReceiveItemDataPage({super.key, required this.id, required this.canEdit, this.transactionReceived});
 
   final String id;
   final bool canEdit;
+  final TransactionReceived? transactionReceived;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transaction = ref.read(transferProvider.notifier).getTransaction(id);
+    TransactionReceived? transaction = transactionReceived ?? ref.read(transferProvider.notifier).getTransaction(id);
     if (transaction == null) {
       Future.delayed(Duration.zero, () => context.pop());
       return Container();

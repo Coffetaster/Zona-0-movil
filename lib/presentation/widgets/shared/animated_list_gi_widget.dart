@@ -115,8 +115,8 @@ class AnimatedListGIController<T> {
   List<T> get items => _items;
 
   AnimatedListGIController({
-    this.addDuration = const Duration(milliseconds: 300),
-    this.removeDuration = const Duration(milliseconds: 300),
+    this.addDuration = const Duration(milliseconds: 600),
+    this.removeDuration = const Duration(milliseconds: 600),
     this.removePlaceholder = const SizedBox(width: 40, height: 40),
     this.addAnimatedListGITransition = AnimatedListGITransition.SizeTransition,
     this.removeAnimatedListGITransition =
@@ -180,6 +180,22 @@ class AnimatedListGIController<T> {
       clear();
       return;
     }
+    if (_items.isEmpty) {
+      addAll(newItems);
+      return;
+    }
+    if (_items.length == newItems.length) {
+      bool isEquals = true;
+      for (var i = 0; i < _items.length; ++i) {
+        if (_items[i] != newItems[i]) {
+          isEquals = false;
+          break;
+        }
+      }
+      if (isEquals) {
+        return;
+      }
+    }
     List<bool> existList = List.filled(newItems.length, false);
     for (int i = 0; i < _items.length; i++) {
       T item = getItem(i);
@@ -223,12 +239,14 @@ class AnimatedListGIController<T> {
   }
 
   void clear() {
-    _key.currentState!.removeAllItems(
-        (context, animation) => getTransition(
-            animatedListGITransition: removeAnimatedListGITransition,
-            child: removePlaceholder,
-            animation: animation),
-        duration: removeDuration);
+    if (_key.currentState != null) {
+      _key.currentState!.removeAllItems(
+          (context, animation) => getTransition(
+              animatedListGITransition: removeAnimatedListGITransition,
+              child: removePlaceholder,
+              animation: animation),
+          duration: removeDuration);
+    }
     _items.clear();
   }
 
@@ -256,8 +274,9 @@ class AnimatedListGIWidget<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedList(
-        controller: scrollController,
         physics: physics,
+        shrinkWrap: true,
+        controller: scrollController,
         key: controller.key,
         initialItemCount: controller.items.length,
         itemBuilder: (context, index, animation) {

@@ -87,52 +87,50 @@ class _SettingsViewState extends ConsumerState<SettingsView>
         children: <Widget>[
           Row(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (accountState.imagePath.isNotEmpty) {
-                          ShowImage.fromNetwork(
-                              context: context,
-                              imagePath: accountState.imagePath,
-                              heroTag: HeroTags.imageProfile2(accountState.id));
-                        }
-                      },
-                      child: Hero(
-                        tag: HeroTags.imageProfile2(accountState.id),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: WidgetsGI.CacheImageNetworkGI(
-                                accountState.imagePath,
-                                placeholderPath: ImagesPath.pic_profile.path,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover)),
-                      ),
-                    ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 100,
+                height: 100,
+                child: GestureDetector(
+                  onTap: () {
+                    if (accountState.imagePath.isNotEmpty) {
+                      ShowImage.fromNetwork(
+                          context: context,
+                          imagePath: accountState.imagePath,
+                          heroTag: HeroTags.imageProfile2(accountState.id));
+                    }
+                  },
+                  child: Hero(
+                    tag: HeroTags.imageProfile2(accountState.id),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: WidgetsGI.CacheImageNetworkGI(
+                            accountState.imagePath,
+                            placeholderPath: ImagesPath.pic_profile.path,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover)),
                   ),
-                  const SizedBox(width: 8),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('${accountState.name} ${accountState.last_name}',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          style: Theme.of(context).textTheme.titleMedium),
-                      Text(accountState.username,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          style: Theme.of(context).textTheme.titleSmall),
-                    ],
-                  )
-                ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('${accountState.name} ${accountState.last_name}',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        style: Theme.of(context).textTheme.titleMedium),
+                    Text(accountState.username,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        style: Theme.of(context).textTheme.titleSmall),
+                  ],
+                ),
               )
             ],
           ),
@@ -143,7 +141,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
               title: AppLocalizations.of(context)!.editarDatos,
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
               onTap: () {
-                context.push(RouterPath.ACCOUNT_EDIT_DATA_PAGE);
+                context.push(RouterPath.USERS_EDIT_DATA_PAGE);
               },
             ),
           ),

@@ -7,4 +7,6 @@ abstract class RemoteRepository {
   RegisterRemoteRepository get register;
 
   TransferRemoteRepository get transfer;
+
+  UsersRemoteRepository get users;
 }

@@ -24,6 +24,11 @@ class Utils {
           icon: Icons.error_outline,
           text: AppLocalizations.of(context)!.compruebeConexion);
 
+  static showSnackbarHaOcurridoError(BuildContext context) =>
+      SnackBarGI.showWithIcon(context,
+          icon: Icons.error_outline,
+          text: AppLocalizations.of(context)!.haOcurridoError);
+
   static String getErrorsFromRegister(dynamic data) {
     if (data == null) return "";
     Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
@@ -35,22 +40,45 @@ class Utils {
     return cad;
   }
 
-  static String getErrorsFromXnon_field_errors(dynamic data) {
+  static String getErrorsFromDioException(dynamic data) {
     if (data == null) return "";
     Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
-    String cad = "";
+    if (json["message"] != null) {
+      return json["message"];
+    }
+    if (json["error"] != null) {
+      return json["error"];
+    }
     if (json["non_field_errors"] != null) {
+      String cad = "";
       List<String>.from(json["non_field_errors"]).forEach((element) {
         if (cad.isNotEmpty) cad += "\n";
         cad += "- $element";
       });
+      return cad;
     }
-    return cad;
+    return "";
   }
 
-  static String getErrorsFromXmessage(dynamic data) {
+  static String getErrorsFromUpdateClientAndCompany(dynamic data) {
     if (data == null) return "";
     Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
+    if (json["errors"] != null) {
+      String cad = "";
+      Map<String, dynamic> errors = json["errors"];
+      errors.values.forEach((element) {
+        if (element is List) {
+          (element as List).forEach((element2) {
+            if (cad.isNotEmpty) cad += "\n";
+            cad += "- $element2";
+          });
+        } else {
+          if (cad.isNotEmpty) cad += "\n";
+          cad += "- $element";
+        }
+      });
+      return cad;
+    }
     if (json["message"] != null) {
       return json["message"];
     }

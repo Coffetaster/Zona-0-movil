@@ -57,7 +57,7 @@ class SendOSPFormNotifier extends StateNotifier<SendOSPFormState> {
       return code.toString();
     } on CustomDioError catch (e) {
       state = state.copyWith(formStatus: FormStatus.invalid);
-      return Utils.getErrorsFromXmessage(e.data);
+      return Utils.getErrorsFromDioException(e.data);
     } catch (e) {
       state = state.copyWith(formStatus: FormStatus.invalid);
       return "";

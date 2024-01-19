@@ -25,10 +25,7 @@ class _CategoriesViewState extends State<CategoriesView> with AutomaticKeepAlive
             children: [
               CustomTitle(AppLocalizations.of(context)!.categorias),
               const Divider(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 1.2,
-                child: CategoriesMasonry(categories: categories)),
+              CategoriesMasonry(categories: categories),
               const SizedBox(height: 80)
             ],
           ),
