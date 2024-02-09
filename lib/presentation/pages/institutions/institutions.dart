@@ -1,0 +1,1 @@
+export 'institution_details_page.dart';

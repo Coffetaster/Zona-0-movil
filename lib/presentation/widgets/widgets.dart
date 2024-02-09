@@ -12,3 +12,4 @@ export 'texts/texts.dart';
 export 'users/users.dart';
 export 'wallet/wallet.dart';
 export 'loadings/loadings.dart';
+export 'dialogs/dialogs.dart';

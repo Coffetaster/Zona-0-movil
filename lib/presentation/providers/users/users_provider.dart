@@ -12,7 +12,7 @@ final usersProvider =
   final apiConsumer = ref.read(apiProvider);
   final accountNotifier = ref.read(accountProvider.notifier);
   final connectivityStatusNotifier =
-      ref.watch(connectivityStatusProvider.notifier);
+      ref.read(connectivityStatusProvider.notifier);
 
   return UsersNotifier(
       usersRemoteRepository: apiConsumer.users,
@@ -60,6 +60,7 @@ class UsersNotifier extends StateNotifier<UsersState> {
       }
       final client = await usersRemoteRepository.getMyDataClient();
       if (client != null) {
+        accountNotifier.updateDataUserOfClient(client);
         state = state.copyWith(client: () => client, company: () => null);
       }
       return 200;
@@ -96,6 +97,7 @@ class UsersNotifier extends StateNotifier<UsersState> {
       }
       final company = await usersRemoteRepository.getMyDataCompany();
       if (company != null) {
+        accountNotifier.updateDataUserOfCompany(company);
         state = state.copyWith(client: () => null, company: () => company);
       }
       return 200;

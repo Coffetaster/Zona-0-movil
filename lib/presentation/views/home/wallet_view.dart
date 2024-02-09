@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +43,12 @@ class _WalletViewState extends ConsumerState<WalletView>
     width: double.infinity,
     height: 80,
   ));
+  final AnimatedListGIController<Donation>
+      _controllerDonationsList = AnimatedListGIController(
+          removePlaceholder: const SizedBox(
+    width: double.infinity,
+    height: 80,
+  ));
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +59,9 @@ class _WalletViewState extends ConsumerState<WalletView>
     if (!isLogin) {
       return const NoLoginPage();
     }
+
+    // ignore: unused_local_variable
+    final keepAlive_institutionsProvider = ref.watch(institutionsProvider.select((value) => value.isLoading));
 
     return SingleChildScrollView(
       child: FadeInUp(
@@ -81,45 +92,25 @@ class _WalletViewState extends ConsumerState<WalletView>
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomTitle(AppLocalizations.of(context)!.recibos),
+                        CustomTitle(
+                            AppLocalizations.of(context)!.ultimasOperaciones),
                         CustomIconButton(
                             icon: Icons.refresh_outlined,
                             onPressed: () {
                               ref
                                   .read(transferProvider.notifier)
-                                  .getListPaidAndUnpaidReceive();
+                                  .getAllTransactions();
                             })
                       ],
                     );
                   },
                 ),
                 CustomCard(
-                  child: _listReceivePaidAndUnpaidWidget(context),
+                  child: _listReceiveAndSentWidget(context),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                Consumer(
-                  builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTitle(AppLocalizations.of(context)!.envios),
-                        CustomIconButton(
-                            icon: Icons.refresh_outlined,
-                            onPressed: () {
-                              ref
-                                  .read(transferProvider.notifier)
-                                  .getListSendTransfer();
-                            })
-                      ],
-                    );
-                  },
-                ),
-                CustomCard(
-                    child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 600),
-                        child: _listTransactionsSentWidget(context))),
                 const SizedBox(height: 80),
               ],
             )),
@@ -127,7 +118,7 @@ class _WalletViewState extends ConsumerState<WalletView>
     );
   }
 
-  Widget _listReceivePaidAndUnpaidWidget(BuildContext context) {
+  Widget _listReceiveAndSentWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final transferState = ref.watch(transferProvider);
@@ -137,15 +128,16 @@ class _WalletViewState extends ConsumerState<WalletView>
               height: 300,
               child: Center(child: LoadingLogo()));
         }
-        int maxLength = transferState.listPaidReceive.length >
-                transferState.listUnpaidReceive.length
-            ? transferState.listPaidReceive.length
-            : transferState.listUnpaidReceive.length;
+        int maxLength1 = max(transferState.listPaidReceive.length,
+            transferState.listUnpaidReceive.length);
+        int maxLength2 = max(transferState.listTransactionsSent.length,
+            transferState.donationsList.length);
+        int maxLength = max(maxLength1, maxLength2);
         if (maxLength == 0) maxLength = 1;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 600),
           width: double.infinity,
-          height: (maxLength * 84) + 100,
+          height: (maxLength * 84) + 130,
           child: DefaultTabController(
               length: 2,
               child: Stack(
@@ -165,12 +157,10 @@ class _WalletViewState extends ConsumerState<WalletView>
                       selectedTextStyle: context.titleMedium,
                       tabs: [
                         SegmentTab(
-                          label:
-                              "${AppLocalizations.of(context)!.efectuados}(${transferState.listPaidReceive.length})",
+                          label: AppLocalizations.of(context)!.recibos,
                         ),
                         SegmentTab(
-                          label:
-                              "${AppLocalizations.of(context)!.pendientes}(${transferState.listUnpaidReceive.length})",
+                          label: AppLocalizations.of(context)!.envios,
                         )
                       ],
                     ),
@@ -180,23 +170,8 @@ class _WalletViewState extends ConsumerState<WalletView>
                     child: TabBarView(
                         physics: const BouncingScrollPhysics(),
                         children: [
-                          transferState.listPaidReceive.isEmpty
-                              ? Center(
-                                  child: Text(AppLocalizations.of(context)!
-                                      .noSolRecibosEfectuados))
-                              : _animatedListWidgetOfTransactionsReceived(
-                                  _controllerPaidList,
-                                  transferState.listPaidReceive),
-                          // : _transactionList(transferState.listPaidReceive),
-                          transferState.listUnpaidReceive.isEmpty
-                              ? Center(
-                                  child: Text(AppLocalizations.of(context)!
-                                      .noSolRecibosPendientes))
-                              : _animatedListWidgetOfTransactionsReceived(
-                                  _controllerUnpaidList,
-                                  transferState.listUnpaidReceive)
-                          // : _transactionList(
-                          //     transferState.listUnpaidReceive),
+                          _listReceivePaidAndUnpaidWidget(context),
+                          _listSentTransferAndDonateWidget(context),
                         ]),
                   ),
                 ],
@@ -206,27 +181,113 @@ class _WalletViewState extends ConsumerState<WalletView>
     );
   }
 
-  Widget _listTransactionsSentWidget(BuildContext context) {
+  Widget _listReceivePaidAndUnpaidWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final transferState = ref.watch(transferProvider);
-        if (transferState.isLoading) {
-          return const SizedBox(
-              width: double.infinity,
-              height: 300,
-              child: Center(child: LoadingLogo()));
-        }
-        int maxLength = transferState.listTransactionsSent.length;
-        if (maxLength == 0) maxLength = 2;
-        return transferState.listTransactionsSent.isEmpty
-            ? SizedBox(
-                width: double.infinity,
-                height: 150,
-                child: Center(
-                    child: Text(AppLocalizations.of(context)!.noSolEnvio)))
-            : _animatedListWidgetOfTransactionsSent(
-                _controllerTransactionsSentList,
-                transferState.listTransactionsSent);
+        int maxLength = transferState.listPaidReceive.length >
+                transferState.listUnpaidReceive.length
+            ? transferState.listPaidReceive.length
+            : transferState.listUnpaidReceive.length;
+        if (maxLength == 0) maxLength = 1;
+        return DefaultTabController(
+          length: 2,
+          child: Column(
+            children: <Widget>[
+              TabBar(
+                indicatorColor: context.primary,
+                labelColor: context.primary,
+                unselectedLabelColor: context.secondary,
+                isScrollable: true,
+                tabs: <Widget>[
+                  Tab(
+                    text:
+                        "${AppLocalizations.of(context)!.efectuados}(${transferState.listPaidReceive.length})",
+                  ),
+                  Tab(
+                    text:
+                        "${AppLocalizations.of(context)!.pendientes}(${transferState.listUnpaidReceive.length})",
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: (maxLength * 84),
+                child: TabBarView(
+                  children: <Widget>[
+                    transferState.listPaidReceive.isEmpty
+                        ? Center(
+                            child: Text(AppLocalizations.of(context)!
+                                .noSolRecibosEfectuados))
+                        : _animatedListWidgetOfTransactionsReceived(
+                            _controllerPaidList, transferState.listPaidReceive),
+                    transferState.listUnpaidReceive.isEmpty
+                        ? Center(
+                            child: Text(AppLocalizations.of(context)!
+                                .noSolRecibosPendientes))
+                        : _animatedListWidgetOfTransactionsReceived(
+                            _controllerUnpaidList,
+                            transferState.listUnpaidReceive)
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _listSentTransferAndDonateWidget(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final transferState = ref.watch(transferProvider);
+        int maxLength = max(transferState.listTransactionsSent.length,
+            transferState.donationsList.length);
+        if (maxLength == 0) maxLength = 1;
+        return DefaultTabController(
+          length: 2,
+          child: Column(
+            children: <Widget>[
+              TabBar(
+                indicatorColor: context.primary,
+                labelColor: context.primary,
+                unselectedLabelColor: context.secondary,
+                isScrollable: true,
+                tabs: <Widget>[
+                  Tab(
+                    text:
+                        "${AppLocalizations.of(context)!.transferidos}(${transferState.listTransactionsSent.length})",
+                  ),
+                  Tab(
+                    text:
+                        "${AppLocalizations.of(context)!.donados}(${transferState.donationsList.length})",
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: (maxLength * 84),
+                child: TabBarView(
+                  children: <Widget>[
+                    transferState.listTransactionsSent.isEmpty
+                        ? Center(
+                            child:
+                                Text(AppLocalizations.of(context)!.noSolEnvio))
+                        : _animatedListWidgetOfTransactionsSent(
+                            _controllerTransactionsSentList,
+                            transferState.listTransactionsSent),
+                    transferState.donationsList.isEmpty
+                        ? Center(
+                            child:
+                                Text(AppLocalizations.of(context)!.noDonaciones))
+                        : _animatedListWidgetOfDonations(
+                            _controllerDonationsList,
+                            transferState.donationsList),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
       },
     );
   }
@@ -264,11 +325,17 @@ class _WalletViewState extends ConsumerState<WalletView>
                   context.push(RouterPath.WALLET_REDEEM_CODE_PAGE);
                 }),
             IconSubtextButton(
-                icon: Icons.play_arrow_outlined,
-                label: AppLocalizations.of(context)!.jugar,
+                icon: Icons.credit_card_outlined,
+                label: AppLocalizations.of(context)!.descuento,
                 onTap: () {
                   context.push(RouterPath.WALLET_PLAY_GAME_PAGE);
                 }),
+            // IconSubtextButton(
+            //     icon: Icons.play_arrow_outlined,
+            //     label: AppLocalizations.of(context)!.jugar,
+            //     onTap: () {
+            //       context.push(RouterPath.WALLET_PLAY_GAME_PAGE);
+            //     }),
             IconSubtextButton(
                 icon: Icons.volunteer_activism_outlined,
                 label: AppLocalizations.of(context)!.donar,
@@ -303,6 +370,19 @@ class _WalletViewState extends ConsumerState<WalletView>
             controller: controller,
             builder: (context, index) =>
                 TransactionSentItem(transaction: transactions[index])));
+  }
+
+  Widget _animatedListWidgetOfDonations(
+      AnimatedListGIController<Donation> controller,
+      List<Donation> donations) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        child: AnimatedListGIWidget<Donation>(
+            items: donations,
+            physics: const NeverScrollableScrollPhysics(),
+            controller: controller,
+            builder: (context, index) =>
+                DonationItem(donation: donations[index])));
   }
 
   @override

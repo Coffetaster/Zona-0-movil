@@ -7,3 +7,4 @@ export 'notifications/notifications.dart';
 export 'users/users.dart';
 export 'utils/utils.dart';
 export 'wallet/wallet.dart';
+export 'institutions/institutions.dart';

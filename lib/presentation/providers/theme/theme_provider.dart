@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zona0_apk/domain/shared_preferences/my_shared.dart';
+import 'package:zona0_apk/data/shared_preferences/my_shared.dart';
 import 'package:zona0_apk/presentation/providers/data_providers/my_shared_provider.dart';
 
 final themeProvider = StateNotifierProvider<ThemeNotifier,ThemeState>((ref) {

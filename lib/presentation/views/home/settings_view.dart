@@ -6,6 +6,7 @@ import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/helpers/show_image.dart';
 import 'package:zona0_apk/config/helpers/utils.dart';
+import 'package:zona0_apk/config/router/router_nav/router_nav.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
@@ -125,7 +126,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                         softWrap: false,
                         style: Theme.of(context).textTheme.titleMedium),
                     Text(accountState.username,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,
                         style: Theme.of(context).textTheme.titleSmall),
@@ -136,13 +137,31 @@ class _SettingsViewState extends ConsumerState<SettingsView>
           ),
           const Divider(thickness: 1, height: 20),
           CustomCard(
-            child: SettingOption(
-              icon: Icons.edit_outlined,
-              title: AppLocalizations.of(context)!.editarDatos,
-              trailing: const Icon(Icons.arrow_forward_ios_outlined),
-              onTap: () {
-                context.push(RouterPath.USERS_EDIT_DATA_PAGE);
-              },
+            child: Column(
+              children: <Widget>[
+                SettingOption(
+                  icon: Icons.person_outline,
+                  title: AppLocalizations.of(context)!.verPerfil,
+                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                  onTap: () {
+                    context.nav
+                        .ProfilePage(
+                            user: accountState.user!,
+                            userImageTag:
+                                HeroTags.imageProfile2(accountState.id))
+                        .push;
+                  },
+                ),
+                const Divider(thickness: 1, height: 1),
+                SettingOption(
+                  icon: Icons.edit_outlined,
+                  title: AppLocalizations.of(context)!.editarDatos,
+                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                  onTap: () {
+                    context.push(RouterPath.USERS_EDIT_DATA_PAGE);
+                  },
+                ),
+              ],
             ),
           ),
           acountBloc(),
@@ -246,7 +265,8 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                   content: AppLocalizations.of(context)!.dialog_content_logout,
                   actionOk: () {
                 ref.read(accountProvider.notifier).logout();
-                Future.delayed(Duration(milliseconds: 0), () => context.pop());
+                Future.delayed(
+                    const Duration(milliseconds: 0), () => context.pop());
               });
             },
           ),

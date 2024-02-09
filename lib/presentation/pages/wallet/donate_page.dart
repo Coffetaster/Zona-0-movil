@@ -1,9 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
+import 'package:zona0_apk/config/extensions/custom_context.dart';
 
-import 'package:zona0_apk/domain/entities/donation.dart';
 import 'package:zona0_apk/main.dart';
+import 'package:zona0_apk/presentation/providers/providers.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class DonatePage extends StatelessWidget {
@@ -11,55 +13,60 @@ class DonatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Delete donations
-    List<Donation> donations = [];
-    donations.add(Donation(
-        id: 1,
-        name: "Lugar de anciano",
-        aboutUs:
-            "Esse cillum esse labore aliquip officia pariatur aliquip velit irure consequat ex deserunt in.",
-        img1: ImagesPath.empty_cart.path,
-        img2: ImagesPath.happy_birthday.path,
-        img3: ImagesPath.new_notifications.path,
-        img4: ImagesPath.under_construction.path,
-      ));
-    donations.add(Donation(
-        id: 2,
-        name: "Hogar materno",
-        aboutUs:
-            "Esse fugiat aliquip proident anim ipsum cupidatat tempor mollit.",
-        img1: ImagesPath.pic_profile.path,
-        img2: ImagesPath.logo.path,
-        img3: ImagesPath.under_construction.path,
-        img4: ImagesPath.new_notifications.path,
-      ));
-    donations.add(Donation(
-        id: 3,
-        name: "Casa de la patria",
-        aboutUs:
-            "Amet amet magna ad est sint magna ad id cillum dolore aliqua ex.",
-        img1: "assets/imagen/b1.jpg",
-        img2: "assets/imagen/b2.jpg",
-        img3: "assets/imagen/b3.jpg",
-        img4: "assets/imagen/b4.jpg",
-      ));
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.donar),
         centerTitle: false,
       ),
-      body: FadeInUp(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: ListView.builder(
-            itemCount: donations.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: DonateItem(donation: donations[index]),
-              );
-            },),
-        ),
+      body: Consumer(
+        builder: (context, ref, child) {
+          final institutionsState = ref.watch(institutionsProvider);
+          if (institutionsState.isLoading) {
+            return ZoomIn(
+                child: const SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: LoadingPage()));
+          }
+          if (institutionsState.institutionsList.isEmpty) {
+            return ZoomIn(
+                child: SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(ImagesPath.no_data.path,
+                            width: context.width * .75,
+                            height: context.width * .75,
+                            fit: BoxFit.contain),
+                        const SizedBox(height: 8),
+                        Text(
+                            AppLocalizations.of(context)!
+                                .noExistenInstituciones,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall),
+                      ],
+                    )));
+          }
+          return FadeInUp(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: ListView.builder(
+                itemCount: institutionsState.institutionsList.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: InstitutionItem(institution: institutionsState.institutionsList[index]),
+                  );
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }

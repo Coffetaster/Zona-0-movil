@@ -101,7 +101,8 @@ abstract class AbstractPopupItemGI {
 }
 
 class PopupMenuHeaderGI extends AbstractPopupItemGI {
-  final ImageProvider imageProvider;
+  final Widget imageProvider;
+  // final ImageProvider imageProvider;
   final String? label;
   final VoidCallback? onTap;
   PopupMenuHeaderGI({
@@ -112,16 +113,27 @@ class PopupMenuHeaderGI extends AbstractPopupItemGI {
 
   @override
   PopupMenuEntry get toPopupMenuEntry {
-    Widget child = CircleAvatar(
-      radius: 40,
-        child: Image(
-      image: imageProvider,
-      width: 80,
-      height: 80,
-    ));
+    Widget child = SizedBox(width: 80, height: 80, child: imageProvider);
+    // Widget child = CircleAvatar(
+    //   radius: 40,
+    //     child: Image(
+    //   image: imageProvider,
+    //   width: 80,
+    //   height: 80,
+    // ));
     if (label != null) {
-      child = Column(
-          mainAxisSize: MainAxisSize.min, children: [child, Text(label!)]);
+      child = SizedBox(
+        width: 100,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          child,
+          Text(
+            label!,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+          )
+        ]),
+      );
     }
     return PopupMenuItem(
       enabled: onTap != null,

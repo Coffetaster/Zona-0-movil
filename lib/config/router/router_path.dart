@@ -1,5 +1,3 @@
-
-
 class RouterPath {
   static const String INITIAL_PAGE = '/';
 
@@ -14,31 +12,38 @@ class RouterPath {
   static const String SEARCH_PAGE = '/search';
 
   //* Products pages
-  static const String PRODUCT_DETAIL_PAGE_PATH = '/product/:id';
+  static const String PRODUCT_DETAIL_PAGE_PATH = '/product/:ttt';
   static String PRODUCT_DETAIL_PAGE(String id) => '/product/$id';
 
   //* Auth pages
   static const String AUTH_LOGIN_PAGE = '/auth/login';
   static const String AUTH_REGISTER_PAGE = '/auth/register';
   static const String AUTH_REGISTER_CLIENT_PAGE_PATH = 'client';
-  static const String AUTH_REGISTER_CLIENT_PAGE = '$AUTH_REGISTER_PAGE/$AUTH_REGISTER_CLIENT_PAGE_PATH';
+  static const String AUTH_REGISTER_CLIENT_PAGE =
+      '$AUTH_REGISTER_PAGE/$AUTH_REGISTER_CLIENT_PAGE_PATH';
   static const String AUTH_REGISTER_COMPANY_PAGE_PATH = 'company';
-  static const String AUTH_REGISTER_COMPANY_PAGE = '$AUTH_REGISTER_PAGE/$AUTH_REGISTER_COMPANY_PAGE_PATH';
+  static const String AUTH_REGISTER_COMPANY_PAGE =
+      '$AUTH_REGISTER_PAGE/$AUTH_REGISTER_COMPANY_PAGE_PATH';
   static const String AUTH_VERIFY_CODE_PAGE = '/auth/verify_code';
   static const String AUTH_PASSWORD_RESET_PAGE = '/auth/password_reset';
-  static const String AUTH_PASSWORD_RESET_CONFIRM_PAGE = '/auth/password_reset/confirm';
+  static const String AUTH_PASSWORD_RESET_CONFIRM_PAGE =
+      '/auth/password_reset/confirm';
 
   //* Account pages
   static const String ACCOUNT_CHANGE_PASSWORD_PAGE = '/account/change_password';
 
   //* Users pages
   static const String USERS_EDIT_DATA_PAGE = '/users/edit_data';
+  static const String USERS_PROFILE_PAGE = '/users/profile_page';
 
   //* Settings pages
   static const String SETTINGS_ABOUT_US_PAGE = '/settings/about_us';
 
   //* Notifications pages
   static const String NOTIFICATIONS_PAGE = '/notifications';
+
+  //* Institutions pages
+  static const String INSTITUTIONS_DETAILS_PAGE = '/institutions';
 
   //* Utils pages
   static const String UTILS_IMAGE_CROP_PAGE = '/utils/image_crop';
@@ -51,8 +56,11 @@ class RouterPath {
   static const String WALLET_REDEEM_CODE_PAGE = '/wallet/redeem_code';
   static const String WALLET_PLAY_GAME_PAGE = '/wallet/play_game';
   static const String WALLET_DONATE_PAGE = '/wallet/donate';
-  static const String WALLET_RECEIVE_ITEM_DATA_PAGE_PATH = '/wallet/receive_item_data/:id/:canEdit';
-  static String WALLET_RECEIVE_ITEM_DATA_PAGE(String id, [bool canEdit = true]) => '/wallet/receive_item_data/$id/${canEdit ? "1" : "0"}';
+  static const String WALLET_RECEIVE_ITEM_DATA_PAGE_PATH =
+      '/wallet/receive_item_data/:id/:canEdit';
+  static String WALLET_RECEIVE_ITEM_DATA_PAGE(String id,
+          [bool canEdit = true]) =>
+      '/wallet/receive_item_data/$id/${canEdit ? "1" : "0"}';
 
   //* Test pages
   static const String TEST_DOBLE_PAGE = '/doble_page';

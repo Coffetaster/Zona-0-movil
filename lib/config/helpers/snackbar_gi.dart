@@ -33,7 +33,7 @@ class SnackBarGI {
       content: FadeInUp(
         child: CustomCard(
           color: color.secondary,
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: Flexible(
             child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: color.onSecondary
@@ -65,7 +65,7 @@ class SnackBarGI {
       content: FadeInUp(
         child: CustomCard(
           color: color.secondary,
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -106,7 +106,7 @@ class SnackBarGI {
       content: FadeInUp(
         child: CustomCard(
           color: color.secondary,
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

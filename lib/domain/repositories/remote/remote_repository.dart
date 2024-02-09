@@ -1,7 +1,6 @@
 import 'usecases/usecases.dart';
 
 abstract class RemoteRepository {
-
   AccountsRemoteRepository get accounts;
 
   RegisterRemoteRepository get register;
@@ -9,4 +8,10 @@ abstract class RemoteRepository {
   TransferRemoteRepository get transfer;
 
   UsersRemoteRepository get users;
+
+  InstitutionsRemoteRepository get institutions;
+
+  RedeemCodeRemoteRepository get redeemCode;
+
+  BankingRemoteRepository get banking;
 }

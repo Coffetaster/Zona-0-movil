@@ -17,7 +17,9 @@ import 'package:zona0_apk/presentation/widgets/shared/widgets_gi.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class UserEditDataPage extends StatelessWidget {
-  const UserEditDataPage({super.key});
+  const UserEditDataPage({super.key, required this.otherHeroTag});
+
+  final String otherHeroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class UserEditDataPage extends StatelessWidget {
                               }
                             },
                             child: Hero(
-                              tag: HeroTags.imageProfile2(accountState.id),
+                              tag: otherHeroTag.isNotEmpty ? otherHeroTag : HeroTags.imageProfile2(accountState.id),
                               child: ClipRRect(
                                   borderRadius: BorderRadius.circular(1000),
                                   child: WidgetsGI.CacheImageNetworkGI(
@@ -506,9 +508,13 @@ class UserEditDataPage extends StatelessWidget {
                           : null,
                     ),
                     CustomDropdownButton<CompanyType>(
-                      value: company.company_type.isEmpty
-                          ? null
-                          : CompanyType(company.company_type),
+                      value:
+                          updateFormCompanyStatus.companyType.value.isNotEmpty
+                              ? CompanyType(
+                                  updateFormCompanyStatus.companyType.value)
+                              : company.company_type.isEmpty
+                                  ? null
+                                  : CompanyType(company.company_type),
                       hint: AppLocalizations.of(context)!.tipoCompany,
                       items: Utils.companyTypes,
                       onChanged: updateFormCompanyStatus.formStatus !=

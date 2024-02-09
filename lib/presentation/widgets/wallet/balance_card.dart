@@ -44,7 +44,7 @@ class BalanceCard extends StatelessWidget {
                             style: GoogleFonts.mulish(
                                 textStyle:
                                     Theme.of(context).textTheme.headline4,
-                                fontSize: 35,
+                                fontSize: 30,
                                 fontWeight: FontWeight.w800,
                                 color: const Color(0xffe7ad03)),
                           );
@@ -53,7 +53,7 @@ class BalanceCard extends StatelessWidget {
                       Text(
                         ' ${Constants.namePoints}',
                         style: TextStyle(
-                            fontSize: 35,
+                            fontSize: 30,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xfffbbd5c).withAlpha(200)),
                       ),

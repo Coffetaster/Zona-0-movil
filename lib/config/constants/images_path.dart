@@ -11,6 +11,8 @@ class ImagesPath {
   static final pic_profile = ImagePath(path: 'assets/imagen/pic_profile.png');
   static final happy_birthday = ImagePath(path: 'assets/imagen/happy_birthday.png');
   static final under_construction = ImagePath(path: 'assets/imagen/under_construction.png');
+  static final placeholder = ImagePath(path: 'assets/imagen/placeholder.png');
+  static final default_donation = ImagePath(path: 'assets/imagen/default_donation.jpg');
 }
 
 class ImagePath {

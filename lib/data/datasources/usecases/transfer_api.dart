@@ -70,10 +70,9 @@ class TransferApi extends TransferRemoteRepository {
   @override
   Future<void> deleteUnpaidReceive(int id) async {
     try {
-      final json = await _myDio.request(
+      await _myDio.request(
           path: '$localUrl/list-delete-unpaid-receive/$id',
           requestType: RequestType.DELETE);
-      print(json);
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {

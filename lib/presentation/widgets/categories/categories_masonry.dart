@@ -18,7 +18,7 @@ class CategoriesMasonry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: MasonryGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

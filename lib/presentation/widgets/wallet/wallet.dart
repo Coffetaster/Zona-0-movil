@@ -1,4 +1,5 @@
 export 'transaction_received_item.dart';
 export 'balance_card.dart';
-export 'donate_item.dart';
+export 'institution_item.dart';
 export 'transaction_sent_item.dart';
+export 'donation_item.dart';

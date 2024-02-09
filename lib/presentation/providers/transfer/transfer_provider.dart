@@ -10,25 +10,33 @@ final transferProvider =
     StateNotifierProvider.autoDispose<TransferNotifier, TransferState>((ref) {
   final apiConsumer = ref.read(apiProvider);
   final connectivityStatusNotifier =
-      ref.watch(connectivityStatusProvider.notifier);
+      ref.read(connectivityStatusProvider.notifier);
+  final institutionsNotifier = ref.read(institutionsProvider.notifier);
 
   return TransferNotifier(
       transferRemoteRepository: apiConsumer.transfer,
       connectivityStatusNotifier: connectivityStatusNotifier,
+      institutionsNotifier: institutionsNotifier,
       getOSPPoints: ref.read(accountProvider.notifier).getOSPPoints);
 });
 
 class TransferNotifier extends StateNotifier<TransferState> {
   final TransferRemoteRepository transferRemoteRepository;
   final ConnectivityStatusNotifier connectivityStatusNotifier;
+  final InstitutionsNotifier institutionsNotifier;
   final Function() getOSPPoints;
 
-  TransferNotifier(
-      {required this.transferRemoteRepository,
-      required this.connectivityStatusNotifier,
-      required this.getOSPPoints,
-      })
-      : super(TransferState()) {
+  TransferNotifier({
+    required this.transferRemoteRepository,
+    required this.connectivityStatusNotifier,
+    required this.institutionsNotifier,
+    required this.getOSPPoints,
+  }) : super(TransferState()) {
+    institutionsNotifier.addListener((institutionsState) {
+      state = state.copyWith(
+        donationsList: institutionsState.donationsList,
+      );
+    });
     refresh();
   }
 
@@ -36,9 +44,7 @@ class TransferNotifier extends StateNotifier<TransferState> {
 
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true);
-    await getListPaidAndUnpaidReceive();
-    await getListSendTransfer();
-    getOSPPoints();
+    await getAllTransactions();
     state = state.copyWith(isLoading: false);
   }
 
@@ -146,6 +152,13 @@ class TransferNotifier extends StateNotifier<TransferState> {
     }
   }
 
+  Future<void> getAllTransactions() async {
+    await getListPaidAndUnpaidReceive();
+    await getListSendTransfer();
+    await institutionsNotifier.getDonations();
+    getOSPPoints();
+  }
+
   Future<void> getListPaidAndUnpaidReceive() async {
     await getListPaidReceive();
     await getListUnpaidReceive();
@@ -200,6 +213,10 @@ class TransferNotifier extends StateNotifier<TransferState> {
     }
     return null;
   }
+
+  Future<void> getDonations() async {
+    await institutionsNotifier.getDonations();
+  }
 }
 
 class TransferState {
@@ -207,12 +224,14 @@ class TransferState {
   final List<TransactionReceived> listPaidReceive;
   final List<TransactionReceived> listUnpaidReceive;
   final List<TransactionSent> listTransactionsSent;
+  final List<Donation> donationsList;
 
   TransferState({
     this.isLoading = false,
     this.listPaidReceive = const [],
     this.listUnpaidReceive = const [],
     this.listTransactionsSent = const [],
+    this.donationsList = const [],
   });
 
   TransferState copyWith({
@@ -220,12 +239,14 @@ class TransferState {
     List<TransactionReceived>? listPaidReceive,
     List<TransactionReceived>? listUnpaidReceive,
     List<TransactionSent>? listTransactionsSent,
+    List<Donation>? donationsList,
   }) {
     return TransferState(
       isLoading: isLoading ?? this.isLoading,
       listPaidReceive: listPaidReceive ?? this.listPaidReceive,
       listUnpaidReceive: listUnpaidReceive ?? this.listUnpaidReceive,
       listTransactionsSent: listTransactionsSent ?? this.listTransactionsSent,
+      donationsList: donationsList ?? this.donationsList,
     );
   }
 }

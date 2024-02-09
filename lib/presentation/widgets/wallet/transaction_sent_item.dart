@@ -25,7 +25,7 @@ class TransactionSentItem extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.secondaryContainer,
             borderRadius:
-                BorderRadius.all(Radius.circular(AppTheme.borderRadius)),
+                const BorderRadius.all(const Radius.circular(AppTheme.borderRadius)),
           ),
           child: Text(
               '${transaction.amount.toStringAsFixed(2)} ${Constants.namePoints}',

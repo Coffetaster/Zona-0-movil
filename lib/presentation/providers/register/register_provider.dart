@@ -10,7 +10,7 @@ final registerProvider =
     StateNotifierProvider.autoDispose<RegisterNotifier, RegisterState>((ref) {
   final apiConsumer = ref.read(apiProvider);
   final connectivityStatusNotifier =
-      ref.watch(connectivityStatusProvider.notifier);
+      ref.read(connectivityStatusProvider.notifier);
 
   return RegisterNotifier(
       registerRemoteRepository: apiConsumer.register,

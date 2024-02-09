@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zona0_apk/domain/entities/transaction_received.dart';
+import 'package:zona0_apk/config/router/router_nav/router_nav.dart';
 import 'package:zona0_apk/presentation/pages/pages.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/presentation/pages/test/doble_page.dart';
@@ -81,16 +81,13 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final id = state.pathParameters['id'] ?? '';
         final canEdit = state.pathParameters['canEdit'] ?? '1';
-        final transactionReceived = state.extra;
         return RouterTransition.slideTransitionPage(
             key: state.pageKey,
             child: ReceiveItemDataPage(
               id: id,
               canEdit: canEdit == '1',
-              transactionReceived: (transactionReceived != null &&
-                      transactionReceived is TransactionReceived)
-                  ? transactionReceived
-                  : null,
+              transactionReceived:
+                  context.navParseExtra(state.extra).ReceiveItemDataPage,
             ));
       },
     ),
@@ -120,6 +117,18 @@ final appRouter = GoRouter(
           key: state.pageKey, child: const NotificationsPage()),
     ),
 
+    //* Institutions Pages
+    GoRoute(
+      path: RouterPath.INSTITUTIONS_DETAILS_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey,
+            child: InstitutionDetailsPage(
+                institution:
+                    context.navParseExtra(state.extra).InstitutionDetailsPage));
+      },
+    ),
+
     //* Test Pages
     GoRoute(
       path: RouterPath.TEST_DOBLE_PAGE,
@@ -144,8 +153,26 @@ final appRouter = GoRouter(
     //* Users Pages
     GoRoute(
       path: RouterPath.USERS_EDIT_DATA_PAGE,
-      pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
-          key: state.pageKey, child: const UserEditDataPage()),
+      pageBuilder: (context, state) {
+        final otherHeroTag = state.extra;
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey,
+            child: UserEditDataPage(
+                otherHeroTag: (otherHeroTag != null && otherHeroTag is String)
+                    ? otherHeroTag
+                    : ''));
+      },
+    ),
+    GoRoute(
+      path: RouterPath.USERS_PROFILE_PAGE,
+      pageBuilder: (context, state) {
+        return RouterTransition.slideTransitionPage(
+            key: state.pageKey,
+            child: ProfilePage(
+                user: context.navParseExtra(state.extra).ProfilePage_User,
+                userImageTag:
+                    context.navParseExtra(state.extra).ProfilePage_UserImageTag));
+      },
     ),
 
     //* Auth Pages

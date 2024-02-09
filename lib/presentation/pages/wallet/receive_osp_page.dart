@@ -1,10 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/helpers/snackbar_gi.dart';
-import 'package:zona0_apk/config/router/router_path.dart';
+import 'package:zona0_apk/config/router/router_nav/router_nav.dart';
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 import 'package:zona0_apk/main.dart';
 import 'package:zona0_apk/presentation/providers/transfer/transfer.dart';
@@ -21,12 +20,15 @@ class ReceiveOSPPage extends ConsumerWidget {
       final code = await ref.read(receiveOSPFormProvider.notifier).onSubmit(
         (transaction) {
           try {
-            if(!context.mounted) return;
+            if (!context.mounted) return;
             SnackBarGI.showWithIcon(context,
                 icon: Icons.check_outlined,
                 text: AppLocalizations.of(context)!.reciboCreado);
-            context.replace(RouterPath.WALLET_RECEIVE_ITEM_DATA_PAGE(
-                transaction.id.toString()));
+            context.nav
+                .ReceiveItemDataPage(
+                    id: transaction.id.toString(),
+                    transactionReceived: transaction)
+                .replace;
           } catch (e) {}
         },
       );

@@ -3,3 +3,7 @@ export 'company_model.dart';
 export 'user_model.dart';
 export 'transaction_received_model.dart';
 export 'transaction_sent_model.dart';
+export 'donation_models.dart';
+export 'institution_gallery_model.dart';
+export 'institution_model.dart';
+export 'banking_model.dart';

@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:zona0_apk/data/dio/my_dio.dart';
+import 'package:zona0_apk/data/shared_preferences/my_shared.dart';
 import 'package:zona0_apk/domain/entities/entities.dart';
 import 'package:zona0_apk/domain/repositories/remote/usecases/accounts_remote_repository.dart';
-import 'package:zona0_apk/domain/shared_preferences/my_shared.dart';
 import 'package:zona0_apk/presentation/providers/data_providers/api_provider.dart';
 import 'package:zona0_apk/presentation/providers/data_providers/my_shared_provider.dart';
 import 'package:zona0_apk/presentation/providers/providers.dart';
@@ -16,7 +16,7 @@ final accountProvider =
   final apiConsumer = ref.read(apiProvider);
   final myShared = ref.read(mySharedProvider);
   final connectivityStatusNotifier =
-      ref.watch(connectivityStatusProvider.notifier);
+      ref.read(connectivityStatusProvider.notifier);
 
   return AccountNotifier(
       accountsRemoteRepository: apiConsumer.accounts,
@@ -364,7 +364,7 @@ class AccountState {
   bool get isClient {
     if (!isLogin) return false;
     if (user != null) {
-      return user!.userType.toLowerCase() == "client";
+      return user!.isClient;
     }
     return false;
   }
@@ -372,7 +372,7 @@ class AccountState {
   bool get isCompany {
     if (!isLogin) return false;
     if (user != null) {
-      return user!.userType.toLowerCase() == "company";
+      return user!.isCompany;
     }
     return false;
   }

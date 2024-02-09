@@ -40,24 +40,27 @@ class Utils {
     return cad;
   }
 
-  static String getErrorsFromDioException(dynamic data) {
-    if (data == null) return "";
-    Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
-    if (json["message"] != null) {
-      return json["message"];
-    }
-    if (json["error"] != null) {
-      return json["error"];
-    }
-    if (json["non_field_errors"] != null) {
-      String cad = "";
-      List<String>.from(json["non_field_errors"]).forEach((element) {
-        if (cad.isNotEmpty) cad += "\n";
-        cad += "- $element";
-      });
-      return cad;
-    }
-    return "";
+  static String getErrorsFromDioException(dynamic data,
+      [String defaultError = ""]) {
+    if (data == null) return defaultError;
+    try {
+      Map<String, dynamic> json = (data is String) ? jsonDecode(data) : data;
+      if (json["message"] != null) {
+        return json["message"];
+      }
+      if (json["error"] != null) {
+        return json["error"];
+      }
+      if (json["non_field_errors"] != null) {
+        String cad = "";
+        List<String>.from(json["non_field_errors"]).forEach((element) {
+          if (cad.isNotEmpty) cad += "\n";
+          cad += "- $element";
+        });
+        return cad;
+      }
+    } catch (_) {}
+    return defaultError;
   }
 
   static String getErrorsFromUpdateClientAndCompany(dynamic data) {

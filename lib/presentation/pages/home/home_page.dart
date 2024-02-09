@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/constants/hero_tags.dart';
 import 'package:zona0_apk/config/constants/images_path.dart';
 import 'package:zona0_apk/config/extensions/custom_context.dart';
-import 'package:zona0_apk/config/helpers/show_image.dart';
+import 'package:zona0_apk/config/router/router_nav/router_nav.dart';
 import 'package:zona0_apk/config/router/router_path.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
@@ -176,7 +176,7 @@ class _HomePageState extends ConsumerState<HomePage>
           : null,
       flexibleSpace: FlexibleSpaceBar(
         background: Center(
-          child: Container(
+          child: SizedBox(
             height: widget.pageIndex == 0 ? 160 : 100,
             child: Column(
               children: [
@@ -252,23 +252,76 @@ class _HomePageState extends ConsumerState<HomePage>
                                   );
                                 },
                               ),
-                              Text('${accountState.username}',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: false,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium),
+                              // Text('${accountState.username}',
+                              // maxLines: 1,
+                              // overflow: TextOverflow.ellipsis,
+                              // softWrap: false,
+                              //     style:
+                              //         Theme.of(context).textTheme.titleMedium),
                               const SizedBox(width: 8),
-                              GestureDetector(
-                                onTap: () {
-                                  if (accountState.imagePath.isNotEmpty) {
-                                    ShowImage.fromNetwork(
-                                        context: context,
-                                        imagePath: accountState.imagePath,
-                                        heroTag: HeroTags.imageProfile1(
-                                            accountState.id));
-                                  }
-                                },
+                              PopupMenuGI(
+                                items: [
+                                  PopupMenuHeaderGI(
+                                      imageProvider: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          child: WidgetsGI.CacheImageNetworkGI(
+                                              accountState.imagePath,
+                                              placeholderPath:
+                                                  ImagesPath.pic_profile.path,
+                                              width: double.infinity,
+                                              height: double.infinity,
+                                              fit: BoxFit.cover)),
+                                      label: accountState.username,
+                                      onTap: () {
+                                        context.nav
+                                            .ProfilePage(
+                                                user: accountState.user!,
+                                                userImageTag:
+                                                    HeroTags.imageProfile1(
+                                                        accountState.id))
+                                            .push;
+                                      }),
+                                  PopupMenuItemGI(
+                                      icon: Icons.edit_outlined,
+                                      label: AppLocalizations.of(context)!
+                                          .editarDatos,
+                                      onTap: () {
+                                        context.push(
+                                            RouterPath.USERS_EDIT_DATA_PAGE,
+                                            extra: HeroTags.imageProfile1(
+                                                accountState.id));
+                                      }),
+                                  PopupMenuDividerGI(height: 8),
+                                  PopupMenuItemGI(
+                                      icon: Icons.lock_outline,
+                                      label: AppLocalizations.of(context)!
+                                          .cambiarContrasena,
+                                      onTap: () {
+                                        context.push(RouterPath
+                                            .ACCOUNT_CHANGE_PASSWORD_PAGE);
+                                      }),
+                                  PopupMenuItemGI(
+                                      icon: Icons.logout_outlined,
+                                      label:
+                                          AppLocalizations.of(context)!.logout,
+                                      onTap: () {
+                                        DialogGI.showAlertDialog(context,
+                                            title: AppLocalizations.of(context)!
+                                                .dialog_title_logout,
+                                            content:
+                                                AppLocalizations.of(context)!
+                                                    .dialog_content_logout,
+                                            actionOk: () {
+                                          ref
+                                              .read(accountProvider.notifier)
+                                              .logout();
+                                          Future.delayed(
+                                              const Duration(milliseconds: 0),
+                                              () => context.pop());
+                                        });
+                                      })
+                                ],
                                 child: SizedBox(
                                   width: 30,
                                   height: 30,
@@ -287,6 +340,34 @@ class _HomePageState extends ConsumerState<HomePage>
                                   ),
                                 ),
                               ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     if (accountState.imagePath.isNotEmpty) {
+                              //       ShowImage.fromNetwork(
+                              //           context: context,
+                              //           imagePath: accountState.imagePath,
+                              //           heroTag: HeroTags.imageProfile1(
+                              //               accountState.id));
+                              //     }
+                              //   },
+                              //   child: SizedBox(
+                              //     width: 30,
+                              //     height: 30,
+                              //     child: Hero(
+                              //       tag:
+                              //           HeroTags.imageProfile1(accountState.id),
+                              //       child: ClipRRect(
+                              //           borderRadius: BorderRadius.circular(50),
+                              //           child: WidgetsGI.CacheImageNetworkGI(
+                              //               accountState.imagePath,
+                              //               placeholderPath:
+                              //                   ImagesPath.pic_profile.path,
+                              //               width: 30,
+                              //               height: 30,
+                              //               fit: BoxFit.cover)),
+                              //     ),
+                              //   ),
+                              // ),
                               const SizedBox(width: 8),
                               CustomIconButton(
                                   icon: Icons.notifications_outlined,

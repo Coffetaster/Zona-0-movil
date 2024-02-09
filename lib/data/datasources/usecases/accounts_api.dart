@@ -26,7 +26,6 @@ class AccountsApi extends AccountsRemoteRepository {
             if (usernameXemail.contains("@")) 'email': usernameXemail,
             'password': password
           });
-          print(json);
       String? accessToken = json["access"];
       String? refreshToken = json["refresh"];
       Map<String, dynamic>? user = json["user"];

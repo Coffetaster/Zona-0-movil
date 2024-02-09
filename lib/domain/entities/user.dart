@@ -22,6 +22,13 @@ class User {
     required this.userType,
   });
 
+  bool get isClient {
+    return userType.toLowerCase() == "client";
+  }
+
+  bool get isCompany {
+    return userType.toLowerCase() == "company";
+  }
 
   @override
   bool operator ==(Object other) {

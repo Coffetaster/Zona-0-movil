@@ -16,9 +16,9 @@ import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   ProductDetailsPage({
-    Key? key,
+    super.key,
     required this.productId,
-  }) : super(key: key) {
+  }) {
     product = AppData.allProducts
         .firstWhere((element) => element.id.toString() == productId);
   }

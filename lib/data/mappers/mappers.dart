@@ -3,3 +3,7 @@ export 'company_mapper.dart';
 export 'user_mapper.dart';
 export 'transaction_received_mapper.dart';
 export 'transaction_sent_mapper.dart';
+export 'donation_mapper.dart';
+export 'institution_gallery_mapper.dart';
+export 'institution_mapper.dart';
+export 'banking_mapper.dart';

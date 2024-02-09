@@ -60,9 +60,12 @@ class DialogGI {
         builder: (context) => Center(
               child: ConstrainedBox(
                   constraints: BoxConstraints(
-                      minWidth: context.width * .8,
-                      minHeight: context.height * .3),
-                  child: CustomCard(child: dialog, elevation: 5)),
+                      minWidth: context.width * .6,
+                      maxWidth: context.width * .8,
+                      minHeight: context.height * .3,
+                      maxHeight: context.height * .8,
+                      ),
+                  child: CustomCard(elevation: 5, child: dialog)),
             ));
   }
 }

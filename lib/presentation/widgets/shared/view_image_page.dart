@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -11,11 +12,13 @@ class ViewImagePage extends StatelessWidget {
   const ViewImagePage(
       {super.key,
       required this.imagePath,
-      required this.heroTag,
+      this.showBtnClose = true,
+      this.heroTag,
       this.extendedImageType = ExtendedImageType.Network});
 
   final String imagePath;
-  final String heroTag;
+  final bool showBtnClose;
+  final String? heroTag;
   final ExtendedImageType extendedImageType;
 
   @override
@@ -23,11 +26,16 @@ class ViewImagePage extends StatelessWidget {
     ExtendedImage extendedImage;
     switch (extendedImageType) {
       case ExtendedImageType.Network:
-        extendedImage = ExtendedImage.network(
-          imagePath,
+        extendedImage = ExtendedImage(
+          image: CachedNetworkImageProvider(imagePath),
           mode: ExtendedImageMode.gesture,
           enableSlideOutPage: true,
         );
+        // extendedImage = ExtendedImage.network(
+        //   imagePath,
+        //   mode: ExtendedImageMode.gesture,
+        //   enableSlideOutPage: true,
+        // );
         break;
       case ExtendedImageType.Asset:
         extendedImage = ExtendedImage.asset(
@@ -45,36 +53,41 @@ class ViewImagePage extends StatelessWidget {
         break;
     }
 
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Hero(
-            tag: heroTag,
-            child: ExtendedImageSlidePage(
-                slideAxis: SlideAxis.vertical,
-                slideType: SlideType.onlyImage,
-                slidePageBackgroundHandler: (offset, size) {
-                  return defaultSlidePageBackgroundHandler(
-                      offset: offset,
-                      pageSize: size,
-                      color: Colors.black,
-                      pageGestureAxis: SlideAxis.vertical);
-                },
-                child: extendedImage),
-          ),
-        ),
-        Positioned(
-            right: 10,
-            top: 10,
-            child: IconButton(
-                onPressed: () {
-                  context.pop();
-                },
-                icon: const Icon(Icons.close_outlined, color: Colors.white)))
-      ],
+    final body = SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Hero(
+        tag: heroTag ?? 'ViewImagePage',
+        child: ExtendedImageSlidePage(
+            slideAxis: SlideAxis.vertical,
+            slideType: SlideType.onlyImage,
+            slidePageBackgroundHandler: (offset, size) {
+              return defaultSlidePageBackgroundHandler(
+                  offset: offset,
+                  pageSize: size,
+                  color: Colors.black,
+                  pageGestureAxis: SlideAxis.vertical);
+            },
+            child: extendedImage),
+      ),
     );
+
+    return showBtnClose
+        ? Stack(
+            children: [
+              body,
+              Positioned(
+                  right: 10,
+                  top: 15,
+                  child: IconButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      icon: const Icon(Icons.close_outlined,
+                          color: Colors.white)))
+            ],
+          )
+        : body;
   }
 
   Color defaultSlidePageBackgroundHandler(

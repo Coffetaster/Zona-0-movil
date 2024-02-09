@@ -14,7 +14,11 @@ import 'package:zona0_apk/presentation/providers/transfer/transfer.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class ReceiveItemDataPage extends ConsumerWidget {
-  const ReceiveItemDataPage({super.key, required this.id, required this.canEdit, this.transactionReceived});
+  const ReceiveItemDataPage(
+      {super.key,
+      required this.id,
+      required this.canEdit,
+      this.transactionReceived});
 
   final String id;
   final bool canEdit;
@@ -22,7 +26,8 @@ class ReceiveItemDataPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    TransactionReceived? transaction = transactionReceived ?? ref.read(transferProvider.notifier).getTransaction(id);
+    TransactionReceived? transaction = transactionReceived ??
+        ref.read(transferProvider.notifier).getTransaction(id);
     if (transaction == null) {
       Future.delayed(Duration.zero, () => context.pop());
       return Container();
@@ -117,6 +122,12 @@ class ReceiveItemDataPage extends ConsumerWidget {
                             subtitle: Text(
                                 '${transaction.amount.toStringAsFixed(2)} ${Constants.namePoints}'),
                           ),
+                          if (!canEdit)
+                            ListTile(
+                              title:
+                                  Text(AppLocalizations.of(context)!.usuario),
+                              subtitle: Text(transaction.user),
+                            ),
                           ListTile(
                             title: Text(AppLocalizations.of(context)!.estado),
                             subtitle: Text(
