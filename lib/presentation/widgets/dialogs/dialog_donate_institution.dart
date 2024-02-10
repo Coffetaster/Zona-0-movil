@@ -62,7 +62,7 @@ class DialogDonateInstitucion extends ConsumerWidget {
           CustomTextFormField(
             keyboardType: TextInputType.number,
             suffix: Text(AppLocalizations.of(context)!.osp),
-            label: AppLocalizations.of(context)!.montoRecibir,
+            label: AppLocalizations.of(context)!.montoADonar,
             enabled: donateOSPFormState.formStatus == FormStatus.invalid,
             onFieldSubmitted: (_) {
               if (donateOSPFormState.formStatus != FormStatus.validating) {

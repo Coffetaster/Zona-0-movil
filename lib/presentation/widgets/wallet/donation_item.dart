@@ -26,6 +26,7 @@ class DonationItem extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(),
               title: Text(donation.institution,
                   style: Theme.of(context).textTheme.titleMedium, maxLines: 2),
+              subtitle: Text(donation.user, maxLines: 1),
               trailing: Container(
                   height: 30,
                   width: 120,

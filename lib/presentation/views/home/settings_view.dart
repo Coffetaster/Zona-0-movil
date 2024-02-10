@@ -58,7 +58,6 @@ class _SettingsViewState extends ConsumerState<SettingsView>
                 const SizedBox(
                   height: 10,
                 ),
-                // settingsBloc(),
                 settingsBloc2(),
                 const SizedBox(
                   height: 30,
@@ -164,6 +163,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
               ],
             ),
           ),
+          infoBloc_GestionarTarjeta(),
           acountBloc(),
           acountBloc2(),
         ],
@@ -235,6 +235,20 @@ class _SettingsViewState extends ConsumerState<SettingsView>
           SettingOption(
             icon: Icons.padding_outlined,
             title: AppLocalizations.of(context)!.verBienvenida,
+            trailing: const Icon(Icons.arrow_forward_ios_outlined),
+            onTap: () {
+              Utils.showSnackbarEnDesarrollo(context);
+            },
+          ),
+        ],
+      ));
+
+  Widget infoBloc_GestionarTarjeta() => CustomCard(
+          child: Column(
+        children: <Widget>[
+          SettingOption(
+            icon: Icons.credit_card_outlined,
+            title: AppLocalizations.of(context)!.gestionaTarjeta,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
             onTap: () {
               Utils.showSnackbarEnDesarrollo(context);

@@ -159,6 +159,13 @@
     "verDonaciones": "Ver donaciones",
     "cantDonada": "Cantidad donada hasta el momento",
     "donacionEnviada": "Donación enviada satisfactoriamente",
+    "calculadora": "Calculadora",
+    "montoTotal": "Monto total",
+    "ganancia": "Ganancia",
+    "dias": "Días",
+    "cerrar": "Cerrar",
+    "montoADonar": "Monto a donar",
+    "gestionaTarjeta": "Gestionar tarjeta",
 
     "dialog_title_logout": "Cerrar sesión",
     "dialog_content_logout": "¿Está seguro que quiere cerrar la sesión actual?",

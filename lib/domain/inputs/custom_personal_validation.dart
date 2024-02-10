@@ -1,6 +1,18 @@
 import 'inputs.dart';
 
 class CustomPersonalValidation {
+  static PersonalValidationResult unsignedNumberValidation(String value) {
+    if (int.tryParse(value) != null &&
+        int.tryParse(value)! >= 0) return PersonalValidationResult.isValid();
+    return PersonalValidationResult.noValid("No puede ser negativo");
+  }
+
+  static PersonalValidationResult unsignedDecimalValidation(String value) {
+    if (double.tryParse(value) != null &&
+        double.tryParse(value)! >= 0) return PersonalValidationResult.isValid();
+    return PersonalValidationResult.noValid("No puede ser negativo");
+  }
+
   static PersonalValidationResult telephonePersonalValidation(String value) {
     if (value.length == 8 &&
         int.tryParse(value) != null &&
