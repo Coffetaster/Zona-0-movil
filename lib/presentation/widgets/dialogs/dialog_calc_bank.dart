@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:zona0_apk/config/extensions/custom_context.dart';
 import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/main.dart';
-import 'package:zona0_apk/presentation/providers/transfer/calc_bank_provider.dart';
+import 'package:zona0_apk/presentation/providers/banking/calc_bank_provider.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class DialogCalcBank extends ConsumerStatefulWidget {
@@ -33,7 +33,7 @@ class _DialogCalcBankState extends ConsumerState<DialogCalcBank> {
     final calcBankState = ref.watch(calcBankProvider);
 
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

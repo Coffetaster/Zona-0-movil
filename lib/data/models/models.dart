@@ -6,4 +6,4 @@ export 'transaction_sent_model.dart';
 export 'donation_models.dart';
 export 'institution_gallery_model.dart';
 export 'institution_model.dart';
-export 'banking_model.dart';
+export 'deposit_model.dart';

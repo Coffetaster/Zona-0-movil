@@ -1,5 +1,6 @@
 import 'package:formz/formz.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:zona0_apk/config/helpers/utils.dart';
 
 import 'package:zona0_apk/domain/inputs/inputs.dart';
 
@@ -14,8 +15,7 @@ class CalcBankNotifier extends StateNotifier<CalcBankState> {
   void updateAmountTotal() {
     if (!state.isvalid) return;
     final amountTotal =
-        (state.amount.realValue * (state.days.realValue / 30) * (3 / 100)) +
-            state.amount.realValue;
+        Utils.calcInterest(state.amount.realValue, state.days.realValue);
     state = state.copyWith(amountTotal: amountTotal);
   }
 

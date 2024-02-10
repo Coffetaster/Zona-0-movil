@@ -62,6 +62,8 @@ class _WalletViewState extends ConsumerState<WalletView>
 
     // ignore: unused_local_variable
     final keepAlive_institutionsProvider = ref.watch(institutionsProvider.select((value) => value.isLoading));
+    // ignore: unused_local_variable
+    final keepAlive_bankingProvider = ref.watch(bankingProvider.select((value) => value.isLoading));
 
     return SingleChildScrollView(
       child: FadeInUp(

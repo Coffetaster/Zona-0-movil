@@ -6,3 +6,4 @@ export 'transfer/transfer.dart';
 export 'users/users.dart';
 export 'institutions/institutions.dart';
 export 'redeem_code/redeem_code.dart';
+export 'banking/banking.dart';

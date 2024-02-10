@@ -11,13 +11,12 @@ class BankingApi extends BankingRemoteRepository {
   final String localUrl = "banking";
 
   @override
-  Future createAccount(double amount) async {
+  Future createDeposit(double amount) async {
     try {
-      final json = await _myDio.request(
+      await _myDio.request(
           path: '$localUrl/account/',
           requestType: RequestType.POST,
           data: {"amount": amount});
-      print(json);
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -26,12 +25,11 @@ class BankingApi extends BankingRemoteRepository {
   }
 
   @override
-  Future<Banking> getAccount(String idAccount) async {
+  Future<Deposit> getDeposit(String idDeposit) async {
     try {
       final json = await _myDio.request(
-          path: '$localUrl/account/$idAccount/', requestType: RequestType.GET);
-      print(json);
-      return BankingModel.fromMap(json).toEntity();
+          path: '$localUrl/account/$idDeposit/', requestType: RequestType.GET);
+      return DepositModel.fromMap(json).toEntity();
     } on CustomDioError catch (_) {
       rethrow;
     } catch (e) {
@@ -40,13 +38,13 @@ class BankingApi extends BankingRemoteRepository {
   }
 
   @override
-  Future<List<Banking>> getAccountList() async {
+  Future<List<Deposit>> getDeposits() async {
     try {
       final json = await _myDio.request(
           path: '$localUrl/account/', requestType: RequestType.GET);
       if (json == null || json.isEmpty) return [];
-      return List<Banking>.from(json.map((x) {
-        return BankingModel.fromMap(x).toEntity();
+      return List<Deposit>.from(json.map((x) {
+        return DepositModel.fromMap(x).toEntity();
       }));
     } on CustomDioError catch (_) {
       rethrow;
@@ -56,10 +54,11 @@ class BankingApi extends BankingRemoteRepository {
   }
 
   @override
-  Future withdrawAccount(String idAccount) async {
+  Future withdrawDeposit(String idDeposit) async {
     try {
       final json = await _myDio.request(
-          path: '$localUrl/account/withdraw/$idAccount', requestType: RequestType.POST);
+          path: '$localUrl/account/withdraw/?id=$idDeposit',
+          requestType: RequestType.POST);
       print(json);
     } on CustomDioError catch (_) {
       rethrow;

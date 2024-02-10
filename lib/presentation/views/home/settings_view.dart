@@ -81,60 +81,60 @@ class _SettingsViewState extends ConsumerState<SettingsView>
     );
   }
 
-  Widget profileBloc(AccountState accountState) => CustomGradientCard(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: GestureDetector(
-                  onTap: () {
-                    if (accountState.imagePath.isNotEmpty) {
-                      ShowImage.fromNetwork(
-                          context: context,
-                          imagePath: accountState.imagePath,
-                          heroTag: HeroTags.imageProfile2(accountState.id));
-                    }
-                  },
-                  child: Hero(
-                    tag: HeroTags.imageProfile2(accountState.id),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: WidgetsGI.CacheImageNetworkGI(
-                            accountState.imagePath,
-                            placeholderPath: ImagesPath.pic_profile.path,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover)),
+  Widget profileBloc(AccountState accountState) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomGradientCard(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: GestureDetector(
+                      onTap: () {
+                        if (accountState.imagePath.isNotEmpty) {
+                          ShowImage.fromNetwork(
+                              context: context,
+                              imagePath: accountState.imagePath,
+                              heroTag: HeroTags.imageProfile2(accountState.id));
+                        }
+                      },
+                      child: Hero(
+                        tag: HeroTags.imageProfile2(accountState.id),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: WidgetsGI.CacheImageNetworkGI(
+                                accountState.imagePath,
+                                placeholderPath: ImagesPath.pic_profile.path,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover)),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('${accountState.name} ${accountState.last_name}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        style: Theme.of(context).textTheme.titleMedium),
-                    Text(accountState.username,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        style: Theme.of(context).textTheme.titleSmall),
-                  ],
-                ),
-              )
-            ],
-          ),
-          const Divider(thickness: 1, height: 20),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('${accountState.name} ${accountState.last_name}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: Theme.of(context).textTheme.titleMedium),
+                        Text(accountState.username,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: Theme.of(context).textTheme.titleSmall),
+                      ],
+                    ),
+                  )
+                ],
+              )),
           CustomCard(
             child: Column(
               children: <Widget>[
@@ -167,7 +167,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
           acountBloc(),
           acountBloc2(),
         ],
-      ));
+      );
 
   Widget settingsBloc2() => CustomCard(
           child: Column(
@@ -251,7 +251,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
             title: AppLocalizations.of(context)!.gestionaTarjeta,
             trailing: const Icon(Icons.arrow_forward_ios_outlined),
             onTap: () {
-              Utils.showSnackbarEnDesarrollo(context);
+              context.push(RouterPath.SETTINGS_MANAGE_CARD_PAGE);
             },
           ),
         ],

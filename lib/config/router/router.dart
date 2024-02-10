@@ -52,7 +52,7 @@ final appRouter = GoRouter(
       path: RouterPath.WALLET_BANKING_PAGE,
       pageBuilder: (context, state) {
         return RouterTransition.slideTransitionPage(
-            key: state.pageKey, child: const BankingPage());
+            key: state.pageKey, child: BankingPage());
       },
     ),
     GoRoute(
@@ -141,6 +141,11 @@ final appRouter = GoRouter(
       path: RouterPath.SETTINGS_ABOUT_US_PAGE,
       pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
           key: state.pageKey, child: const AboutUsPage()),
+    ),
+    GoRoute(
+      path: RouterPath.SETTINGS_MANAGE_CARD_PAGE,
+      pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
+          key: state.pageKey, child: const ManageCardPage()),
     ),
 
     //* Account Pages

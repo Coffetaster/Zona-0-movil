@@ -166,6 +166,12 @@
     "cerrar": "Cerrar",
     "montoADonar": "Monto a donar",
     "gestionaTarjeta": "Gestionar tarjeta",
+    "depositos": "Depósitos",
+    "monto": "Monto",
+    "bancarizarContent1": "Deposita tus fondos y obtén un interés fijo del 3% cada 30 días para hacer crecer tus ahorros. Puedes hacer uso de la calculadora para tener una idea más precisa de la ganacia que puede llegar a obtener.",
+    "bancarizarContent2": "Los OSP depositados quedarán congelados un total de 60 días. Luego de eso podrá retirarlos.",
+    "depositar": "Depositar",
+    "noDepositos": "No existen depósitos aún",
 
     "dialog_title_logout": "Cerrar sesión",
     "dialog_content_logout": "¿Está seguro que quiere cerrar la sesión actual?",

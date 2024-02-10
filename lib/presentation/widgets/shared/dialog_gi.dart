@@ -5,7 +5,7 @@ import 'package:zona0_apk/config/theme/app_theme.dart';
 import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 class DialogGI {
-  static void showAlertDialog(
+  static Future showAlertDialog(
     BuildContext context, {
     required String title,
     required String content,
@@ -35,7 +35,7 @@ class DialogGI {
     btnOk ??= CustomFilledButton(onPressed: actionOk, label: textActionOk);
     btnCancel ??=
         CustomTextButton(onPressed: actionCancel, label: textActionCancel);
-    showDialog(
+    return showDialog(
         context: context,
         barrierColor: barrierColor,
         barrierDismissible: isDismissible,
@@ -49,11 +49,11 @@ class DialogGI {
             ));
   }
 
-  static void showCustomDialog(BuildContext context,
+  static Future showCustomDialog(BuildContext context,
       {required Widget dialog,
       bool isDismissible = true,
       Color barrierColor = Colors.black54}) {
-    showDialog(
+    return showDialog(
         context: context,
         barrierColor: barrierColor,
         barrierDismissible: isDismissible,
@@ -61,7 +61,7 @@ class DialogGI {
               child: ConstrainedBox(
                   constraints: BoxConstraints(
                       minWidth: context.width * .6,
-                      maxWidth: context.width * .8,
+                      maxWidth: context.width * .9,
                       minHeight: context.height * .3,
                       maxHeight: context.height * .8,
                       ),

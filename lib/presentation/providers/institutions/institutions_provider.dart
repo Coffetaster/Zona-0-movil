@@ -17,16 +17,19 @@ final institutionsProvider =
 
   return InstitutionsNotifier(
       institutionsRemoteRepository: apiConsumer.institutions,
-      connectivityStatusNotifier: connectivityStatusNotifier);
+      connectivityStatusNotifier: connectivityStatusNotifier,
+      getOSPPoints: ref.read(accountProvider.notifier).getOSPPoints);
 });
 
 class InstitutionsNotifier extends StateNotifier<InstitutionsState> {
   final InstitutionsRemoteRepository institutionsRemoteRepository;
   final ConnectivityStatusNotifier connectivityStatusNotifier;
+  final Function() getOSPPoints;
 
   InstitutionsNotifier({
     required this.institutionsRemoteRepository,
     required this.connectivityStatusNotifier,
+    required this.getOSPPoints,
   }) : super(InstitutionsState()) {
     refresh();
   }
@@ -47,6 +50,7 @@ class InstitutionsNotifier extends StateNotifier<InstitutionsState> {
       }
       await institutionsRemoteRepository.createDonation(donation);
       getDonations();
+      getOSPPoints();
       return 200;
     } on CustomDioError catch (_) {
       connectivityStatusNotifier.checkedConnection();

@@ -2,11 +2,11 @@ import 'package:zona0_apk/domain/entities/entities.dart';
 
 abstract class BankingRemoteRepository {
 
-  Future<List<Banking>> getAccountList();
+  Future<List<Deposit>> getDeposits();
 
-  Future<dynamic> createAccount(double amount);
+  Future<dynamic> createDeposit(double amount);
 
-  Future<dynamic> withdrawAccount(String idAccount);
+  Future<dynamic> withdrawDeposit(String idDeposit);
 
-  Future<Banking> getAccount(String idAccount);
+  Future<Deposit> getDeposit(String idDeposit);
 }

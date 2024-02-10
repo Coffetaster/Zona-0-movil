@@ -38,6 +38,7 @@ class RouterPath {
 
   //* Settings pages
   static const String SETTINGS_ABOUT_US_PAGE = '/settings/about_us';
+  static const String SETTINGS_MANAGE_CARD_PAGE = '/settings/manage_card';
 
   //* Notifications pages
   static const String NOTIFICATIONS_PAGE = '/notifications';

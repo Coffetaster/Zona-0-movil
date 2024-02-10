@@ -6,4 +6,4 @@ export 'transaction_sent_mapper.dart';
 export 'donation_mapper.dart';
 export 'institution_gallery_mapper.dart';
 export 'institution_mapper.dart';
-export 'banking_mapper.dart';
+export 'deposit_mapper.dart';

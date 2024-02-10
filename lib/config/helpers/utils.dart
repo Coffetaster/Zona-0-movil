@@ -15,6 +15,10 @@ import 'package:zona0_apk/presentation/widgets/widgets.dart';
 import 'snackbar_gi.dart';
 
 class Utils {
+  static Future showDialogIsLoading(BuildContext context) =>
+      DialogGI.showCustomDialog(context,
+          isDismissible: false, dialog: const DialogIsLoading());
+
   static showSnackbarEnDesarrollo(BuildContext context) =>
       SnackBarGI.showWithIcon(context,
           icon: Icons.watch_later_outlined, text: "En desarrollo");
@@ -136,4 +140,7 @@ class Utils {
     return clipboardData?.text ?? "";
     // return clipboardData != null ? clipboardData.text ?? "" : "";
   }
+
+  static double calcInterest(double amount, int days) =>
+      (amount * (days / 30) * (3 / 100)) + amount;
 }

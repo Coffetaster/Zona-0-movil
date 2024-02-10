@@ -33,9 +33,14 @@ class ReceiveItemDataPage extends ConsumerWidget {
       return Container();
     }
     deleteTransaction() async {
+      bool isOpenDialog = true;
+      Utils.showDialogIsLoading(context).then((value) => isOpenDialog = false);
       final code = await ref
           .read(transferProvider.notifier)
           .deleteUnpaidReceive(transaction.id);
+      if (isOpenDialog) {
+        context.pop();
+      }
       if (code == 200) {
         context.pop();
         SnackBarGI.showWithIcon(context,
