@@ -81,7 +81,10 @@ class _SettingsViewState extends ConsumerState<SettingsView>
     );
   }
 
-  Widget profileBloc(AccountState accountState) => Column(
+  Widget profileBloc(AccountState accountState) {
+    // ignore: unused_local_variable
+    final keepAlive_cardProvider = ref.watch(cardProvider.select((value) => value.isLoading));
+    return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           CustomGradientCard(
@@ -168,6 +171,7 @@ class _SettingsViewState extends ConsumerState<SettingsView>
           acountBloc2(),
         ],
       );
+  }
 
   Widget settingsBloc2() => CustomCard(
           child: Column(

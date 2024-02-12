@@ -145,7 +145,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouterPath.SETTINGS_MANAGE_CARD_PAGE,
       pageBuilder: (context, state) => RouterTransition.slideTransitionPage(
-          key: state.pageKey, child: const ManageCardPage()),
+          key: state.pageKey, child: ManageCardPage()),
     ),
 
     //* Account Pages

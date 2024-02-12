@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zona0_apk/config/constants/hero_tags.dart';
@@ -188,11 +187,6 @@ class InstitutionDetailsPage extends StatelessWidget {
   }
 
   Widget _InstitutionGalleryView(BuildContext context) {
-    List<ImageItem> imagesItem = institution!.galleryInstitution
-        .map((e) => ImageItem(
-            path: e.image,
-            heroTag: HeroTags.imageGallery(e.id.toString()) + '1'))
-        .toList();
     return SingleChildScrollView(
       child: FadeInUp(
         child: Padding(
@@ -308,62 +302,9 @@ class InstitutionDetailsPage extends StatelessWidget {
                       )
                     ],
                   )),
-              const SizedBox(height: 16),
-              const CustomTitle("Galería de imágenes"),
-              MasonryGridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                itemCount: institution!.galleryInstitution.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final item = _ImageGalleryItem(
-                      index: index,
-                      context: context,
-                      imagesItem: imagesItem,
-                      imageGallery: institution!.galleryInstitution[index]);
-                  if (index == 1) {
-                    return Column(
-                      children: [
-                        const SizedBox(width: double.infinity, height: 30),
-                        item
-                      ],
-                    );
-                  }
-                  return item;
-                },
-              ),
               const SizedBox(height: 20),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  _ImageGalleryItem(
-      {required int index,
-      required BuildContext context,
-      required List<ImageItem> imagesItem,
-      required InstitutionGallery imageGallery}) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 200),
-      child: GestureDetector(
-        onTap: () {
-          if (imageGallery.image.isNotEmpty) {
-            ShowImage.showGalleryImage(
-                context: context, imagesItem: imagesItem, initialPage: index);
-          }
-        },
-        child: Hero(
-          tag: HeroTags.imageGallery(imageGallery.id.toString()) + '1',
-          placeholderBuilder: (context, heroSize, child) => child,
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-              child: WidgetsGI.CacheImageNetworkGI(imageGallery.image,
-                  placeholderPath: ImagesPath.placeholder.path,
-                  fit: BoxFit.cover)),
         ),
       ),
     );

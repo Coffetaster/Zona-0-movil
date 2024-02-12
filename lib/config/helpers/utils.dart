@@ -14,7 +14,18 @@ import 'package:zona0_apk/presentation/widgets/widgets.dart';
 
 import 'snackbar_gi.dart';
 
+typedef LoadingFunction = Future<void> Function();
+
 class Utils {
+  static Future<void> waitingLoading(BuildContext context, LoadingFunction loadingFunction) async {
+    bool isOpenDialog = true;
+    showDialogIsLoading(context).then((value) => isOpenDialog = false);
+    await loadingFunction();
+    if(isOpenDialog){
+      context.pop();
+    }
+  }
+
   static Future showDialogIsLoading(BuildContext context) =>
       DialogGI.showCustomDialog(context,
           isDismissible: false, dialog: const DialogIsLoading());
@@ -143,4 +154,25 @@ class Utils {
 
   static double calcInterest(double amount, int days) =>
       (amount * (days / 30) * (3 / 100)) + amount;
+
+  static void parseErrorCode(BuildContext context, String code) {
+    switch (code) {
+      case "412":
+        SnackBarGI.showWithIcon(context,
+            icon: Icons.error_outline,
+            text: AppLocalizations.of(context)!.camposConError);
+        break;
+      case "498":
+        SnackBarGI.showWithIcon(context,
+            icon: Icons.error_outline,
+            text: AppLocalizations.of(context)!.compruebeConexion);
+        break;
+      default:
+        SnackBarGI.showWithIcon(context,
+            icon: Icons.error_outline,
+            text: code.isEmpty
+                ? AppLocalizations.of(context)!.haOcurridoError
+                : code);
+    }
+  }
 }

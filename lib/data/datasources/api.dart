@@ -15,6 +15,7 @@ class ApiConsumer extends RemoteRepository {
   late InstitutionsApi _institutionsApi;
   late RedeemCodeApi _redeemCodeApi;
   late BankingApi _bankingApi;
+  late CardApi _cardApi;
 
   ApiConsumer() {
     _myDio = MyDio();
@@ -27,6 +28,7 @@ class ApiConsumer extends RemoteRepository {
     _institutionsApi = InstitutionsApi(_myDio);
     _redeemCodeApi = RedeemCodeApi(_myDio);
     _bankingApi = BankingApi(_myDio);
+    _cardApi = CardApi(_myDio);
   }
 
   @override
@@ -49,4 +51,7 @@ class ApiConsumer extends RemoteRepository {
 
   @override
   RedeemCodeRemoteRepository get redeemCode => _redeemCodeApi;
+
+  @override
+  CardRemoteRepository get card => _cardApi;
 }

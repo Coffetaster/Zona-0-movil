@@ -7,3 +7,5 @@ export 'donation_mapper.dart';
 export 'institution_gallery_mapper.dart';
 export 'institution_mapper.dart';
 export 'deposit_mapper.dart';
+export 'card_mapper.dart';
+export 'card_discount_mapper.dart';

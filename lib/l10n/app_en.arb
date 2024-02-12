@@ -172,6 +172,10 @@
     "bancarizarContent2": "Los OSP depositados quedarán congelados un total de 60 días. Luego de eso podrá retirarlos.",
     "depositar": "Depositar",
     "noDepositos": "No existen depósitos aún",
+    "descuentos": "Descuentos",
+    "noDescuentos": "No existen descuentos aún",
+    "realizados": "Realizados",
+    "recibidos": "Recibidos",
 
     "dialog_title_logout": "Cerrar sesión",
     "dialog_content_logout": "¿Está seguro que quiere cerrar la sesión actual?",

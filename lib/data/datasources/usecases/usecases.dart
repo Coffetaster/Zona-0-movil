@@ -5,3 +5,4 @@ export 'users_api.dart';
 export 'institutions_api.dart';
 export 'reedem_code_api.dart';
 export 'banking_api.dart';
+export 'card_api.dart';

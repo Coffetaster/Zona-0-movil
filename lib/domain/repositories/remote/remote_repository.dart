@@ -14,4 +14,6 @@ abstract class RemoteRepository {
   RedeemCodeRemoteRepository get redeemCode;
 
   BankingRemoteRepository get banking;
+
+  CardRemoteRepository get card;
 }

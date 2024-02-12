@@ -7,3 +7,5 @@ export 'donation_models.dart';
 export 'institution_gallery_model.dart';
 export 'institution_model.dart';
 export 'deposit_model.dart';
+export 'card_model.dart';
+export 'card_discount_model.dart';
